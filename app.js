@@ -23,7 +23,7 @@ const upload = multer({
   }
 });
 
-//kinjal
+
 
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
@@ -74,6 +74,37 @@ app.get('/', async (req, res) => {
   }
 });        
 
+
+
+app.get('/1', async (req, res) => {                                                        
+  const user = req.session.user;
+  try {
+    const result = await pool.query(`
+      SELECT 
+        id,
+        name,
+        city,
+        action_type,
+        mobile_number,
+        customer_type,
+        account_owner,
+        po_no,
+        ack_no,
+        billing_address,
+        spoc
+        /* …any other fields you want to edit… */
+      FROM sales_enquiry
+      WHERE account_owner = $1
+    `, [user.name]);
+    res.render('1', {
+      user,
+      enquiries: result.rows
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
+  }
+});  
 const normalizeDate = (value) => {
   const str = (value || "").toString().trim();
   return str !== '' ? str : null;
@@ -174,82 +205,6 @@ app.post('/save-entry', upload.single('confirmation_pdf'), async (req, res) => {
     res.status(500).send("Database error");
   }
 });
-
-
-
-
-
-// Route to handle updating an existing entry
-app.put('/update-entry/:id', async (req, res) => {
-  const entryId = req.params.id;  // Get entry ID from URL
-  // Helper: convert "" to null for date fields
-const parseDate = (val) => (val === '' ? null : val);
-const {
-  account_owner, name, poc_name, mobile_number, city, email, customer_type,
-  action_type, email_sub, email_body, followup_email_sub, followup_email_body,
-  start_date, duration, residential_screen, r_per_screen, r_plan,
-  corporate_screen, c_per_screen, c_plan, outdur_screen, o_per_screen, o_plan,
-  note, invoice_no, invoice_date, amount, closure_date, closed_won_remarks,
-  po_no, po_date, gst_no, pan_no, website, place_of_supply, payment_terms, ack_no,
-  ack_date, irn, spoc, billing_address
-} = req.body;
-
-try {
-  const query = `
-    UPDATE sales_enquiry SET
-      account_owner = $1, name = $2, poc_name = $3, mobile_number = $4, city = $5, email = $6, customer_type = $7,
-      action_type = $8, email_sub = $9, email_body = $10, followup_email_sub = $11, followup_email_body = $12,
-      start_date = $13, total_value = $14, residential_screen = $15, r_per_screen = $16, r_plan = $17,
-      corporate_screen = $18, c_per_screen = $19, c_plan = $20, outdur_screen = $21, o_per_screen = $22, o_plan = $23,
-      note = $24, invoice_no = $25, invoice_date = $26, amount = $27, end_date = $28, confirmation_pdf = $29,
-      po_no = $30, po_date = $31, gst_no = $32, pan_no = $33, website = $34, place_of_supply = $35, payment_terms = $36,
-      ack_no = $37, ack_date = $38, irn = $39, spoc = $40, billing_address = $41
-    WHERE id = $42
-  `;
-
-  const values = [
-    account_owner, name, poc_name, mobile_number, city, email, customer_type,
-    action_type, email_sub, email_body, followup_email_sub, followup_email_body,
-    parseDate(start_date), duration, residential_screen, r_per_screen, r_plan,
-    corporate_screen, c_per_screen, c_plan, outdur_screen, o_per_screen, o_plan,
-    note, invoice_no, parseDate(invoice_date), amount, parseDate(closure_date), closed_won_remarks,
-    po_no, parseDate(po_date), gst_no, pan_no, website, place_of_supply, payment_terms,
-    ack_no, parseDate(ack_date), irn, spoc, billing_address, entryId
-  ];
-
-  await pool.query(query, values);
-
-  res.status(200).json({ message: 'Data updated successfully' });
-} catch (err) {
-  console.error(err);
-  res.status(500).json({ message: 'Error updating data', error: err });
-}
-});
-
-
-app.get('/get-entry/:id', async (req, res) => {
-  const entryId = req.params.id;
-  console.log("Received entryId:", entryId);  // Add a log to check
-  try {
-    const entry = await pool.query('SELECT * FROM sales_enquiry WHERE id = $1', [entryId]);
-    if (entry.rows.length > 0) {
-      res.json(entry.rows[0]);
-    } else {
-      res.status(404).json({ error: 'Entry not found' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-
-
-
-
-
-
-
-
 
 
 
