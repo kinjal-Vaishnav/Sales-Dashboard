@@ -647,6 +647,7 @@ input, select {
                   fill="#706E6B" />
               </svg>
             </th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -661,6 +662,12 @@ input, select {
               <td><%= row.mobile_number %></td>             
               <td><%= row.customer_type %></td>
               <td><%= row.account_owner %></td>
+              <td><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="0.5" y="0.5" width="19" height="19" rx="3.5" fill="white"/>
+<rect x="0.5" y="0.5" width="19" height="19" rx="3.5" stroke="#DDDBDA"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M5.48845 6.76929H14.53C14.7854 6.76929 14.9641 7.11929 14.7598 7.36159L10.3412 13.0693C10.188 13.2847 9.85595 13.2847 9.70271 13.0693L5.23304 7.36159C5.05425 7.11929 5.2075 6.76929 5.48845 6.76929Z" fill="#706E6B"/>
+</svg>
+</td>
             </tr>                                                     
           <% }) %>                                  
         </tbody>      
