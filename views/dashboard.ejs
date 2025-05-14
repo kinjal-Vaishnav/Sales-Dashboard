@@ -803,7 +803,7 @@ p strong {
       3 items - Sorted by Opportunity Name - Filtered by All Employees - Updated 4 minutes ago
     </div>
     
- 
+                                                                            
     
     <table id="dataTable">
       <thead>
@@ -911,48 +911,51 @@ p strong {
 
 
       <!-- Send Offer -->   
-     <div id="sendOfferFieldsedit" class="conditionalFields" style="display: none;">
+  <div id="sendOfferFieldsedit" class="conditionalFields" style="display: none;">
   <label>Start Date:
-    <input type="date" name="offer_start_date" id="offer_start_date">
+    <input type="date" name="start_date" id="offer_start_date">
   </label><br>
 
-<!-- test git -->  
-  
   <label>Duration (Days):
-    <input type="number" name="offer_duration" id="offer_duration">
+    <input type="number" name="duration" id="offer_duration">
   </label><br>
 
   <label>End Date:
-    <input type="text" name="offer_end_date" id="offer_end_date" readonly>
+    <input type="text" name="end_date" id="offer_end_date" readonly>
   </label><br>
 
- <h4>Residential</h4>
-<input type="number" name="residential_screen" id="residential_screen_edit" placeholder="Screens">
-<input type="number" name="r_per_screen" id="r_per_screen_edit" placeholder="Per Screen Rate">
-<input type="number" name="r_plan" id="r_plan_edit" placeholder="Plan Days">
-<span id="r_result_edit">₹0</span><br>
+  <h4>Residential</h4>
+  <input type="number" name="residential_screen" id="residential_screen_edit" placeholder="Screens">
+  <input type="number" name="r_per_screen" id="r_per_screen_edit" placeholder="Per Screen Rate">
+ <select name="r_plan" id="r_plan_edit">
+  <option value="720">720 Days</option>
+  <option value="360">360 Days</option>
+</select>
+  <span id="r_result_edit">₹0</span><br>
 
-<h4>Corporate</h4>
-<input type="number" name="corporate_screen" id="corporate_screen_edit" placeholder="Screens">
-<input type="number" name="c_per_screen" id="c_per_screen_edit" placeholder="Per Screen Rate">
-<input type="number" name="c_plan" id="c_plan_edit" placeholder="Plan Days">
-<span id="c_result_edit">₹0</span><br>
+  <h4>Corporate</h4>
+  <input type="number" name="corporate_screen" id="corporate_screen_edit" placeholder="Screens">
+  <input type="number" name="c_per_screen" id="c_per_screen_edit" placeholder="Per Screen Rate">
+ <select name="c_plan" id="c_plan_edit">
+  <option value="720">720 Days</option>
+  <option value="360">360 Days</option>
+</select>
 
-<h4>Outdoor</h4>
-<input type="number" name="outdur_screen" id="outdur_screen_edit" placeholder="Screens">
-<input type="number" name="o_per_screen" id="o_per_screen_edit" placeholder="Per Screen Rate">
-<input type="number" name="o_plan" id="o_plan_edit" placeholder="Plan Days">
-<span id="o_result_edit">₹0</span><br>
+  <span id="c_result_edit">₹0</span><br>
 
+  <h4>Outdoor</h4>
+  <input type="number" name="outdur_screen" id="outdur_screen_edit" placeholder="Screens">
+  <input type="number" name="o_per_screen" id="o_per_screen_edit" placeholder="Per Screen Rate">
+  <select name="o_plan" id="o_plan_edit">
+  <option value="720">720 Days</option>
+  <option value="360">360 Days</option>
+</select>
+  <span id="o_result_edit">₹0</span><br>
 
   <label>Note:<br>
     <textarea name="note" id="offer_note" placeholder="Enter note..."></textarea>
   </label><br>
-
-
-    </div>    
-
-
+</div>
 
 
 
@@ -984,20 +987,36 @@ p strong {
      <h4>Residential</h4>
 <input type="number" name="residential_screen" id="res_screen" placeholder="Screens">
   <input type="number" name="r_per_screen" id="res_rate" placeholder="Rate">
-  <input type="number" name="r_plan" id="res_plan" placeholder="Plan"><br>
+<!-- Residential Plan -->
+<select name="r_plan" id="res_plan">
+  <option value="">Select Plan</option>
+  <option value="720">720 Days</option>
+  <option value="360">360 Days</option>
+</select><br>
+
 
 <span id="res_result">₹0</span><br>
 
 <h4>Corporate</h4>
  <input type="number" name="corporate_screen" id="corp_screen" placeholder="Screens">
   <input type="number" name="c_per_screen" id="corp_rate" placeholder="Rate">
-  <input type="number" name="c_plan" id="corp_plan" placeholder="Plan"><br>
+  <!-- Corporate Plan -->
+<select name="c_plan" id="corp_plan">
+  <option value="">Select Plan</option>
+  <option value="720">720 Days</option>
+  <option value="360">360 Days</option>
+</select><br>
+
 <span id="corp_result">₹0</span><br>
 
 <h4>Outdoor</h4>
 <input type="number" name="outdur_screen" id="out_screen" placeholder="Screens">
   <input type="number" name="o_per_screen" id="out_rate" placeholder="Rate">
-  <input type="number" name="o_plan" id="out_plan" placeholder="Plan"><br>
+ <select name="o_plan" id="out_plan">
+  <option value="">Select Plan</option>
+  <option value="720">720 Days</option>
+  <option value="360">360 Days</option>
+</select><br>
 
 <span id="out_result">₹0</span><br>
 
@@ -1030,74 +1049,126 @@ p strong {
   
    // Open modal and fill form
  // Open modal and fill form
- document.querySelectorAll('.edit-btn').forEach(btn => {
-    btn.addEventListener('click', async () => {
-      const entryId = JSON.parse(btn.getAttribute('data-entry')).id;
+document.querySelectorAll('.edit-btn').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const entryId = JSON.parse(btn.getAttribute('data-entry')).id;
 
-      try {
-        const response = await fetch(`/get-entry/${entryId}`);
-        const data = await response.json();
+    try {
+      const response = await fetch(`/get-entry/${entryId}`);
+      const data = await response.json();
 
-        if (response.ok) {
-          document.getElementById('entry_id').value = data.id || '';
-          document.getElementById('account_owner').value = data.account_owner || '';
-          document.getElementById('name').value = data.name || '';
-          document.getElementById('poc_name').value = data.poc_name || '';
-          document.getElementById('mobile_number').value = data.mobile_number || '';
-          document.getElementById('city').value = data.city || '';
-          document.getElementById('email').value = data.email || '';
-          document.getElementById('customer_type').value = data.customer_type || '';
-          document.getElementById('action_type').value = data.action_type || '';
+      if (response.ok) {
+        // Basic Fields
+        document.getElementById('entry_id').value = data.id || '';
+        document.getElementById('account_owner').value = data.account_owner || '';
+        document.getElementById('name').value = data.name || '';
+        document.getElementById('poc_name').value = data.poc_name || '';
+        document.getElementById('mobile_number').value = data.mobile_number || '';
+        document.getElementById('city').value = data.city || '';
+        document.getElementById('email').value = data.email || '';
+        document.getElementById('customer_type').value = data.customer_type || '';
+        document.getElementById('action_type').value = data.action_type || '';
 
-          // Hide all conditional fields
-          document.querySelectorAll(".conditionalFields").forEach(field => field.style.display = "none");
+        // Hide all conditional fields first
+        document.querySelectorAll(".conditionalFields").forEach(field => field.style.display = "none");
 
-          if (data.action_type === "Send Offer") {
+        // Show and populate based on action_type
+        switch (data.action_type) {
+          case "Send Proposal":
+            document.getElementById("sendProposalFieldsedit").style.display = "block";
+            document.querySelector('[name="email_subject"]').value = data.email_sub || '';
+            document.querySelector('[name="email_body"]').value = data.email_body || '';
+            break;
+
+          case "Send Follow-up Email":
+            document.getElementById("followupFieldsedit").style.display = "block";
+            document.querySelector('[name="followup_email_sub"]').value = data.followup_email_sub || '';
+            document.querySelector('[name="followup_email_body"]').value = data.followup_email_body || '';
+            break;
+
+          case "Send Offer":
             document.getElementById("sendOfferFieldsedit").style.display = "block";
+            document.getElementById("offer_start_date").value = data.start_date || '';
+            document.getElementById("offer_duration").value = data.duration || '';
+            document.getElementById("offer_end_date").value = data.end_date || '';
 
-          document.getElementById("start_dateee").value = data.offer_start_date || '';
-document.getElementById("durationnn").value = data.offer_duration || '';
+            document.getElementById("residential_screen_edit").value = data.residential_screen || '';
+            document.getElementById("r_per_screen_edit").value = data.r_per_screen || '';
+            document.getElementById("r_plan_edit").value = data.r_plan || '';
 
-document.getElementById("res_screen").value = data.residential_screen || '';
-document.getElementById("res_rate").value = data.r_per_screen || '';
-document.getElementById("res_plan").value = data.r_plan || '';
+            document.getElementById("corporate_screen_edit").value = data.corporate_screen || '';
+            document.getElementById("c_per_screen_edit").value = data.c_per_screen || '';
+            document.getElementById("c_plan_edit").value = data.c_plan || '';
 
-document.getElementById("corp_screen").value = data.corporate_screen || '';
-document.getElementById("corp_rate").value = data.c_per_screen || '';
-document.getElementById("corp_plan").value = data.c_plan || '';
+            document.getElementById("outdur_screen_edit").value = data.outdur_screen || '';
+            document.getElementById("o_per_screen_edit").value = data.o_per_screen || '';
+            document.getElementById("o_plan_edit").value = data.o_plan || '';
 
-document.getElementById("out_screen").value = data.outdur_screen || '';
-document.getElementById("out_rate").value = data.o_per_screen || '';
-document.getElementById("out_plan").value = data.o_plan || '';
-
-// document.getElementById("offer_note").value = data.note || '';
             document.getElementById("offer_note").value = data.note || '';
+            break;
 
-            // calculateAmount();
-            calculateEndDate();    
-            calculateAmountEdit();                                             
-          }
+          case "Send Tax Invoice":
+            document.getElementById("taxInvoiceFieldsedit").style.display = "block";
 
-          document.getElementById("editModal").style.display = "block";
-        } else {
-          alert('Error loading entry');
+            document.querySelector('[name="invoice_no"]').value = data.invoice_no || '';
+            document.querySelector('[name="invoice_date"]').value = data.invoice_date || '';
+            document.querySelector('[name="po_no"]').value = data.po_no || '';
+            document.querySelector('[name="po_date"]').value = data.po_date || '';
+            document.getElementById("gst_no").value = data.gst_no || '';
+            document.getElementById("pan_no").value = data.pan_no || '';
+            document.getElementById("website").value = data.website || '';
+            document.querySelector('[name="place_of_supply"]').value = data.place_of_supply || '';
+            document.querySelector('[name="payment_terms"]').value = data.payment_terms || '';
+            document.querySelector('[name="ack_no"]').value = data.ack_no || '';
+            document.querySelector('[name="ack_date"]').value = data.ack_date || '';
+            document.querySelector('[name="irn"]').value = data.irn || '';
+            document.querySelector('[name="spoc"]').value = data.spoc || '';
+            document.querySelector('[name="billing_address"]').value = data.billing_address || '';
+
+            document.getElementById("start_dateee").value = data.start_date || '';
+            document.getElementById("durationnn").value = data.duration || '';
+            document.getElementById("end_dateee").value = data.end_date || '';
+
+            document.getElementById("res_screen").value = data.residential_screen || '';
+            document.getElementById("res_rate").value = data.r_per_screen || '';
+            document.getElementById("res_plan").value = data.r_plan || '';
+
+            document.getElementById("corp_screen").value = data.corporate_screen || '';
+            document.getElementById("corp_rate").value = data.c_per_screen || '';
+            document.getElementById("corp_plan").value = data.c_plan || '';
+
+            document.getElementById("out_screen").value = data.outdur_screen || '';
+            document.getElementById("out_rate").value = data.o_per_screen || '';
+            document.getElementById("out_plan").value = data.o_plan || '';
+
+            document.querySelector('#taxInvoiceFieldsedit textarea[name="note"]').value = data.note || '';
+            break;
+
+          case "Closed Won":
+            document.getElementById("closedWonFieldsedit").style.display = "block";
+            document.querySelector('[name="closed_won_remarks"]').value = data.closed_won_remarks || '';
+            document.querySelector('[name="closure_date"]').value = data.closure_date || '';
+            break;
         }
-      } catch (err) {
-        console.error(err);
-        alert('Failed to load data');
+
+        // Show Modal
+        document.getElementById("editModal").style.display = "block";
       }
-    });
+    } catch (err) {
+      console.error("Error fetching entry:", err);
+    }
   });
+});
 
 
 // Form submission (Save button clicked)
 document.getElementById('editForm').addEventListener('submit', async (e) => {
-  e.preventDefault(); // Prevent traditional form submission
+  e.preventDefault();
 
   const saveButton = document.getElementById('saveBtn');
-  saveButton.disabled = true; // Disable button to prevent double submit
+  saveButton.disabled = true;
 
-  const formData = new FormData(document.querySelector('#editForm'));
+  const formData = new FormData(document.getElementById('editForm'));
   const updatedData = {};
 
   formData.forEach((value, key) => {
@@ -1119,7 +1190,6 @@ document.getElementById('editForm').addEventListener('submit', async (e) => {
 
     if (response.ok) {
       alert('Data updated successfully');
-      // Close modal or reset form
       document.getElementById('editModal').style.display = 'none';
     } else {
       alert('Failed to update data');
@@ -1128,9 +1198,12 @@ document.getElementById('editForm').addEventListener('submit', async (e) => {
     console.error(err);
     alert('An error occurred while saving');
   } finally {
-    saveButton.disabled = false; // Re-enable button
+    saveButton.disabled = false;
   }
 });
+
+
+
 document.getElementById("nextBtn").addEventListener("click", function () {
     document.getElementById("stage1").style.display = "none";
     document.getElementById("stage2").style.display = "block";
@@ -1253,19 +1326,12 @@ function calculateAmountEdit() {
 
 
 
-  // // Event Listeners for Live Calculation                                       
-  // ['residential', 'corporate', 'outdur'].forEach(prefix => {
-  //   ['screen', 'per_screen', 'plan'].forEach(field => {
-  //     const el = document.getElementById(`${prefix}_${field}`);
-  //     if (el) el.addEventListener('input', calculateAmount);
-  //   });
-  // });
-
+  
   document.getElementById("offer_start_date").addEventListener("change", calculateEndDate);
   document.getElementById("offer_duration").addEventListener("input", calculateEndDate);
 
  
-  </script>
+  </script>                                                                                                 
 
 
 
