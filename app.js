@@ -6,6 +6,7 @@ const app = express();
 
 const multer = require('multer');
 const path = require('path');
+const { log } = require('console');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, 'uploads/'),  // Ensure 'uploads/' folder exists
@@ -208,6 +209,19 @@ app.post('/save-entry', upload.single('confirmation_pdf'), async (req, res) => {
 
 
 
+// app.get('/enquiry/:id', async (req, res) => {
+//   const id = req.params.id;
+//   try {
+//     const result = await pool.query('SELECT * FROM sales_enquiry WHERE id = $1', [id]);
+//     if (result.rows.length === 0) {
+//       return res.status(404).send("Not found");
+//     }
+//     res.render('edit-enquiry', { enquiry : result.rows[0] ,  enquiryList: result.rows});
+//   } catch (err) {
+//     console.error('Error fetching enquiry:', err);
+//     res.status(500).send("Server error");
+//   }
+// });
 app.get('/enquiry/:id', async (req, res) => {
   const id = req.params.id;
   try {
@@ -215,7 +229,7 @@ app.get('/enquiry/:id', async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).send("Not found");
     }
-    res.render('edit-enquiry', { enquiry : result.rows[0] ,  enquiryList: result.rows});
+    res.render('2', { enquiry : result.rows[0] ,  enquiryList: result.rows});
   } catch (err) {
     console.error('Error fetching enquiry:', err);
     res.status(500).send("Server error");
@@ -228,7 +242,8 @@ app.post('/enquiry-inline/:id', async (req, res) => {
     'email', 'gst_no', 'pan_no', 'website', 'billing_address',
     'shipping_address'
   ];
-
+  console.log("dhvanil",fields);
+  
   const updates = [];
   const values = [];
   const clean = val => Array.isArray(val) ? val.join(', ') : val;
@@ -250,9 +265,13 @@ app.post('/enquiry-inline/:id', async (req, res) => {
 
   if (updates.length === 0) return res.status(400).send("No data to update");
 
+
+   console.log("dhvanil",lastModifiedBy);
+      console.log("dhvanil",values);
   try {
     await pool.query(`UPDATE sales_enquiry SET ${updates.join(', ')} WHERE id = $${values.length}`, values);
-    res.status(200).json({ message: "Successfully updated" });
+    // res.status(200).json({ message: "Successfully updated" });
+    res.redirect(`/enquiry/${id}`)
   } catch (err) {
     console.error('Inline Update Error:', err);
     res.status(500).send("Update failed");
