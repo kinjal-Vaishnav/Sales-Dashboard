@@ -584,6 +584,7 @@ p strong {
         <div id="previewInfo"></div>
 
         <div class="form-group">
+         <div id="formMessage" style="color: red; margin-bottom: 10px;"></div>
             <label>Action:</label>
             <select name="action" id="actionSelect" required onchange="handleActionChange(this.value)">
               <option value="">Select</option>
@@ -592,7 +593,8 @@ p strong {
               <option value="Send Offer">Send Offer</option>
               <option value="Send Tax Invoice">Send Tax Invoice</option>                             
               <option value="Closed Won">Closed Won</option>                          
-            </select>                                                                                                    
+            </select>                          
+             <button type="button" onclick="clearActionFields()" style="margin-left: 10px;">Clear Fields</button>                                                                          
           </div>                                                                                           
 
           <div id="proposalFields" style="display:none;">
@@ -850,7 +852,7 @@ p strong {
   left: 20%;
   width: 60%;
   max-height: 80vh; /* limits the modal height */
-  overflow-y: auto; /* enables vertical scroll if needed */               
+  overflow-y: auto; /* enables vertical scroll if needed */                
   background: #fff;
   border: 1px solid #ccc;
   padding: 20px;
@@ -858,8 +860,8 @@ p strong {
 ">
   <form id="editForm" enctype="multipart/form-data">
     <input type="hidden" name="entry_id" id="entry_id">
-
-    <!-- Stage 1 -->
+ 
+    <!-- Stage 1 -->  
     <div id="stage1">
       <h3>Stage 1 - Basic Info</h3>
       <label>Account Owner: <input type="text" name="account_owner" id="account_owner" readonly></label><br>
@@ -870,7 +872,7 @@ p strong {
       <label>Email: <input type="email" name="email" id="email"></label><br>
       <!-- <label>Customer Type: <input type="text" name="customer_type" id="customer_type"></label><br> -->
 
-      <label>Customer Type:
+      <label>Customer Type: 
   <select name="customer_type" id="customer_type">
     <option value="">-- Select --</option>
     <option value="Customer - Direct">Customer - Direct</option>
@@ -894,6 +896,9 @@ p strong {
           <option value="Send Tax Invoice">Send Tax Invoice</option>
           <option value="Closed Won">Closed Won</option>
         </select>
+         <button type="button" id="clearActionFieldsBtn">Clear Fields</button><br><br>
+            <div id="actionChangeMessage" style="display: none; color: red; margin-bottom: 10px;">First you filled fields. Clear them before you can select another action type.</div>
+
       </label><br><br>
 
       <!-- Send Proposal -->
@@ -909,8 +914,8 @@ p strong {
       </div>
 
 
-
-      <!-- Send Offer -->   
+                                                                      
+      <!-- Send Offer -->                                                        
   <div id="sendOfferFieldsedit" class="conditionalFields" style="display: none;">
   <label>Start Date:
     <input type="date" name="start_date" id="offer_start_date">
@@ -1022,313 +1027,400 @@ p strong {
 
 
         <label>Note:<br><textarea name="note" placeholder="Enter note..."></textarea></label>
-      </div>
+      </div>                                                                    
 
-      <!-- Closed Won -->
+      <!-- Closed Won -->                                                                 
       <div class="conditionalFields" id="closedWonFieldsedit" style="display:none;">
-        <label>Reason/Remarks: <textarea name="closed_won_remarks"></textarea></label><br>
-        <label>Closure Date: <input type="date" name="closure_date"></label><br>
+        <label>Ammount: <textarea name="amount"></textarea></label><br>
+        <label>confirmation_pdf: <input type="text" name="confirmation_pdf"></label><br>
       </div>
 
       <br>
-      <button type="submit" id="saveBtn">Save</button>
+      <button type="submit" id="saveBtn">Save</button>                    
     </div>
   </form>
-</div>
+</div>                    
 
-<style>
+<style>   
   .modall { position: fixed; top: 10%; left: 20%; width: 60%; background: #fff; border: 1px solid #ccc; padding: 20px; z-index: 1000; }
   .modal-contentt { display: flex; flex-direction: column; }
   .conditionalFields { display: none; margin-top: 10px; }
   </style>
 
 <script>
-  function closeModal() {
-    document.getElementById("editModal").style.display = "none";
-  }
-  
-   // Open modal and fill form
- // Open modal and fill form
-document.querySelectorAll('.edit-btn').forEach(btn => {
-  btn.addEventListener('click', async () => {
-    const entryId = JSON.parse(btn.getAttribute('data-entry')).id;
-
-    try {
-      const response = await fetch(`/get-entry/${entryId}`);
-      const data = await response.json();
-
-      if (response.ok) {
-        // Basic Fields
-        document.getElementById('entry_id').value = data.id || '';
-        document.getElementById('account_owner').value = data.account_owner || '';
-        document.getElementById('name').value = data.name || '';
-        document.getElementById('poc_name').value = data.poc_name || '';
-        document.getElementById('mobile_number').value = data.mobile_number || '';
-        document.getElementById('city').value = data.city || '';
-        document.getElementById('email').value = data.email || '';
-        document.getElementById('customer_type').value = data.customer_type || '';
-        document.getElementById('action_type').value = data.action_type || '';
-
-        // Hide all conditional fields first
-        document.querySelectorAll(".conditionalFields").forEach(field => field.style.display = "none");
-
-        // Show and populate based on action_type
-        switch (data.action_type) {
-          case "Send Proposal":
-            document.getElementById("sendProposalFieldsedit").style.display = "block";
-            document.querySelector('[name="email_subject"]').value = data.email_sub || '';
-            document.querySelector('[name="email_body"]').value = data.email_body || '';
-            break;
-
-          case "Send Follow-up Email":
-            document.getElementById("followupFieldsedit").style.display = "block";
-            document.querySelector('[name="followup_email_sub"]').value = data.followup_email_sub || '';
-            document.querySelector('[name="followup_email_body"]').value = data.followup_email_body || '';
-            break;
-
-          case "Send Offer":
-            document.getElementById("sendOfferFieldsedit").style.display = "block";
-            document.getElementById("offer_start_date").value = data.start_date || '';
-            document.getElementById("offer_duration").value = data.duration || '';
-            document.getElementById("offer_end_date").value = data.end_date || '';
-
-            document.getElementById("residential_screen_edit").value = data.residential_screen || '';
-            document.getElementById("r_per_screen_edit").value = data.r_per_screen || '';
-            document.getElementById("r_plan_edit").value = data.r_plan || '';
-
-            document.getElementById("corporate_screen_edit").value = data.corporate_screen || '';
-            document.getElementById("c_per_screen_edit").value = data.c_per_screen || '';
-            document.getElementById("c_plan_edit").value = data.c_plan || '';
-
-            document.getElementById("outdur_screen_edit").value = data.outdur_screen || '';
-            document.getElementById("o_per_screen_edit").value = data.o_per_screen || '';
-            document.getElementById("o_plan_edit").value = data.o_plan || '';
-
-            document.getElementById("offer_note").value = data.note || '';
-            break;
-
-          case "Send Tax Invoice":
-            document.getElementById("taxInvoiceFieldsedit").style.display = "block";
-
-            document.querySelector('[name="invoice_no"]').value = data.invoice_no || '';
-            document.querySelector('[name="invoice_date"]').value = data.invoice_date || '';
-            document.querySelector('[name="po_no"]').value = data.po_no || '';
-            document.querySelector('[name="po_date"]').value = data.po_date || '';
-            document.getElementById("gst_no").value = data.gst_no || '';
-            document.getElementById("pan_no").value = data.pan_no || '';
-            document.getElementById("website").value = data.website || '';
-            document.querySelector('[name="place_of_supply"]').value = data.place_of_supply || '';
-            document.querySelector('[name="payment_terms"]').value = data.payment_terms || '';
-            document.querySelector('[name="ack_no"]').value = data.ack_no || '';
-            document.querySelector('[name="ack_date"]').value = data.ack_date || '';
-            document.querySelector('[name="irn"]').value = data.irn || '';
-            document.querySelector('[name="spoc"]').value = data.spoc || '';
-            document.querySelector('[name="billing_address"]').value = data.billing_address || '';
-
-            document.getElementById("start_dateee").value = data.start_date || '';
-            document.getElementById("durationnn").value = data.duration || '';
-            document.getElementById("end_dateee").value = data.end_date || '';
-
-            document.getElementById("res_screen").value = data.residential_screen || '';
-            document.getElementById("res_rate").value = data.r_per_screen || '';
-            document.getElementById("res_plan").value = data.r_plan || '';
-
-            document.getElementById("corp_screen").value = data.corporate_screen || '';
-            document.getElementById("corp_rate").value = data.c_per_screen || '';
-            document.getElementById("corp_plan").value = data.c_plan || '';
-
-            document.getElementById("out_screen").value = data.outdur_screen || '';
-            document.getElementById("out_rate").value = data.o_per_screen || '';
-            document.getElementById("out_plan").value = data.o_plan || '';
-
-            document.querySelector('#taxInvoiceFieldsedit textarea[name="note"]').value = data.note || '';
-            break;
-
-          case "Closed Won":
-            document.getElementById("closedWonFieldsedit").style.display = "block";
-            document.querySelector('[name="closed_won_remarks"]').value = data.closed_won_remarks || '';
-            document.querySelector('[name="closure_date"]').value = data.closure_date || '';
-            break;
-        }
-
-        // Show Modal
-        document.getElementById("editModal").style.display = "block";
-      }
-    } catch (err) {
-      console.error("Error fetching entry:", err);
+ function closeModal() {
+        document.getElementById("editModal").style.display = "none";
     }
-  });
-});
 
+    // Open modal and fill form
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const entryId = JSON.parse(btn.getAttribute('data-entry')).id;
 
-// Form submission (Save button clicked)
-document.getElementById('editForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
+            try {
+                const response = await fetch(`/get-entry/${entryId}`);
+                const data = await response.json();
 
-  const saveButton = document.getElementById('saveBtn');
-  saveButton.disabled = true;
+                if (response.ok) {
+                    // Basic Fields
+                    document.getElementById('entry_id').value = data.id || '';
+                    document.getElementById('account_owner').value = data.account_owner || '';
+                    document.getElementById('name').value = data.name || '';
+                    document.getElementById('poc_name').value = data.poc_name || '';
+                    document.getElementById('mobile_number').value = data.mobile_number || '';
+                    document.getElementById('city').value = data.city || '';
+                    document.getElementById('email').value = data.email || '';
+                    document.getElementById('customer_type').value = data.customer_type || '';
 
-  const formData = new FormData(document.getElementById('editForm'));
-  const updatedData = {};
+                    const actionTypeSelect = document.getElementById('action_type');
+                    const previouslySelectedAction = data.action_type || '';
 
-  formData.forEach((value, key) => {
-    updatedData[key] = value;
-  });
+                    // Clear existing options and add back the default "Select" option
+                    actionTypeSelect.innerHTML = '<option value="">Select</option>';
 
-  const entryId = document.getElementById('entry_id').value;
+                    // Add other options, excluding the previously selected one
+                    ['Send Proposal', 'Send Follow-up Email', 'Send Offer', 'Send Tax Invoice', 'Closed Won'].forEach(optionValue => {
+                        if (optionValue !== previouslySelectedAction) {
+                            const option = document.createElement('option');
+                            option.value = optionValue;
+                            option.textContent = optionValue;
+                            actionTypeSelect.appendChild(option);
+                        }
+                    });
 
-  try {
-    const response = await fetch(`/update-entry/${entryId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(updatedData),
+                    // Set the previously selected action after re-populating
+                    actionTypeSelect.value = previouslySelectedAction;
+
+                    // Hide all conditional fields first
+                    document.querySelectorAll(".conditionalFields").forEach(field => field.style.display = "none");
+                    document.getElementById('actionChangeMessage').style.display = 'none';
+                    fieldsFilled = false; // Reset the flag when a new entry is loaded
+
+                    // Show and populate based on action_type
+                    switch (data.action_type) {
+                        case "Send Proposal":
+                            document.getElementById("sendProposalFieldsedit").style.display = "block";
+                            document.querySelector('[name="email_subject"]').value = data.email_sub || '';
+                            document.querySelector('[name="email_body"]').value = data.email_body || '';
+                            fieldsFilled = true;
+                            break;
+
+                        case "Send Follow-up Email":
+                            document.getElementById("followupFieldsedit").style.display = "block";
+                            document.querySelector('[name="followup_email_sub"]').value = data.followup_email_sub || '';
+                            document.querySelector('[name="followup_email_body"]').value = data.followup_email_body || '';
+                            fieldsFilled = true;
+                            break;
+
+                        case "Send Offer":
+                            document.getElementById("sendOfferFieldsedit").style.display = "block";
+                            document.getElementById("offer_start_date").value = data.start_date || '';
+                            document.getElementById("offer_duration").value = data.duration || '';
+                            document.getElementById("offer_end_date").value = data.end_date || '';
+
+                            document.getElementById("residential_screen_edit").value = data.residential_screen || '';
+                            document.getElementById("r_per_screen_edit").value = data.r_per_screen || '';
+                            document.getElementById("r_plan_edit").value = data.r_plan || '';
+
+                            document.getElementById("corporate_screen_edit").value = data.corporate_screen || '';
+                            document.getElementById("c_per_screen_edit").value = data.c_per_screen || '';
+                            document.getElementById("c_plan_edit").value = data.c_plan || '';
+
+                            document.getElementById("outdur_screen_edit").value = data.outdur_screen || '';
+                            document.getElementById("o_per_screen_edit").value = data.o_per_screen || '';
+                            document.getElementById("o_plan_edit").value = data.o_plan || '';
+
+                            document.getElementById("offer_note").value = data.note || '';
+                            calculateAmountEdit(); // Initial calculation
+                            fieldsFilled = true;
+                            break;
+
+                        case "Send Tax Invoice":
+                            document.getElementById("taxInvoiceFieldsedit").style.display = "block";
+
+                            document.querySelector('[name="invoice_no"]').value = data.invoice_no || '';
+                            document.querySelector('[name="invoice_date"]').value = data.invoice_date || '';
+                            document.querySelector('[name="po_no"]').value = data.po_no || '';
+                            document.querySelector('[name="po_date"]').value = data.po_date || '';
+                            document.getElementById("gst_no").value = data.gst_no || '';
+                            document.getElementById("pan_no").value = data.pan_no || '';
+                            document.getElementById("website").value = data.website || '';
+                            document.querySelector('[name="place_of_supply"]').value = data.place_of_supply || '';
+                            document.querySelector('[name="payment_terms"]').value = data.payment_terms || '';
+                            document.querySelector('[name="ack_no"]').value = data.ack_no || '';
+                            document.querySelector('[name="ack_date"]').value = data.ack_date || '';
+                            document.querySelector('[name="irn"]').value = data.irn || '';
+                            document.querySelector('[name="spoc"]').value = data.spoc || '';
+                            document.querySelector('[name="billing_address"]').value = data.billing_address || '';
+
+                            document.getElementById("start_dateee").value = data.start_date || '';
+                            document.getElementById("durationnn").value = data.duration || '';
+                            document.getElementById("end_dateee").value = data.end_date || '';
+
+                            document.getElementById("res_screen").value = data.residential_screen || '';
+                            document.getElementById("res_rate").value = data.r_per_screen || '';
+                            document.getElementById("res_plan").value = data.r_plan || '';
+
+                            document.getElementById("corp_screen").value = data.corporate_screen || '';
+                            document.getElementById("corp_rate").value = data.c_per_screen || '';
+                            document.getElementById("corp_plan").value = data.c_plan || '';
+
+                            document.getElementById("out_screen").value = data.outdur_screen || '';
+                            document.getElementById("out_rate").value = data.o_per_screen || '';
+                            document.getElementById("out_plan").value = data.o_plan || '';
+
+                            document.querySelector('#taxInvoiceFieldsedit textarea[name="note"]').value = data.note || '';
+                            calculate('res');
+                            calculate('corp');
+                            calculate('out');
+                            fieldsFilled = true;
+                            break;
+
+                        case "Closed Won":
+                            document.getElementById("closedWonFieldsedit").style.display = "block";
+                            document.querySelector('[name="amount"]').value = data.amount || '';
+                            document.querySelector('[name="confirmation_pdf"]').value = data.closure_date || '';
+                            fieldsFilled = true;
+                            break;
+                    }
+
+                    // Show Modal
+                    document.getElementById("editModal").style.display = "block";
+                }
+            } catch (err) {
+                console.error("Error fetching entry:", err);
+            }
+        });
     });
 
-    const result = await response.json();
 
-    if (response.ok) {
-      alert('Data updated successfully');
-      document.getElementById('editModal').style.display = 'none';
-    } else {
-      alert('Failed to update data');
+    // Form submission (Save button clicked)
+    document.getElementById('editForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const saveButton = document.getElementById('saveBtn');
+        saveButton.disabled = true;
+
+        const formData = new FormData(document.getElementById('editForm'));
+        const updatedData = {};
+
+        formData.forEach((value, key) => {
+            updatedData[key] = value;
+        });
+
+        const entryId = document.getElementById('entry_id').value;
+
+        try {
+            const response = await fetch(`/update-entry/${entryId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedData),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                alert('Data updated successfully');
+                document.getElementById('editModal').style.display = 'none';
+                // Optionally, reload the page or update the table dynamically
+                window.location.reload();
+            } else {
+                alert('Failed to update data');
+            }
+        } catch (err) {
+            console.error(err);
+            alert('An error occurred while saving');
+        } finally {
+            saveButton.disabled = false;
+        }
+    });
+
+
+
+    document.getElementById("nextBtn").addEventListener("click", function () {
+        document.getElementById("stage1").style.display = "none";
+        document.getElementById("stage2").style.display = "block";
+    });
+
+    let fieldsFilled = false;
+    const actionTypeSelect = document.getElementById("action_type");
+    const conditionalFields = document.querySelectorAll(".conditionalFields");
+    const actionChangeMessage = document.getElementById('actionChangeMessage');
+
+    conditionalFields.forEach(field => {
+        field.querySelectorAll('input, textarea, select').forEach(input => {
+            input.addEventListener('input', () => {
+                fieldsFilled = true;
+                actionChangeMessage.style.display = 'none';
+            });
+            input.addEventListener('change', () => {
+                fieldsFilled = true;
+                actionChangeMessage.style.display = 'none';
+            });
+        });
+    });
+
+    actionTypeSelect.addEventListener("change", function () {
+        if (fieldsFilled) {
+            actionChangeMessage.style.display = 'block';
+            // Revert to the previously selected option (without triggering another change event)
+            const entryId = document.getElementById('entry_id').value;
+            fetch(`/get-entry/${entryId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (response.ok && data.action_type) {
+                        actionTypeSelect.value = data.action_type;
+                        showConditionalFields(data.action_type);
+                    }
+                })
+                .catch(error => console.error("Error fetching entry:", error));
+        } else {
+            const type = this.value;
+            showConditionalFields(type);
+        }
+    });
+
+    document.getElementById("clearActionFieldsBtn").addEventListener("click", function () {
+        clearConditionalFields();
+        fieldsFilled = false;
+        actionTypeSelect.value = ""; // Reset the action type dropdown
+        actionChangeMessage.style.display = 'none';
+        conditionalFields.forEach(field => field.style.display = "none");
+    });
+
+    function showConditionalFields(type) {
+        conditionalFields.forEach(field => field.style.display = "none");
+        if (type === "Send Proposal") {
+            document.getElementById("sendProposalFieldsedit").style.display = "block";
+        } else if (type === "Send Follow-up Email") {
+            document.getElementById("followupFieldsedit").style.display = "block";
+        } else if (type === "Send Offer") {
+            document.getElementById("sendOfferFieldsedit").style.display = "block";
+        } else if (type === "Send Tax Invoice") {
+            document.getElementById("taxInvoiceFieldsedit").style.display = "block";
+        } else if (type === "Closed Won") {
+            document.getElementById("closedWonFieldsedit").style.display = "block";
+        }
     }
-  } catch (err) {
-    console.error(err);
-    alert('An error occurred while saving');
-  } finally {
-    saveButton.disabled = false;
-  }
-});
 
-
-
-document.getElementById("nextBtn").addEventListener("click", function () {
-    document.getElementById("stage1").style.display = "none";
-    document.getElementById("stage2").style.display = "block";
-  });
-
-
-
-  
-  document.getElementById("action_type").addEventListener("change", function () {
-  const type = this.value;
-
-  // Hide all conditional sections
-  document.querySelectorAll(".conditionalFields").forEach(field => field.style.display = "none");
-
-  if (type === "Send Proposal") {
-    document.getElementById("sendProposalFieldsedit").style.display = "block";
-  } else if (type === "Send Follow-up Email") {
-    document.getElementById("followupFieldsedit").style.display = "block";
-  } else if (type === "Send Offer") {
-    document.getElementById("sendOfferFieldsedit").style.display = "block";
-  } else if (type === "Send Tax Invoice") {
-    document.getElementById("taxInvoiceFieldsedit").style.display = "block";
-  } else if (type === "Closed Won") {
-    document.getElementById("closedWonFieldsedit").style.display = "block";
-  }
-});
-
- function InvoicecalculateEndDateedit() {
-  const start = document.getElementById("start_dateee").value;
-  const duration = parseInt(document.getElementById("durationnn").value || 0);
-
-  if (start && duration) {
-    const startDate = new Date(start);
-    startDate.setDate(startDate.getDate() + duration);
-    const endDate = startDate.toISOString().split('T')[0];
-    document.getElementById("end_dateee").value = endDate;
-  } else {
-    document.getElementById("end_dateee").value = "";
-  }
-}
-
-
-  
-// Total amount calculation
- // Calculate amount = screens * rate * plan for each category
-function calculate(section) {
-  const screens = parseInt(document.getElementById(`${section}_screen`).value) || 0;
-  const rate = parseFloat(document.getElementById(`${section}_rate`).value) || 0;
-  const plan = parseInt(document.getElementById(`${section}_plan`).value) || 0;
-
-  const result = document.getElementById(`${section}_result`);
-
-  if (plan > 0) {
-    const totalCost = screens * rate;
-    const per30DayRate = (totalCost / plan) * 30;
-    result.textContent = `₹${per30DayRate.toFixed(2)}`;
-  } else {
-    result.textContent = `₹0.00`;
-  }
-}
-
-// Attach input listeners
-['res', 'corp', 'out'].forEach(section => {
-  ['screen', 'rate', 'plan'].forEach(field => {
-    const input = document.getElementById(`${section}_${field}`);
-    input.addEventListener('input', () => calculate(section));
-  });
-});
-function calculateAmountEdit() {
-    // Residential
-    const rScreens = Number(document.getElementById('residential_screen_edit').value) || 0;
-    const rRate = Number(document.getElementById('r_per_screen_edit').value) || 0;
-    const rPlan = Number(document.getElementById('r_plan_edit').value) || 1; // prevent divide by zero
-    const rTotal = ((rScreens * rRate) / rPlan) * 30;
-    document.getElementById('r_result_edit').textContent = `₹${rTotal.toFixed(2)}`;
-
-    // Corporate
-    const cScreens = Number(document.getElementById('corporate_screen_edit').value) || 0;
-    const cRate = Number(document.getElementById('c_per_screen_edit').value) || 0;
-    const cPlan = Number(document.getElementById('c_plan_edit').value) || 1;
-    const cTotal = ((cScreens * cRate) / cPlan) * 30;
-    document.getElementById('c_result_edit').textContent = `₹${cTotal.toFixed(2)}`;
-
-    // Outdoor
-    const oScreens = Number(document.getElementById('outdur_screen_edit').value) || 0;
-    const oRate = Number(document.getElementById('o_per_screen_edit').value) || 0;
-    const oPlan = Number(document.getElementById('o_plan_edit').value) || 1;
-    const oTotal = ((oScreens * oRate) / oPlan) * 30;
-    document.getElementById('o_result_edit').textContent = `₹${oTotal.toFixed(2)}`;
-  }
-
-  // Attach listeners
-  [
-    'residential_screen_edit', 'r_per_screen_edit', 'r_plan_edit',
-    'corporate_screen_edit', 'c_per_screen_edit', 'c_plan_edit',
-    'outdur_screen_edit', 'o_per_screen_edit', 'o_plan_edit'
-  ].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.addEventListener('input', calculateAmountEdit);
+    function clearConditionalFields() {
+        conditionalFields.forEach(field => {
+            field.querySelectorAll('input[type="text"], input[type="email"], input[type="date"], input[type="number"], textarea, select').forEach(input => {
+                if (input.type === 'select-one') {
+                    input.value = '';
+                } else {
+                    input.value = '';
+                }
+            });
+            // Reset calculated spans in Send Offer and Send Tax Invoice
+            if (field.id === 'sendOfferFieldsedit') {
+                document.getElementById('r_result_edit').textContent = '₹0.00';
+                document.getElementById('c_result_edit').textContent = '₹0.00';
+                document.getElementById('o_result_edit').textContent = '₹0.00';
+            } else if (field.id === 'taxInvoiceFieldsedit') {
+                document.getElementById('res_result').textContent = '₹0.00';
+                document.getElementById('corp_result').textContent = '₹0.00';
+                document.getElementById('out_result').textContent = '₹0.00';
+            }
+        });
     }
-  });
+
+    function InvoicecalculateEndDateedit() {
+        const start = document.getElementById("start_dateee").value;
+        const duration = parseInt(document.getElementById("durationnn").value || 0);
+
+        if (start && duration) {
+            const startDate = new Date(start);
+            startDate.setDate(startDate.getDate() + duration);
+            const endDate = startDate.toISOString().split('T')[0];
+            document.getElementById("end_dateee").value = endDate;
+        } else {
+            document.getElementById("end_dateee").value = "";
+        }
+    }
 
 
+    // Total amount calculation for Tax Invoice
+    function calculate(section) {
+        const screens = parseInt(document.getElementById(`${section}_screen`).value) || 0;
+        const rate = parseFloat(document.getElementById(`${section}_rate`).value) || 0;
+        const plan = parseInt(document.getElementById(`${section}_plan`).value) || 0;
+
+        const result = document.getElementById(`${section}_result`);
+
+        if (plan > 0) {
+            const totalCost = screens * rate;
+            const per30DayRate = (totalCost / plan) * 30;
+            result.textContent = `₹${per30DayRate.toFixed(2)}`;
+        } else {
+            result.textContent = `₹0.00`;
+        }
+    }
+
+    // Attach input listeners for Tax Invoice calculations
+    ['res', 'corp', 'out'].forEach(section => {
+        ['screen', 'rate', 'plan'].forEach(field => {
+            const input = document.getElementById(`${section}_${field}`);
+            if (input) {
+                input.addEventListener('input', () => calculate(section));
+            }
+        });
+    });
+
+    // Total amount calculation for Send Offer
+    function calculateAmountEdit() {
+        // Residential
+        const rScreens = Number(document.getElementById('residential_screen_edit').value) || 0;
+        const rRate = Number(document.getElementById('r_per_screen_edit').value) || 0;
+        const rPlan = Number(document.getElementById('r_plan_edit').value) || 1; // prevent divide by zero
+        const rTotal = ((rScreens * rRate) / rPlan) * 30;
+        document.getElementById('r_result_edit').textContent = `₹${rTotal.toFixed(2)}`;
+
+        // Corporate
+        const cScreens = Number(document.getElementById('corporate_screen_edit').value) || 0;
+        const cRate = Number(document.getElementById('c_per_screen_edit').value) || 0;
+        const cPlan = Number(document.getElementById('c_plan_edit').value) || 1;
+        const cTotal = ((cScreens * cRate) / cPlan) * 30;
+        document.getElementById('c_result_edit').textContent = `₹${cTotal.toFixed(2)}`;
+
+        // Outdoor
+        const oScreens = Number(document.getElementById('outdur_screen_edit').value) || 0;
+        const oRate = Number(document.getElementById('o_per_screen_edit').value) || 0;
+        const oPlan = Number(document.getElementById('o_plan_edit').value) || 1;
+        const oTotal = ((oScreens * oRate) / oPlan) * 30;
+        document.getElementById('o_result_edit').textContent = `₹${oTotal.toFixed(2)}`;
+    }
+
+    // Attach listeners for Send Offer calculations
+    [
+        'residential_screen_edit', 'r_per_screen_edit', 'r_plan_edit',
+        'corporate_screen_edit', 'c_per_screen_edit', 'c_plan_edit',
+        'outdur_screen_edit', 'o_per_screen_edit', 'o_plan_edit'
+    ].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('input', calculateAmountEdit);
+        }
+    });
 
 
+    function calculateEndDate() {
+        const start = document.getElementById("offer_start_date").value;
+        const duration = parseInt(document.getElementById("offer_duration").value || 0);
+
+        if (start && duration) {
+            const startDate = new Date(start);
+            startDate.setDate(startDate.getDate() + duration);
+            const end = startDate.toISOString().split('T')[0];
+            document.getElementById("offer_end_date").value = end;
+        }
+    }
 
 
-  function calculateEndDate() {
-  const start = document.getElementById("offer_start_date").value;
-  const duration = parseInt(document.getElementById("offer_duration").value || 0);
-
-  if (start && duration) {
-    const startDate = new Date(start);
-    startDate.setDate(startDate.getDate() + duration);
-    const end = startDate.toISOString().split('T')[0];
-    document.getElementById("offer_end_date").value = end;
-  }
-}
-
-
-
-  
-  document.getElementById("offer_start_date").addEventListener("change", calculateEndDate);
-  document.getElementById("offer_duration").addEventListener("input", calculateEndDate);
+    document.getElementById("offer_start_date").addEventListener("change", calculateEndDate);
+    document.getElementById("offer_duration").addEventListener("input", calculateEndDate);
 
  
   </script>                                                                                                 
@@ -1344,7 +1436,7 @@ function calculateAmountEdit() {
 
 
 
-
+                                                                          
 
 
 
@@ -1357,28 +1449,71 @@ function calculateAmountEdit() {
 
   <script>  
 
-  
+  function handleActionChange(value) {
+  const proposalFieldsFilled = document.querySelector('#proposalFields input[type="text"]').value !== '' || document.querySelector('#proposalFields textarea').value !== '';
+  const followupFieldsFilled = document.querySelector('#followupFields input[type="text"]').value !== '' || document.querySelector('#followupFields textarea').value !== '';
+  const offerFieldsFilled = document.querySelector('#offerFields input[type="date"]').value !== '' || document.querySelector('#offerFields input[type="number"]').value !== '' || document.querySelector('#offerFields textarea').value !== '';
+  const closedWonFieldsFilled = document.querySelector('#closedWonFields input[type="number"]').value !== '' || document.querySelector('#closedWonFields input[type="file"]').value !== '';
+  const taxInvoiceFieldsFilled = document.querySelector('#taxInvoiceFields input[type="text"]').value !== '' || document.querySelector('#taxInvoiceFields input[type="date"]').value !== '' || document.querySelector('#taxInvoiceFields textarea').value !== '';
 
+  const formMessage = document.getElementById('formMessage');
+  const actionSelect = document.getElementById('actionSelect');
 
-function handleActionChange(value) {
-  document.getElementById('proposalFields').style.display = (value === 'Send Proposal') ? 'block' : 'none';
-  document.getElementById('followupFields').style.display = (value === 'Send Follow-up Email') ? 'block' : 'none';
-  document.getElementById('offerFields').style.display = (value === 'Send Offer') ? 'block' : 'none';
-  document.getElementById('closedWonFields').style.display = (value === 'Closed Won') ? 'block' : 'none';
-  document.getElementById('taxInvoiceFields').style.display = (value === 'Send Tax Invoice') ? 'block' : 'none';
+  if (proposalFieldsFilled || followupFieldsFilled || offerFieldsFilled || closedWonFieldsFilled || taxInvoiceFieldsFilled) {
+    formMessage.textContent = 'First you filled fields. Clear them before you can select another action type.';
+    actionSelect.value = ''; // Reset the select to the "Select" option
+    document.getElementById('proposalFields').style.display = 'none';
+    document.getElementById('followupFields').style.display = 'none';
+    document.getElementById('offerFields').style.display = 'none';
+    document.getElementById('closedWonFields').style.display = 'none';
+    document.getElementById('taxInvoiceFields').style.display = 'none';
+  } else {
+    formMessage.textContent = ''; // Clear the message
+    document.getElementById('proposalFields').style.display = (value === 'Send Proposal') ? 'block' : 'none';
+    document.getElementById('followupFields').style.display = (value === 'Send Follow-up Email') ? 'block' : 'none';
+    document.getElementById('offerFields').style.display = (value === 'Send Offer') ? 'block' : 'none';
+    document.getElementById('closedWonFields').style.display = (value === 'Closed Won') ? 'block' : 'none';
+    document.getElementById('taxInvoiceFields').style.display = (value === 'Send Tax Invoice') ? 'block' : 'none';
+  }
+}
+
+function clearActionFields() {
+  document.getElementById('proposalFields').style.display = 'none';
+  document.querySelectorAll('#proposalFields input[type="text"], #proposalFields textarea').forEach(el => el.value = '');
+
+  document.getElementById('followupFields').style.display = 'none';
+  document.querySelectorAll('#followupFields input[type="text"], #followupFields textarea').forEach(el => el.value = '');
+
+  document.getElementById('offerFields').style.display = 'none';
+  document.querySelectorAll('#offerFields input[type="date"], #offerFields input[type="number"], #offerFields textarea').forEach(el => el.value = '');
+
+  document.getElementById('closedWonFields').style.display = 'none';
+  document.querySelectorAll('#closedWonFields input[type="number"], #closedWonFields input[type="file"]').forEach(el => {
+    if (el.type === 'file') {
+      el.value = ''; // Clearing file input requires setting value to empty string
+    } else {
+      el.value = '';
+    }
+  });
+
+  document.getElementById('taxInvoiceFields').style.display = 'none';
+  document.querySelectorAll('#taxInvoiceFields input[type="text"], #taxInvoiceFields input[type="date"], #taxInvoiceFields textarea').forEach(el => el.value = '');
+
+  document.getElementById('formMessage').textContent = ''; // Clear any previous message
+  document.getElementById('actionSelect').value = ''; // Optionally reset the select as well
 }
 
 function calculateEndDate() {
-  const startDate = document.getElementById("offer_start_date").value;
-  const duration = parseInt(document.getElementById("offer_duration").value) || 0;
+  const startDate = document.getElementById("start_date").value;
+  const duration = parseInt(document.getElementById("duration").value) || 0;
 
   if (startDate && duration) {
     const start = new Date(startDate);
     start.setDate(start.getDate() + duration);
     const endDate = start.toISOString().split('T')[0];
-    document.getElementById("offer_end_date").value = endDate;
+    document.getElementById("end_date").value = endDate;
   } else {
-    document.getElementById("offer_end_date").value = "";
+    document.getElementById("end_date").value = "";
   }
 }
 
@@ -1393,18 +1528,18 @@ function InvoicecalculateEndDate() {
   }
 }
 
-    function openForm1() {
-      document.getElementById('form1').style.display = 'block';
-    }
+function openForm1() {
+  document.getElementById('form1').style.display = 'block';
+}
 
-    function closeAll() {
-      document.getElementById('form1').style.display = 'none';
-      document.getElementById('form2').style.display = 'none';
-      document.getElementById('accountForm').reset();
-      document.getElementById('fullForm').reset();
-      document.getElementById('emailFields').classList.add('hidden');
-    }
-    let currentEntryId = null;
+function closeAll() {
+  document.getElementById('form1').style.display = 'none';
+  document.getElementById('form2').style.display = 'none';
+  document.getElementById('accountForm').reset();
+  document.getElementById('fullForm').reset();
+  document.getElementById('formMessage').textContent = ''; // Ensure message is cleared on close
+}
+let currentEntryId = null;
 
 function submitForm1(event, mode) {
   event.preventDefault();
@@ -1427,12 +1562,12 @@ function submitForm1(event, mode) {
         const email = formData.get("email");
         const type = formData.get("type");
 
-        document.getElementById('previewInfo').innerHTML = `                                            
+        document.getElementById('previewInfo').innerHTML = `
           <p><strong>Company:</strong> ${company}</p>
           <p><strong>POC:</strong> ${poc}</p>
           <p><strong>Mobile:</strong> ${mobile}</p>
           <p><strong>City:</strong> ${city}</p>
-          <p><strong>Email:</strong> ${email}</p>                               
+          <p><strong>Email:</strong> ${email}</p>
         `;
 
         const form2 = document.getElementById('fullForm');
@@ -1457,21 +1592,10 @@ function submitForm1(event, mode) {
     });
 }
 
-    function toggleEmailFields() {
-      const selected = document.getElementById('actionSelect').value;
-      const emailFields = document.getElementById('emailFields');
-      emailFields.classList.toggle('hidden', selected !== 'Send Proposal');
-    }
-
-    document.getElementById('fullForm').addEventListener('submit', function (e) {
+document.getElementById('fullForm').addEventListener('submit', function (e) {
   e.preventDefault();
   const form = e.target;
   const formData = new FormData(form);
-
-
-
-
-
 
   fetch('/save-entry', {
     method: 'POST',
@@ -1485,17 +1609,6 @@ function submitForm1(event, mode) {
     }
   });
 });
-
-
-
-
-
-
-
-
-
-
-
 
 const inputs = document.querySelectorAll('.screen, .rate, .plan');
 
@@ -1523,29 +1636,30 @@ inputs.forEach(input => {
 });
 
 document.querySelectorAll('.component-block').forEach(block => {
-    const rows = block.querySelectorAll('.form-row');
+  const rows = block.querySelectorAll('.form-row');
 
-    rows.forEach(row => {
-      const inputs = row.querySelectorAll('input');
-      const result = row.querySelector('.result');
+  rows.forEach(row => {
+    const inputs = row.querySelectorAll('input');
+    const result = row.querySelector('.result');
 
-      inputs.forEach(input => {
-        input.addEventListener('input', () => {
-          const screens = parseFloat(row.querySelector('.screen')?.value) || 0;
-          const rate = parseFloat(row.querySelector('.rate')?.value) || 0;
-          const plan = parseFloat(row.querySelector('.plan')?.value) || 0;
+    inputs.forEach(input => {
+      input.addEventListener('input', () => {
+        const screens = parseFloat(row.querySelector('.screen')?.value) || 0;
+        const rate = parseFloat(row.querySelector('.rate')?.value) || 0;
+        const plan = parseFloat(row.querySelector('.plan')?.value) || 0;
 
-          if (screens > 0 && rate > 0 && plan > 0) {
-            const totalCost = screens * rate;
-            const per30DayRate = (totalCost / plan) * 30;
-            result.textContent = `₹${per30DayRate.toFixed(2)}`;
-          } else {
-            result.textContent = `₹0`;
-          }
-        });
+        if (screens > 0 && rate > 0 && plan > 0) {
+          const totalCost = screens * rate;
+          const per30DayRate = (totalCost / plan) * 30;
+          result.textContent = `₹${per30DayRate.toFixed(2)}`;
+        } else {
+          result.textContent = `₹0`;
+        }
       });
     });
   });
+});
+
   </script>
-</body>
-</html>
+</body>                                                                           
+</html>     
