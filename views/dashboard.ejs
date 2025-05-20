@@ -852,7 +852,7 @@ p strong {
   left: 20%;
   width: 60%;
   max-height: 80vh; /* limits the modal height */
-  overflow-y: auto; /* enables vertical scroll if needed */                
+  overflow-y: auto; /* enables vertical scroll if needed */                                    
   background: #fff;
   border: 1px solid #ccc;
   padding: 20px;
@@ -872,16 +872,19 @@ p strong {
       <label>Email: <input type="email" name="email" id="email"></label><br>
       <!-- <label>Customer Type: <input type="text" name="customer_type" id="customer_type"></label><br> -->
 
-      <label>Customer Type: 
+      <label>Customer Type:             
   <select name="customer_type" id="customer_type">
     <option value="">-- Select --</option>
     <option value="Customer - Direct">Customer - Direct</option>
     <option value="Regional Agency">Regional Agency</option>
   </select>
 </label><br>
+      <!-- Close button (just closes modal) -->
+    <button type="button" onclick="closeModal()">Close</button>
 
 
       <button type="button" id="nextBtn">Next</button>
+
     </div>
 
     <!-- Stage 2 -->
@@ -946,7 +949,7 @@ p strong {
   <option value="360">360 Days</option>
 </select>
 
-  <span id="c_result_edit">₹0</span><br>
+  <span id="c_result_edit">₹0</span><br>                                        
 
   <h4>Outdoor</h4>
   <input type="number" name="outdur_screen" id="outdur_screen_edit" placeholder="Screens">
@@ -1036,6 +1039,8 @@ p strong {
       </div>
 
       <br>
+       <!-- Close button (just closes modal) -->
+    <button type="button" onclick="closeModal()">Close</button>
       <button type="submit" id="saveBtn">Save</button>                    
     </div>
   </form>
@@ -1048,9 +1053,6 @@ p strong {
   </style>
 
 <script>
- function closeModal() {
-        document.getElementById("editModal").style.display = "none";
-    }
 
     // Open modal and fill form
     document.querySelectorAll('.edit-btn').forEach(btn => {
@@ -1423,6 +1425,11 @@ p strong {
     document.getElementById("offer_duration").addEventListener("input", calculateEndDate);
 
  
+
+
+    function closeModal() {
+    document.getElementById("editModal").style.display = "none";
+}
   </script>                                                                                                 
 
 
@@ -1612,28 +1619,24 @@ document.getElementById('fullForm').addEventListener('submit', function (e) {
 
 const inputs = document.querySelectorAll('.screen, .rate, .plan');
 
-inputs.forEach(input => {
-  input.addEventListener('input', () => {
-    const type = input.dataset.type;
-    const screens = document.querySelector(`.screen[data-type="${type}"]`).value;
-    const rate = document.querySelector(`.rate[data-type="${type}"]`).value;
-    const plan = document.querySelector(`.plan[data-type="${type}"]`).value;
+  inputs.forEach(input => {
+    input.addEventListener('input', () => {
+      const type = input.dataset.type; // 'r', 'c', or 'o'
+      
+      const screens = document.querySelector(`.screen[data-type="${type}"]`).value;
+      const rate = document.querySelector(`.rate[data-type="${type}"]`).value;
+      const plan = document.querySelector(`.plan[data-type="${type}"]`).value;
 
-    const screensVal = parseFloat(screens) || 0;
-    const rateVal = parseFloat(rate) || 0;
-    const planVal = parseFloat(plan) || 0;
+      const screensVal = parseFloat(screens) || 0;
+      const rateVal = parseFloat(rate) || 0;
+      const planVal = parseFloat(plan) || 0;
 
-    let total = 0;
+      const total = screensVal * rateVal * planVal;
 
-    if (screensVal > 0 && rateVal > 0 && planVal > 0) {
-      const totalCost = screensVal * rateVal;
-      const costPer30Days = (totalCost / planVal) * 30;
-      total = costPer30Days.toFixed(2);
-    }
-
-    document.getElementById(`${type}_result`).textContent = `₹${total}`;
+      // Update result span
+      document.getElementById(`${type}_result`).textContent = `₹${total}`;
+    });
   });
-});
 
 document.querySelectorAll('.component-block').forEach(block => {
   const rows = block.querySelectorAll('.form-row');
