@@ -290,7 +290,6 @@ app.post('/enquiry-inline/:id', async (req, res) => {
   const lastModifiedBy = req.session.user?.name || 'Unknown';
   updates.push(`last_modified_by = $${values.length + 1}`);
   values.push(lastModifiedBy);
-
   values.push(id);
 
   if (updates.length === 0) return res.status(400).send("No data to update");
