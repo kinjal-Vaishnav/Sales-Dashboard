@@ -45,7 +45,7 @@ app.use(session({
 
 // Fake login session                                                                                                                                            
 // app.use((req, res, next) => {
-//   req.session.user = { emp_id: 'emp_81', name: 'Hardik Prajapati' };              
+//   req.session.user = { emp_id: 'emp_81', name: 'Hardik Prajapati' };                 
 //   next();                       
 // });        
 const transporter = nodemailer.createTransport({
@@ -124,7 +124,7 @@ app.post('/login', async (req, res) => {
 
 
 
-
+                                                                          
 
 
 app.get('/', async (req, res) => {                                                        
@@ -406,7 +406,7 @@ app.post('/save-entry', upload.single('confirmation_pdf'), async (req, res) => {
     }
 });
 
-// Your existing /get-entry/:id route
+// Your existing /get-entry/:id route                                 
 app.get('/get-entry/:id', async (req, res) => {
     const entryId = parseInt(req.params.id, 10); // Parse ID as integer
     if (isNaN(entryId)) {
@@ -425,28 +425,6 @@ app.get('/get-entry/:id', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error', details: error.message });
     }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

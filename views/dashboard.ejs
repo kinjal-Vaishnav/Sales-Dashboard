@@ -679,8 +679,8 @@
           <label>Remarks:</label>
           <textarea name="closed_won_remarks" placeholder="Enter remarks..."></textarea>
           <label>Closure Date:</label>
-          <input type="date" name="closure_date" />
-        </div>
+          <input type="date" name="closure_date" />                               
+        </div>                                                        
 
         <div id="taxInvoiceFields" style="display: none; margin-top: 20px;">
           <h3>Tax Invoice Details</h3>
@@ -785,7 +785,7 @@
         <button class="button" onclick="openForm1()">New</button>
         <button class="button">Import</button>
         <button class="button">Export</button>
-      </div>
+      </div>  
     </div>
 
     <div class="filter-info">
@@ -821,14 +821,14 @@
               <%= row.city %>
             </td>
             <td>
-              <%= row.action_type || '-' %>
+              <%= row.action_type || '-' %>                           
             </td>
             <td>
               <%= row.mobile_number %>
             </td>
             <td>
               <%= row.customer_type %>
-            </td>
+            </td>                                                       
             <td>
               <%= row.account_owner %>
             </td>
@@ -836,14 +836,15 @@
               <button class="button" onclick="editEntryExample(<%= row.id %>)">Edit</button>
 
             </td>
-          </tr>
-          <% }) %>
-      </tbody>
-    </table>
-  </div>
+          </tr>                                 
+          <% }) %>                                                                                        
+      </tbody>                                                                                                                                                                                                                                   
+    </table>                                                                                                      
 
+  </div>                                                                     
 
-  <script>
+                                                                          
+  <script>  
     let currentEntryId = null; // Stores the ID of the entry being edited
 
     // Helper to parse date strings for input fields
@@ -891,7 +892,7 @@
       // Populate Form 2 specific fields based on action_type
       form2.action_type.value = entry.action_type || ''; // Set the selected action
 
-      // Clear all fields before populating to avoid stale data
+      // Clear all fields before populating to avoid stale data               
       clearActionFields();
       // Trigger handleActionChange to show/hide relevant sections based on fetched action_type
       handleActionChange(entry.action_type || '', true); // Pass true to skip initial field check
@@ -1050,9 +1051,9 @@
     // Example function to call edit entry (you would integrate this into your table/list view)
     // Make sure to pass a valid INTEGER ID from your database for testing.
     function editEntryExample(id) {
-      openForm1(id); // Start with Form 1 to show initial details and then allow proceeding to Form 2
+      // openForm1(id); // Start with Form 1 to show initial details and then allow proceeding to Form 2
       // Or, if you want to jump straight to Form 2 for deeper edits:
-      // openForm2ForEdit(id);
+      openForm2ForEdit(id);
     }
 
     function closeAll() {
