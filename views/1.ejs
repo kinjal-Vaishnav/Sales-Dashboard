@@ -176,9 +176,10 @@
     }
     /* Table */
     .table-container {
-      overflow-x: auto;
+      overflow-y: auto;
       padding: 15px;
       margin-top: -15px;
+      max-height: 80vh;
     }
 
     table {
@@ -245,11 +246,15 @@
 
   .modal-content {
     background: white;
-    width: 700px;
+    width: fit-content;
+    max-width: 65%;
+    min-width: 33%;
     border-radius: 0.25rem;
     font-family: Arial, sans-serif;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     padding: 5px 15px;
+    overflow-y: auto;
+    max-height: 90vh;
   }
 
  .form-title {
@@ -291,7 +296,9 @@
   }
   input[type="text"],
   input[type="email"],
-  select {
+  input[type="date"],
+  input[type="number"],
+  select,textarea {
     width: 100%;
     padding: 8px;
     margin: 5px 0 15px;
@@ -302,6 +309,8 @@
   .row {
     display: flex;
     gap: 20px;
+    align-items: center;
+    justify-content: center;
   }
   .half {
     width: 100%;
@@ -328,93 +337,138 @@
     background: #e0e0e0;
   }
   .btn.primary {
-    background: #0070d2;
-    color: white;
+    background: #0070d2 !important;
+    color: white !important; 
   }
-
-
-/* Form Elements */
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.form-group,
+/* Form rows */
 .form-row {
   display: flex;
-  flex-direction: column;
   gap: 10px;
+  margin-bottom: 15px;
+}
+.form-row input {
+  flex: 1;
 }
 
-.form-row {
-  flex-wrap: wrap;
+/* Actions */
+.form-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.form-actions button {
+  padding: 8px 16px;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.form-actions button[type="button"] {
+  background-color: #f4f6f9;
+  color: #333;
+}
+
+.form-actions button[type="submit"] {
+  background-color: white;
+  color: #0070d2;
+  border: 1px solid #ccc;
+}
+
+.form-actions button:hover {
+  opacity: 0.9;
 }
 
 label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 4px;
+  white-space: nowrap; /* Prevent line break */
+}
+ #end_date_display, #end_date_displayy{
+      font-size: 12px;
+    /* color: #e04e39; */
+    display: block;
+    margin-top: -10px;
+ }
+.result{
+  width: 250px;
+}
+  textarea[name="note"],textarea[name='billing_address'] {
+    width: 100%;
+    height: 100px;
+    resize: vertical;
+    margin-top: 10px;
+  }
+
+  #closedWonFields {
+  background: #fff;
+  padding: 15px 0;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
   font-weight: 600;
-  margin-bottom: 5px;
+  margin-bottom: 6px;
+  color: #111827;
 }
 
-input[type="text"],
-input[type="number"],
-input[type="date"],
-input[type="email"],
-input[type="file"],
-textarea,
-select {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 1rem;
+/* input[type="text"] {
   width: 100%;
-  box-sizing: border-box;
-}
+  padding: 10px 14px;
+  border: 1px solid #D1D5DB;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: #fff;
+} */
 
-textarea {
-  resize: vertical;
-  min-height: 80px;
-}
-
-/* Result Display */
-.result {
-  font-weight: bold;
-  color: #2c3e50;
-  margin-top: 5px;
-}
-
-/* Section Headings */
-h3, h4 {
-  margin-top: 20px;
-  margin-bottom: 10px;
-  color: #34495e;
-}
-
-/* Buttons */
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
+.upload-box {
+  border: 1px solid #3B82F6;
+  padding: 12px 20px;
+  align-items: center;
+  gap: 8px;
+  color: #1D4ED8;
+  font-weight: 500;
+  font-size: 14px;
   cursor: pointer;
-  font-size: 1rem;
+  width: 35%;
 }
 
-button[type="submit"] {
-  background-color: #27ae60;
-  color: #fff;
+.upload-box:hover {
+  background-color: #E0E7FF;
 }
 
-button[type="button"] {
-  background-color: #e74c3c;
-  color: #fff;
+.upload-icon {
+  width: 20px;
+  height: 20px;
 }
+
+.uploaded-file {
+  display: flex;
+  align-items: center;
+  margin-top: 12px;
+  color: #374151;
+  font-size: 14px;
+  gap: 6px;
+}
+
+.file-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.hint-text {
+  color: #6B7280;
+  font-size: 12px;
+  margin-top: 6px;
+}
+
   </style>
 
 
@@ -669,200 +723,668 @@ button[type="button"] {
 </div>
 
 
-  
-  <!-- Modal 2 -->                                                              
-  <div id="form2" class="modal">
-    <div class="modal-content">
-      <!-- <form id="fullForm"> --><form id="fullForm" enctype="multipart/form-data">
-
-        <input type="hidden" name="entry_id" value="">
-
-        <h3>Next Action</h3>
-        <label>Account Owner</label>
-        <input type="text" value="<%= user.name %>" disabled>
-
-        <div id="previewInfo"></div>
-
-        <div class="form-group">
-            <label>Action:</label>
-            <select name="action" id="actionSelect" required onchange="handleActionChange(this.value)">
-              <option value="">Select</option>
-              <option value="Send Proposal">Send Proposal</option>
-              <option value="Send Follow-up Email">Send Follow-up Email</option>
-              <option value="Send Offer">Send Offer</option>
-              <option value="Send Tax Invoice">Send Tax Invoice</option>                             
-              <option value="Closed Won">Closed Won</option>                          
-            </select>                                                                                                    
-          </div>                                                                                           
-
+    <!-- Modal 2 -->
+    <div id="form2" class="modal">
+      <div class="modal-content">
+        <form id="fullForm" enctype="multipart/form-data">
+    
+          <input type="hidden" name="entry_id" value="">
+          <h2 class="form-title">Edit Opportunity</h2>
+          <hr class="form-underline">
+          <p class="required-note"><span class="required-star">*</span> = Required Information</p>
+    
+          <!-- <h3>Next Action</h3> -->
+          <!-- <label>Account Owner</label>
+              <input type="text" value="<%= user.name %>" disabled> -->
+          <div class="row" style="display: flex; justify-content: space-between;align-items: center;">
+            <div class="half">
+              <label>Account Owner</label>
+              <p class="owner-display">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="20" height="20" rx="10" fill="#EBEBEB" />
+                  <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M15.5379 13.923V14.4307C15.5379 15.0307 15.0302 15.5384 14.4302 15.5384H5.56863C4.96863 15.5384 4.46094 15.0307 4.46094 14.4307V13.923C4.46094 12.5845 6.03017 11.7538 7.50709 11.1076L7.64555 11.0384C7.76094 10.9922 7.87632 10.9922 7.99171 11.0615C8.59171 11.4538 9.26094 11.6615 9.97632 11.6615C10.6917 11.6615 11.384 11.4307 11.9609 11.0615C12.0763 10.9922 12.1917 10.9922 12.3071 11.0384L12.4456 11.1076C13.9686 11.7538 15.5379 12.5615 15.5379 13.923ZM9.99942 4.46143C11.5225 4.46143 12.7456 5.82297 12.7456 7.50758C12.7456 9.1922 11.5225 10.5537 9.99942 10.5537C8.47634 10.5537 7.25326 9.1922 7.25326 7.50758C7.25326 5.82297 8.47634 4.46143 9.99942 4.46143Z"
+                    fill="#768191" />
+                </svg>
+                <%= user.name %>
+              </p>
+            </div>
+            <div class="form-group half" style="position: relative;">
+              <div id="formMessage" style="color: red; margin-bottom: 10px;"></div>
+              <label>Action:</label>
+              <select name="action" id="actionSelect" required onchange="handleActionChange(this.value)">
+                <option value="">Select</option>
+                <option value="Send Proposal">Send Proposal</option>
+                <option value="Send Follow-up Email">Send Follow-up Email</option>
+                <option value="Send Offer">Send Offer</option>
+                <option value="Send Tax Invoice">Send Tax Invoice</option>
+                <option value="Closed Won">Closed Won</option>
+              </select>
+              <button type="button" onclick="clearActionFields()" style="position: absolute;right: 0px;bottom: -7px;">Clear
+                Fields</button>
+            </div>
+          </div>
+          <!-- <div id="previewInfo"></div> -->
+          <div class="row">
+            <div class="half">
+              <label>*Opportunity Name</label>
+              <input type="text" name="company">
+            </div>
+            <div class="half">
+              <label>*Mobile Number</label>
+              <input type="text" name="mobile">
+            </div>
+          </div>
+    
+          <div class="row">
+            <div class="half">
+              <label>*City</label>
+              <input type="text" name="city">
+            </div>
+            <div class="half">
+              <label>*Email Address</label>
+              <input type="email" name="email">
+            </div>
+          </div>
+    
+          <label>*Type</label>
+          <select name="type">
+            <option value="">--None--</option>
+            <option value="Customer - Direct">Customer - Direct</option>
+            <option value="Regional Agency">Regional Agency</option>
+          </select>
+    
+    
           <div id="proposalFields" style="display:none;">
             <label>Email Subject:</label>
             <input type="text" name="email_subject" />
             <label>Email Body:</label>
             <textarea name="email_body"></textarea>
           </div>
-          
+    
           <div id="followupFields" style="display:none;">
             <label>Follow-up Email Subject:</label>
             <input type="text" name="followup_email_sub" />
             <label>Follow-up Email Body:</label>
             <textarea name="followup_email_body"></textarea>
           </div>
-
-
-          <div id="offerFields">                                                
-
-            <div class="form-row">
-              <label>Start Date:</label>
-              <input type="date" name="start_date" id="start_date"  />
-          
-              <label>Duration (Days):</label>
-              <input type="number" name="duration" id="duration"  oninput="calculateEndDate()" />
-              <br>
-            <p> <input type="text" name="end_date" id="end_date" readonly /> </p> 
-          
-              
-             
-            </div>          
-            <div class="component-block">
-
-              <h4>Residential</h4>
-              <div class="form-row">
-                <input type="number" name="residential_screen" placeholder="Screens" class="screen" data-type="r" />
-                <input type="number" name="r_per_screen" placeholder="Per Screen Rate" class="rate" data-type="r" />
-                <input type="number" name="r_plan" placeholder="Plan Days" class="plan" data-type="r" />
+    
+    
+          <div id="offerFields" style="display: none;">
+    
+            <div class="row">
+              <div class="half">
+                <label>Start Date:</label>
+                <input type="date" name="start_date" id="start_date" onchange="calculateEndDateOffer()" />
+              </div>
+              <div class="half">
+                <label>Duration (Days):</label>
+                <input type="number" style="margin-top: 10px;" name="duration" id="duration" onchange="calculateEndDateOffer()" />
+                <input type="text" name="end_date" id="end_date" readonly style="display: none;" />
+                  <small id="end_date_display" style="color: red;">(Ends on: DD/MM/YYYY)</small>
+                </div>
+            </div>
+            <div class="component-block" style="margin-top: 10px;">
+            
+            
+              <div class="row">
+                <div class="half">
+                  <label>*No. of Residential Screens</label>
+                  <input type="number" name="residential_screen" placeholder="Screens" class="screen" data-type="r" />
+                </div>
+                <div class="half">
+                  <label>*Offer Rate(per Screen per 30 Days)</label>
+                  <input type="number" name="r_per_screen" placeholder="Per Screen Rate" class="rate" data-type="r" />
+                </div>
+                <div class="half" style="width: 250px;">
+                  <label>Plan</label>
+                  <!-- <input type="text" name="r_plan" value="720" class="plan" data-type="r"> -->
+                  <select name="r_plan" class="plan" data-type="r">
+                    <option value="720" selected>720</option>
+                    <option value="360">360</option>
+                  </select>
+                </div>
+                <div class="half">
+                  <label>Card Rate(per Screen per 30 Days)</label>
+                  <input type="text" value="3000" readonly />
+                </div>
                 <span class="result" id="r_result">₹0</span>
               </div>
             
-              <h4>Corporate</h4>
-              <div class="form-row">
-                <input type="number" name="corporate_screen" placeholder="Screens" class="screen" data-type="c" />
-                <input type="number" name="c_per_screen" placeholder="Per Screen Rate" class="rate" data-type="c" />
-                <input type="number" name="c_plan" placeholder="Plan Days" class="plan" data-type="c" />
-                <span class="result" id="c_result">₹0</span>
+            
+              <div class="row">
+                <div class="half">
+                  <label>*No. of Corporate Screens</label>
+                  <input type="number" name="corporate_screen" placeholder="Screens" class="screen" data-type="c" />
+                </div>
+                <div class="half">
+                  <label>*Offer Rate(per Screen per 30 Days)</label>
+                  <input type="number" name="c_per_screen" placeholder="Per Screen Rate" class="rate" data-type="c" />
+                </div>
+                <div class="half" style="width: 250px;">
+                  <label>Plan</label>
+                  <!-- <input type="text" name="c_plan" value="720" class="plan" data-type="c"> -->
+                  <select name="c_plan" class="plan"  data-type="c">
+                    <option value="720" selected>720</option>
+                    <option value="360">360</option>
+                  </select>
+                </div>
+                <div class="half">
+                  <label>Card Rate(per Screen per 30 Days)</label>
+                  <input type="text" value="6000" readonly />
+                </div>
+                 <span class="result" id="c_result">₹0</span>
               </div>
             
-              <h4>Outdoor</h4>
-              <div class="form-row">
-                <input type="number" name="outdur_screen" placeholder="Screens" class="screen" data-type="o" />
-                <input type="number" name="o_per_screen" placeholder="Per Screen Rate" class="rate" data-type="o" />
-                <input type="number" name="o_plan" placeholder="Plan Days" class="plan" data-type="o" />
-                <span class="result" id="o_result">₹0</span>
+            
+              <div class="row">
+                <div class="half">
+                  <label>*No. of Outdoor Screens</label>
+                  <input type="number" name="outdur_screen" placeholder="Screens" class="screen" data-type="o" />
+                </div>
+                <div class="half">
+                  <label>*Offer Rate(per Screen per 30 Days)</label>
+                  <input type="number" name="o_per_screen" placeholder="Per Screen Rate" class="rate" data-type="o" />
+                </div>
+                <div class="half" style="width: 250px;">
+                  <label>Plan</label>
+                  <!-- <input type="text" name="o_plan" value="720" class="plan" data-type="o"> -->
+                  <select name="o_plan" class="plan" data-type="o">
+                    <option value="720" selected>720</option>
+                    <option value="360">360</option>
+                  </select>
+                </div>
+                <div class="half">
+                  <label>Card Rate(per Screen per 30 Days)</label>
+                  <input type="text" value="10000" readonly />
+                </div>
+                    <span class="result" id="o_result">₹0</span>
               </div>
             
-              <hr />
+            
               <div><strong>Total Amount:</strong> <span id="total_amount">₹0</span></div>
             
             </div>
-                               
-          
+    
+    
             <label>Note:</label>
             <div class="form-row">
               <textarea name="note" placeholder="Enter note..."></textarea>
             </div>
           </div>
-
-          <div id="closedWonFields" style="display:none;">
+    
+          <!-- <div id="closedWonFields" style="display:none;">
             <label>*Amount:</label>
-            <input type="number" name="amount"  />
-          
+            <input type="number" name="amount" />
+    
             <label>*Purchase Order/Email Confirmation (PDF only):</label>
-            <input type="file" name="confirmation_pdf" accept="application/pdf"  />
-          </div>
-          
+            <input type="file" name="confirmation_pdf" accept="application/pdf" />
+          </div> -->
+    
+    <div id="closedWonFields" style="display: none;">
+  <div class="form-group">
+    <label for="amount">*Amount:</label>
+    <input type="number" id="amount" name="amount" placeholder="₹5,00,000.00" />
+  </div>
 
+  <div class="form-group">
+    <label for="confirmation_pdf">*Purchase Order/Email Confirmation:</label>
 
+    <label for="confirmation_pdf" class="upload-box">
+      <svg xmlns="http://www.w3.org/2000/svg" class="upload-icon" viewBox="0 0 24 24" fill="none">
+        <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke="#1D4ED8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M7 9l5-5 5 5" stroke="#1D4ED8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M12 4v12" stroke="#1D4ED8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span style="color: #0D6EFD;">Click To Upload</span>
+    </label>
+    <input type="file" id="confirmation_pdf" name="confirmation_pdf" accept="application/pdf" hidden />
 
+    <div class="uploaded-file">
+      <svg xmlns="http://www.w3.org/2000/svg" class="file-icon" viewBox="0 0 24 24" fill="none">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M14 2v6h6" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>PO2561256.PDF</span>
+    </div>
 
+    <p class="hint-text">
+      If the PDF of the PO is not avail, please upload a screenshot of email confirmation
+    </p>
+  </div>
+    </div>
+
+    <script>
+      document.getElementById('confirmation_pdf').addEventListener('change', function () {
+        const file = this.files[0];
+        if (file) {
+          document.querySelector('.uploaded-file span').textContent = file.name;
+        }
+      });
+    </script>
 
           <!-- Tax Invoice Fields -->
-<div id="taxInvoiceFields" style="display: none; margin-top: 20px;">
-  <h3>Tax Invoice Details</h3>
-  <input type="text" name="invoice_no" placeholder="Invoice No"  />
-  <input type="date" name="invoice_date" placeholder="Invoice Date"  />
-  <input type="text" name="po_no" placeholder="PO No." />
-  <input type="date" name="po_date" placeholder="PO Date" />
-  <input type="text" name="GST_No" placeholder="GST_No" />
-  <input type="text" name="pan_No" placeholder="pan_No" />
-  <input type="Website" name="Website" placeholder="Website" />
+          <div id="taxInvoiceFields" style="display: none; margin-top: 20px;">
+            <!-- <h3>Tax Invoice Details</h3> -->
+            <div class="row">
+              <div class="half">
+                <label>Invoice No</label>
+                <input type="text" name="invoice_no" placeholder="Invoice No" />
+              </div>
+          
+              <div class="half">
+                <label>Invoice Date</label>
+                <input type="date" name="invoice_date" placeholder="Invoice Date" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="half">
+                <label>PO No.</label>
+                <input type="text" name="po_no" placeholder="PO No." />
+              </div>
+              <div class="half">
+                <label>PO Date</label>
+                <input type="date" name="po_date" placeholder="PO Date" />
+              </div>
+            </div>
+                <!--  <div class="row">
+                      <input type="text" name="GST_No" placeholder="GST_No" />
+                      <input type="text" name="pan_No" placeholder="pan_No" />
+                      <input type="Website" name="Website" placeholder="Website" />
+                      </div> -->
 
-
-
-
- 
-  <input type="text" name="place_of_supply" placeholder="Place of Supply" />
-  <input type="text" name="payment_terms" placeholder="Payment Terms" />
-  <input type="text" name="ack_no" placeholder="Acknowledgment No." />
-  <input type="date" name="ack_date" placeholder="Acknowledgment Date" />
-  <input type="text" name="irn" placeholder="IRN" />
-  <input type="text" name="spoc" placeholder="SPOC" />
-  <textarea name="billing_address" placeholder="Billing Address"></textarea>
-  <div class="form-row">
-    <label>Start Date:</label>
-    <input type="date" name="start_date" id="start_datee"  />
-
-    <label>Duration (Days):</label>
-    <input type="number" name="duration" id="durationn"  oninput="InvoicecalculateEndDate()" />
-    <br>
-  <p> <input type="text" name="end_date" id="end_datee" readonly /> </p> 
-
+            <div class="row">
+              <div class="half">
+                <label>Place of Supply</label>
+                <input type="text" name="place_of_supply" placeholder="Place of Supply" />
+              </div>
+              <div class="half">
+                <label>Payment Terms</label>
+                <input type="text" name="payment_terms" placeholder="Payment Terms" />
+              </div>
+            </div>
+          
+            <div class="row">
+              <div class="half">
+                <label>Acknowledgment No.</label>
+                <input type="text" name="ack_no" placeholder="Acknowledgment No." />
+              </div>
+              <div class="half">
+                <label>Acknowledgment Date</label>
+                <input type="date" name="ack_date" placeholder="Acknowledgment Date" />
+              </div>
+            </div>
+          
+            <div class="row">
+              <div class="half">
+                <label>IRN</label>
+                <input type="text" name="irn" placeholder="IRN" />
+              </div>
+              <div class="half">
+                <label>SPOC</label>
+                <input type="text" name="spoc" placeholder="SPOC" />
+              </div>
+          
+            </div>
+            <div class="half">
+             <label>Billing Address</label>
+            <textarea name="billing_address" placeholder="Billing Address"></textarea>
+          </div>
+            <div class="row">
+              <div class="half">
+                <label>Start Date:</label>
+                <input type="date" name="start_date" id="start_datee" />
+              </div>
+              <div class="half">
+                <label>Duration (Days):</label>
+                <input type="number" style="margin-top: 10px;" name="duration" id="durationn"
+                  oninput="InvoicecalculateEndDate()" />
+                <input type="text" name="end_date" id="end_datee" readonly style="display: none;" />
+                <small id="end_date_displayy" style="color: red;">(Ends on: DD/MM/YYYY)</small>
+              </div>
+          
+          
+            </div>
+            <!-- <h4>Residential</h4> -->
+            <div class="row" style="margin-top: 10px;">
+              <div class="half">
+                <label>*No. of Residential Screens</label>
+                <input type="number" name="residential_screen" placeholder="Screens" class="screen" data-type="r" />
+              </div>
+              <div class="half">
+                <label>Offer Rate(per Screen per 30 Days)</label>
+                <input type="number" name="r_per_screen" placeholder="Per Screen Rate" class="rate" data-type="r" />
+              </div>
+              <div class="half">
+                <label>Plan</label>
+                <!-- <input type="number" name="r_plan" placeholder="Plan Days" class="plan" data-type="r" /> -->
+                 <select name="r_plan" class="plan" data-type="r">
+                    <option value="720" selected>720</option>
+                    <option value="360">360</option>
+                  </select>
+              </div>
+              <div class="half">
+                <label>Card Rate(per Screen per 30 Days)</label>
+                <input type="text" value="10000" readonly />
+              </div>
+              <span class="result" id="r_result">₹0</span>
+            </div>
+          
+            <!-- <h4>Corporate</h4> -->
+            <div class="row">
+              <div class="half">
+              <label>*No. of Corporate Screens</label>
+              <input type="number" name="corporate_screen" placeholder="Screens" class="screen" data-type="c" /></div>
+              <div class="half">
+                <label>Offer Rate(per Screen per 30 Days)</label>
+                <input type="number" name="c_per_screen" placeholder="Per Screen Rate" class="rate" data-type="c" />
+              </div>
+              <div class="half">
+                <label>Plan</label>
+                <!-- <input type="number" name="c_plan" placeholder="Plan Days" class="plan" data-type="c" /> -->
+                 <select name="c_plan" class="plan" data-type="c">
+                    <option value="720" selected>720</option>
+                    <option value="360">360</option>
+                  </select>
+              </div>
+              <div class="half">
+                <label>Card Rate(per Screen per 30 Days)</label>
+                <input type="text" value="10000" readonly />
+              </div>
+              <span class="result" id="c_result">₹0</span>
+            </div>
+          
+            <!-- <h4>Outdoor</h4> -->
+            <div class="row">
+               <div class="half">
+              <label>*No. of Outdoor Screens</label>
+              <input type="number" name="outdur_screen" placeholder="Screens" class="screen" data-type="o" /></div>
+           <div class="half">
+              <label>Offer Rate(per Screen per 30 Days)</label>
+              <input type="number" name="o_per_screen" placeholder="Per Screen Rate" class="rate" data-type="o" /></div>
+           <div class="half">
+              <label>Plan</label>
+              <!-- <input type="number" name="o_plan" placeholder="Plan Days" class="plan" data-type="o" /></div> -->
+               <select name="o_plan" class="plan" data-type="o">
+                    <option value="720" selected>720</option>
+                    <option value="360">360</option>
+                  </select>
+                  </div>
+          
+              <div class="half">
+                <label>Card Rate(per Screen per 30 Days)</label>
+                <input type="text" value="10000" readonly />
+              </div>
+              <span class="result" id="o_result">₹0</span>
+            </div>
+          
+          
+            <label>Note:</label>
+            <div class="form-row">
+              <textarea name="note" placeholder="Enter note..."></textarea>
+            </div>
+          
+          
+          
+            <!-- You already have screen fields, just reuse here or conditionally show -->
+          </div>
     
-   
-  </div>          
-  <h4>Residential</h4>
-  <div class="form-row">
-    <input type="number" name="residential_screen" placeholder="Screens" class="screen" data-type="r" />
-    <input type="number" name="r_per_screen" placeholder="Per Screen Rate" class="rate" data-type="r" />
-    <input type="number" name="r_plan" placeholder="Plan Days" class="plan" data-type="r" />
-    <span class="result" id="r_result">₹0</span>
-  </div>
-  
-  <h4>Corporate</h4>
-  <div class="form-row">
-    <input type="number" name="corporate_screen" placeholder="Screens" class="screen" data-type="c" />
-    <input type="number" name="c_per_screen" placeholder="Per Screen Rate" class="rate" data-type="c" />
-    <input type="number" name="c_plan" placeholder="Plan Days" class="plan" data-type="c" />
-    <span class="result" id="c_result">₹0</span>
-  </div>
-  
-  <h4>Outdoor</h4>
-  <div class="form-row">
-    <input type="number" name="outdur_screen" placeholder="Screens" class="screen" data-type="o" />
-    <input type="number" name="o_per_screen" placeholder="Per Screen Rate" class="rate" data-type="o" />
-    <input type="number" name="o_plan" placeholder="Plan Days" class="plan" data-type="o" />
-    <span class="result" id="o_result">₹0</span>
-  </div>
-  
-  
-  
-  <label>Note:</label>
-  <div class="form-row">
-    <textarea name="note" placeholder="Enter note..."></textarea>
-  </div>
-
-  
-                                                                                                                           
-  <!-- You already have screen fields, just reuse here or conditionally show -->  
-</div>
-
-
-        <!-- Hidden inputs -->
-        <input type="hidden" name="company">                                                                                                                                                                                                                                                                                                            
-        <input type="hidden" name="poc">                                                    
-        <input type="hidden" name="mobile">
-        <input type="hidden" name="city">
-        <input type="hidden" name="email">                          
-        <input type="hidden" name="type">                                               
-
-        <div class="form-actions">
-          <button type="button" onclick="closeAll()">Cancel</button>                            
-          <button type="submit">Save</button>
-        </div>                                                                          
-      </form>
+    
+          <!-- Hidden inputs -->
+          <!-- <input type="hidden" name="company">
+              <input type="hidden" name="poc">
+              <input type="hidden" name="mobile">
+              <input type="hidden" name="city">
+              <input type="hidden" name="email">
+              <input type="hidden" name="type"> -->
+    
+          <div class="form-actions">
+            <button type="button" class="btn" onclick="closeAll()">Cancel</button>
+            <button type="submit">Save</button>
+          </div>
+        </form>
+      </div>
     </div>
-  </div>
+
 
   </div>
+
+
+  <script>
+
+    function handleActionChange(value) {
+      const proposalFieldsFilled = document.querySelector('#proposalFields input[type="text"]').value !== '' || document.querySelector('#proposalFields textarea').value !== '';
+      const followupFieldsFilled = document.querySelector('#followupFields input[type="text"]').value !== '' || document.querySelector('#followupFields textarea').value !== '';
+      const offerFieldsFilled = document.querySelector('#offerFields input[type="date"]').value !== '' || document.querySelector('#offerFields input[type="number"]').value !== '' || document.querySelector('#offerFields textarea').value !== '';
+      const closedWonFieldsFilled = document.querySelector('#closedWonFields input[type="number"]').value !== '' || document.querySelector('#closedWonFields input[type="file"]').value !== '';
+      const taxInvoiceFieldsFilled = document.querySelector('#taxInvoiceFields input[type="text"]').value !== '' || document.querySelector('#taxInvoiceFields input[type="date"]').value !== '' || document.querySelector('#taxInvoiceFields textarea').value !== '';
+
+      const formMessage = document.getElementById('formMessage');
+      const actionSelect = document.getElementById('actionSelect');
+
+      if (proposalFieldsFilled || followupFieldsFilled || offerFieldsFilled || closedWonFieldsFilled || taxInvoiceFieldsFilled) {
+        formMessage.textContent = 'First you filled fields. Clear them before you can select another action type.';
+        actionSelect.value = ''; // Reset the select to the "Select" option
+        document.getElementById('proposalFields').style.display = 'none';
+        document.getElementById('followupFields').style.display = 'none';
+        document.getElementById('offerFields').style.display = 'none';
+        document.getElementById('closedWonFields').style.display = 'none';
+        document.getElementById('taxInvoiceFields').style.display = 'none';
+      } else {
+        formMessage.textContent = ''; // Clear the message
+        document.getElementById('proposalFields').style.display = (value === 'Send Proposal') ? 'block' : 'none';
+        document.getElementById('followupFields').style.display = (value === 'Send Follow-up Email') ? 'block' : 'none';
+        document.getElementById('offerFields').style.display = (value === 'Send Offer') ? 'block' : 'none';
+        document.getElementById('closedWonFields').style.display = (value === 'Closed Won') ? 'block' : 'none';
+        document.getElementById('taxInvoiceFields').style.display = (value === 'Send Tax Invoice') ? 'block' : 'none';
+      }
+    }
+
+    function clearActionFields() {
+      document.getElementById('proposalFields').style.display = 'none';
+      document.querySelectorAll('#proposalFields input[type="text"], #proposalFields textarea').forEach(el => el.value = '');
+
+      document.getElementById('followupFields').style.display = 'none';
+      document.querySelectorAll('#followupFields input[type="text"], #followupFields textarea').forEach(el => el.value = '');
+
+      document.getElementById('offerFields').style.display = 'none';
+      document.querySelectorAll('#offerFields input[type="date"], #offerFields input[type="number"], #offerFields textarea').forEach(el => el.value = '');
+
+      document.getElementById('closedWonFields').style.display = 'none';
+      document.querySelectorAll('#closedWonFields input[type="number"], #closedWonFields input[type="file"]').forEach(el => {
+        if (el.type === 'file') {
+          el.value = ''; // Clearing file input requires setting value to empty string
+        } else {
+          el.value = '';
+        }
+      });
+
+      document.getElementById('taxInvoiceFields').style.display = 'none';
+      document.querySelectorAll('#taxInvoiceFields input[type="text"], #taxInvoiceFields input[type="date"], #taxInvoiceFields textarea').forEach(el => el.value = '');
+
+      document.getElementById('formMessage').textContent = ''; // Clear any previous message
+      document.getElementById('actionSelect').value = ''; // Optionally reset the select as well
+    }
+
+  function calculateEndDateOffer() {
+  const startDate = document.getElementById("start_date").value;
+  const duration = parseInt(document.getElementById("duration").value) || 0;
+
+  if (startDate && duration) {
+    const start = new Date(startDate);
+    start.setDate(start.getDate() + duration);
+
+    const dd = String(start.getDate()).padStart(2, '0');
+    const mm = String(start.getMonth() + 1).padStart(2, '0'); // January is 0!
+    const yyyy = start.getFullYear();
+
+    const formattedDate = `${dd}/${mm}/${yyyy}`;
+    document.getElementById("end_date").value = formattedDate;
+    document.getElementById("end_date_display").innerText = `(Ends on: ${formattedDate})`;
+  } else {
+    document.getElementById("end_date").value = "";
+    document.getElementById("end_date_display").innerText = "(Ends on: DD/MM/YYYY)";
+  }
+}
+
+
+    function InvoicecalculateEndDate() {
+      const startDate = document.getElementById('start_datee').value;
+      const duration = parseInt(document.getElementById('durationn').value);
+       if (startDate && duration) {
+    const start = new Date(startDate);
+    start.setDate(start.getDate() + duration);
+
+    const dd = String(start.getDate()).padStart(2, '0');
+    const mm = String(start.getMonth() + 1).padStart(2, '0'); // January is 0!
+    const yyyy = start.getFullYear();
+
+    const formattedDate = `${dd}/${mm}/${yyyy}`;
+    document.getElementById("end_datee").value = formattedDate;
+    document.getElementById("end_date_displayy").innerText = `(Ends on: ${formattedDate})`;
+  } else {
+    document.getElementById("end_datee").value = "";
+    document.getElementById("end_date_displayy").innerText = "(Ends on: DD/MM/YYYY)";
+  }
+    }
+
+    function openForm1() {
+      document.getElementById('form1').style.display = 'flex';
+    }
+
+    function closeAll() {
+      document.getElementById('form1').style.display = 'none';
+      document.getElementById('form2').style.display = 'none';
+      document.getElementById('accountForm').reset();
+      document.getElementById('fullForm').reset();
+      document.getElementById('formMessage').textContent = ''; // Ensure message is cleared on close
+    }
+    let currentEntryId = null;
+
+    function submitForm1(event, mode) {
+      event.preventDefault();
+
+      const form1 = document.getElementById('accountForm');
+      const formData = new FormData(form1);
+
+      fetch('/save-entry', {
+        method: 'POST',
+        body: new URLSearchParams(formData)
+      }).then(res => res.json())
+        .then(data => {
+          if (data.id) {
+            currentEntryId = data.id;
+
+            const company = formData.get("company");
+            // const poc = formData.get("poc");
+            const mobile = formData.get("mobile");
+            const city = formData.get("city");
+            const email = formData.get("email");
+            const type = formData.get("type");
+
+          //   document.getElementById('previewInfo').innerHTML = `
+          //   <p><strong>Company:</strong> ${company}</p>
+          //   <p><strong>POC:</strong> ${poc}</p>
+          //   <p><strong>Mobile:</strong> ${mobile}</p>
+          //   <p><strong>City:</strong> ${city}</p>
+          //   <p><strong>Email:</strong> ${email}</p>
+          // `;
+
+            const form2 = document.getElementById('fullForm');
+            form2.company.value = company;
+            // form2.poc.value = poc;
+            form2.mobile.value = mobile;
+            form2.city.value = city;
+            form2.email.value = email;
+            form2.type.value = type;
+            form2.entry_id.value = currentEntryId;
+
+            if (mode === 'save') {
+              document.getElementById('form1').style.display = 'none';
+              document.getElementById('form2').style.display = 'flex';
+            } else if (mode === 'save_new') {
+              form1.reset();
+              alert('Saved! You can add another entry now.');
+            }
+          } else {
+            alert('Failed to save.');
+          }
+        });
+    }
+
+    document.getElementById('fullForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+
+      fetch('/save-entry', {
+        method: 'POST',
+        body: new URLSearchParams(formData)
+      }).then(res => {
+        if (res.ok) {
+          alert('Saved action successfully!');
+          closeAll();
+        } else {
+          alert('Error saving action.');
+        }
+      });
+    });
+
+    const inputs = document.querySelectorAll('.screen, .rate, .plan');
+
+    inputs.forEach(input => {
+      input.addEventListener('input', () => {
+        const type = input.dataset.type;
+        const screens = document.querySelector(`.screen[data-type="${type}"]`).value;
+        const rate = document.querySelector(`.rate[data-type="${type}"]`).value;
+        const plan = document.querySelector(`.plan[data-type="${type}"]`).value;
+
+        const screensVal = parseFloat(screens) || 0;
+        const rateVal = parseFloat(rate) || 0;
+        const planVal = parseFloat(plan) || 0;
+
+        let total = 0;
+
+        if (screensVal > 0 && rateVal > 0 && planVal > 0) {
+          const totalCost = screensVal * rateVal;
+          const costPer30Days = (totalCost / planVal) * 30;
+          total = costPer30Days.toFixed(2);
+        }
+
+        document.getElementById(`${type}_result`).textContent = `₹${total}`;
+      });
+    });
+
+    document.querySelectorAll('.component-block').forEach(block => {
+      const rows = block.querySelectorAll('.form-row');
+
+      rows.forEach(row => {
+        const inputs = row.querySelectorAll('input');
+        const result = row.querySelector('.result');
+
+        inputs.forEach(input => {
+          input.addEventListener('input', () => {
+            const screens = parseFloat(row.querySelector('.screen')?.value) || 0;
+            const rate = parseFloat(row.querySelector('.rate')?.value) || 0;
+            const plan = parseFloat(row.querySelector('.plan')?.value) || 0;
+
+            if (screens > 0 && rate > 0 && plan > 0) {
+              const totalCost = screens * rate;
+              const per30DayRate = (totalCost / plan) * 30;
+              result.textContent = `₹${per30DayRate.toFixed(2)}`;
+            } else {
+              result.textContent = `₹0`;
+            }
+          });
+        });
+      });
+    });
+
+  </script>
+
+
+
+
 <!-- Edit Modal -->
 <div id="editModal" style="
   display: none;
@@ -900,7 +1422,7 @@ button[type="button"] {
 </label><br>
 
 
-      <button type="button" id="nextBtn">Next</button>
+      <button type="button" id="nextBtn">Next</button> 
     </div>
 
     <!-- Stage 2 -->
@@ -1057,199 +1579,6 @@ button[type="button"] {
   </form>
 </div>
 
-
-   <script>  
-
-  
-
-
-function handleActionChange(value) {
-  document.getElementById('proposalFields').style.display = (value === 'Send Proposal') ? 'block' : 'none';
-  document.getElementById('followupFields').style.display = (value === 'Send Follow-up Email') ? 'block' : 'none';
-  document.getElementById('offerFields').style.display = (value === 'Send Offer') ? 'block' : 'none';
-  document.getElementById('closedWonFields').style.display = (value === 'Closed Won') ? 'block' : 'none';
-  document.getElementById('taxInvoiceFields').style.display = (value === 'Send Tax Invoice') ? 'block' : 'none';
-}
-
-function calculateEndDate() {
-  const startDate = document.getElementById("offer_start_date").value;
-  const duration = parseInt(document.getElementById("offer_duration").value) || 0;
-
-  if (startDate && duration) {
-    const start = new Date(startDate);
-    start.setDate(start.getDate() + duration);
-    const endDate = start.toISOString().split('T')[0];
-    document.getElementById("offer_end_date").value = endDate;
-  } else {
-    document.getElementById("offer_end_date").value = "";
-  }
-}
-
-function InvoicecalculateEndDate() {
-  const startDate = document.getElementById('start_datee').value;
-  const duration = parseInt(document.getElementById('durationn').value);
-  if (startDate && duration) {
-    const start = new Date(startDate);
-    start.setDate(start.getDate() + duration);
-    const endDate = start.toISOString().split('T')[0];
-    document.getElementById('end_datee').value = endDate;
-  }
-}
-
-    function openForm1() {
-      document.getElementById('form1').style.display = 'flex';
-    }
-
-    function closeAll() {
-      document.getElementById('form1').style.display = 'none';
-      document.getElementById('form2').style.display = 'none';
-      document.getElementById('accountForm').reset();
-      document.getElementById('fullForm').reset();
-      document.getElementById('emailFields').classList.add('hidden');
-    }
-    let currentEntryId = null;
-
-function submitForm1(event, mode) {
-  event.preventDefault();
-
-  const form1 = document.getElementById('accountForm');
-  const formData = new FormData(form1);
-
-  fetch('/save-entry', {
-    method: 'POST',
-    body: new URLSearchParams(formData)
-  }).then(res => res.json())
-    .then(data => {
-      if (data.id) {
-        currentEntryId = data.id;
-
-        const company = formData.get("company");
-        const poc = formData.get("poc");
-        const mobile = formData.get("mobile");
-        const city = formData.get("city");
-        const email = formData.get("email");
-        const type = formData.get("type");
-
-        document.getElementById('previewInfo').innerHTML = `                                            
-          <p><strong>Company:</strong> ${company}</p>
-          <p><strong>POC:</strong> ${poc}</p>
-          <p><strong>Mobile:</strong> ${mobile}</p>
-          <p><strong>City:</strong> ${city}</p>
-          <p><strong>Email:</strong> ${email}</p>                               
-        `;
-
-        const form2 = document.getElementById('fullForm');
-        form2.company.value = company;
-        form2.poc.value = poc;
-        form2.mobile.value = mobile;
-        form2.city.value = city;
-        form2.email.value = email;
-        form2.type.value = type;
-        form2.entry_id.value = currentEntryId;
-
-        if (mode === 'save') {
-          document.getElementById('form1').style.display = 'none';
-          document.getElementById('form2').style.display = 'flex';
-        } else if (mode === 'save_new') {
-          form1.reset();
-          alert('Saved! You can add another entry now.');
-        }
-      } else {
-        alert('Failed to save.');
-      }
-    });
-}
-
-    function toggleEmailFields() {
-      const selected = document.getElementById('actionSelect').value;
-      const emailFields = document.getElementById('emailFields');
-      emailFields.classList.toggle('hidden', selected !== 'Send Proposal');
-    }
-
-    document.getElementById('fullForm').addEventListener('submit', function (e) {
-  e.preventDefault();
-  const form = e.target;
-  const formData = new FormData(form);
-
-
-
-
-
-
-  fetch('/save-entry', {
-    method: 'POST',
-    body: new URLSearchParams(formData)
-  }).then(res => {
-    if (res.ok) {
-      alert('Saved action successfully!');
-      closeAll();
-    } else {
-      alert('Error saving action.');
-    }
-  });
-});
-
-
-
-
-
-
-
-
-
-
-
-
-const inputs = document.querySelectorAll('.screen, .rate, .plan');
-
-inputs.forEach(input => {
-  input.addEventListener('input', () => {
-    const type = input.dataset.type;
-    const screens = document.querySelector(`.screen[data-type="${type}"]`).value;
-    const rate = document.querySelector(`.rate[data-type="${type}"]`).value;
-    const plan = document.querySelector(`.plan[data-type="${type}"]`).value;
-
-    const screensVal = parseFloat(screens) || 0;
-    const rateVal = parseFloat(rate) || 0;
-    const planVal = parseFloat(plan) || 0;
-
-    let total = 0;
-
-    if (screensVal > 0 && rateVal > 0 && planVal > 0) {
-      const totalCost = screensVal * rateVal;
-      const costPer30Days = (totalCost / planVal) * 30;
-      total = costPer30Days.toFixed(2);
-    }
-
-    document.getElementById(`${type}_result`).textContent = `₹${total}`;
-  });
-});
-
-document.querySelectorAll('.component-block').forEach(block => {
-    const rows = block.querySelectorAll('.form-row');
-
-    rows.forEach(row => {
-      const inputs = row.querySelectorAll('input');
-      const result = row.querySelector('.result');
-
-      inputs.forEach(input => {
-        input.addEventListener('input', () => {
-          const screens = parseFloat(row.querySelector('.screen')?.value) || 0;
-          const rate = parseFloat(row.querySelector('.rate')?.value) || 0;
-          const plan = parseFloat(row.querySelector('.plan')?.value) || 0;
-
-          if (screens > 0 && rate > 0 && plan > 0) {
-            const totalCost = screens * rate;
-            const per30DayRate = (totalCost / plan) * 30;
-            result.textContent = `₹${per30DayRate.toFixed(2)}`;
-          } else {
-            result.textContent = `₹0`;
-          }
-        });
-      });
-    });
-  });
-  </script>
 <script>
   function closeModal() {
     document.getElementById("editModal").style.display = "none";

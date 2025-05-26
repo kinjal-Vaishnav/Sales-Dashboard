@@ -95,7 +95,7 @@ app.get('/1', async (req, res) => {
         spoc
         /* …any other fields you want to edit… */
       FROM sales_enquiry
-      WHERE account_owner = $1
+      WHERE account_owner = $1 order by id desc
     `, [user.name]);
     res.render('1', {
       user,
