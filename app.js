@@ -226,7 +226,7 @@ try {
 }
 });
 
-
+                                 
 app.get('/get-entry/:id', async (req, res) => {
   const entryId = req.params.id;
   console.log("Received entryId:", entryId);  // Add a log to check

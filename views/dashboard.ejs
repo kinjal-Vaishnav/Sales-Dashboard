@@ -1147,6 +1147,53 @@ label {
     </div>
 
 
+
+    <table id="dataTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Opportunity Name</th>
+          <th>City</th>
+          <th>Stage</th>
+          <th>Phone</th>
+          <th>Type</th>
+          <th>Account Owner</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% enquiries.forEach((row, index)=> { %>
+          <tr>
+            <td>
+              <%= index + 1 %>
+            </td>
+            <td>
+              <a href="/enquiry/<%= row.id %>">
+                <%= row.name %>
+              </a>
+            </td>
+            <td>
+              <%= row.city %>
+            </td>
+            <td>
+              <%= row.action_type || '-' %>
+            </td>
+            <td>
+              <%= row.mobile_number %>
+            </td>
+            <td>
+              <%= row.customer_type %>
+            </td>
+            <td>
+              <%= row.account_owner %>
+            </td>
+            <td>
+              <button class="button" onclick="editEntryExample(<%= row.id %>)">Edit</button>
+
+            </td>
+          </tr>
+          <% }) %>
+      </tbody>
+    </table>
   </div>
 
 
