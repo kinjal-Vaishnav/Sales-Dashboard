@@ -646,13 +646,12 @@ label {
               <td><%= row.mobile_number %></td>             
               <td><%= row.customer_type %></td>
               <td><%= row.account_owner %></td>
-              <td><svg class="edit-btn btn btn-primary" 
-                data-entry='<%- JSON.stringify(row) %>' width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <td><svg class="edit-btn btn btn-primary" data-id="<%= row.id %>" 
+              width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
 <rect x="0.5" y="0.5" width="19" height="19" rx="3.5" fill="white"/>
 <rect x="0.5" y="0.5" width="19" height="19" rx="3.5" stroke="#DDDBDA"/>
 <path fill-rule="evenodd" clip-rule="evenodd" d="M5.48845 6.76929H14.53C14.7854 6.76929 14.9641 7.11929 14.7598 7.36159L10.3412 13.0693C10.188 13.2847 9.85595 13.2847 9.70271 13.0693L5.23304 7.36159C5.05425 7.11929 5.2075 6.76929 5.48845 6.76929Z" fill="#706E6B"/>
 </svg>
-
 </td>
             </tr>                                                     
           <% }) %>                                  
@@ -760,7 +759,7 @@ label {
                 <option value="Send Tax Invoice">Send Tax Invoice</option>
                 <option value="Closed Won">Closed Won</option>
               </select>
-              <button type="button" onclick="clearActionFields()" style="position: absolute;right: 0px;bottom: -7px;">Clear
+              <button type="button" onclick="clearActionFields()" style="position: absolute;right: 0px;bottom: -7px;display: none;">Clear
                 Fields</button>
             </div>
           </div>
@@ -768,7 +767,7 @@ label {
           <div class="row">
             <div class="half">
               <label>*Opportunity Name</label>
-              <input type="text" name="company">
+              <input type="text" name="name">
             </div>
             <div class="half">
               <label>*Mobile Number</label>
@@ -815,11 +814,11 @@ label {
             <div class="row">
               <div class="half">
                 <label>Start Date:</label>
-                <input type="date" name="start_date" id="start_date" onchange="calculateEndDateOffer()" />
+                <input type="date" name="start_date" id="start_date" onchange="calculateEndDate('start_date','duration','end_date','end_date_display')" />
               </div>
               <div class="half">
                 <label>Duration (Days):</label>
-                <input type="number" style="margin-top: 10px;" name="duration" id="duration" onchange="calculateEndDateOffer()" />
+                <input type="number" style="margin-top: 10px;" name="duration" id="duration" onchange="calculateEndDate('start_date','duration','end_date','end_date_display')" />
                 <input type="text" name="end_date" id="end_date" readonly style="display: none;" />
                   <small id="end_date_display" style="color: red;">(Ends on: DD/MM/YYYY)</small>
                 </div>
@@ -880,7 +879,7 @@ label {
               <div class="row">
                 <div class="half">
                   <label>*No. of Outdoor Screens</label>
-                  <input type="number" name="outdur_screen" placeholder="Screens" class="screen" data-type="o" />
+                  <input type="number" name="outdoor_screen" placeholder="Screens" class="screen" data-type="o" />
                 </div>
                 <div class="half">
                   <label>*Offer Rate(per Screen per 30 Days)</label>
@@ -930,7 +929,7 @@ label {
   <div class="form-group">
     <label for="confirmation_pdf">*Purchase Order/Email Confirmation:</label>
 
-    <label for="confirmation_pdf" class="upload-box">
+    <label for="confirmation_file" class="upload-box">
       <svg xmlns="http://www.w3.org/2000/svg" class="upload-icon" viewBox="0 0 24 24" fill="none">
         <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke="#1D4ED8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         <path d="M7 9l5-5 5 5" stroke="#1D4ED8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -938,7 +937,8 @@ label {
       </svg>
       <span style="color: #0D6EFD;">Click To Upload</span>
     </label>
-    <input type="file" id="confirmation_pdf" name="confirmation_pdf" accept="application/pdf" hidden />
+    <input type="file" id="confirmation_file" name="confirmation_file" accept=".pdf,image/*" hidden />
+
 
     <div class="uploaded-file">
       <svg xmlns="http://www.w3.org/2000/svg" class="file-icon" viewBox="0 0 24 24" fill="none">
@@ -947,6 +947,7 @@ label {
       </svg>
       <span>PO2561256.PDF</span>
     </div>
+<div id="existing-confirmation-file"></div>
 
     <p class="hint-text">
       If the PDF of the PO is not avail, please upload a screenshot of email confirmation
@@ -955,13 +956,14 @@ label {
     </div>
 
     <script>
-      document.getElementById('confirmation_pdf').addEventListener('change', function () {
+      document.getElementById('confirmation_file').addEventListener('change', function () {
         const file = this.files[0];
         if (file) {
           document.querySelector('.uploaded-file span').textContent = file.name;
         }
       });
     </script>
+
 
           <!-- Tax Invoice Fields -->
           <div id="taxInvoiceFields" style="display: none; margin-top: 20px;">
@@ -1033,13 +1035,13 @@ label {
             <div class="row">
               <div class="half">
                 <label>Start Date:</label>
-                <input type="date" name="start_date" id="start_datee" />
+                <input type="date" name="t_start_date" id="start_datee" onchange="calculateEndDate('start_datee','durationn','end_datee','end_date_displayy')" />
               </div>
               <div class="half">
                 <label>Duration (Days):</label>
-                <input type="number" style="margin-top: 10px;" name="duration" id="durationn"
-                  oninput="InvoicecalculateEndDate()" />
-                <input type="text" name="end_date" id="end_datee" readonly style="display: none;" />
+                <input type="number" style="margin-top: 10px;" name="t_duration" id="durationn"
+                  onchange="calculateEndDate('start_datee','durationn','end_datee','end_date_displayy')" />
+                <input type="text" name="t_end_date" id="end_datee" readonly style="display: none;" />
                 <small id="end_date_displayy" style="color: red;">(Ends on: DD/MM/YYYY)</small>
               </div>
           
@@ -1049,16 +1051,16 @@ label {
             <div class="row" style="margin-top: 10px;">
               <div class="half">
                 <label>*No. of Residential Screens</label>
-                <input type="number" name="residential_screen" placeholder="Screens" class="screen" data-type="r" />
+                <input type="number" name="t_residential_screen" placeholder="Screens" class="screen" data-type="r" />
               </div>
               <div class="half">
                 <label>Offer Rate(per Screen per 30 Days)</label>
-                <input type="number" name="r_per_screen" placeholder="Per Screen Rate" class="rate" data-type="r" />
+                <input type="number" name="t_r_per_screen" placeholder="Per Screen Rate" class="rate" data-type="r" />
               </div>
               <div class="half">
                 <label>Plan</label>
                 <!-- <input type="number" name="r_plan" placeholder="Plan Days" class="plan" data-type="r" /> -->
-                 <select name="r_plan" class="plan" data-type="r">
+                 <select name="t_r_plan" class="plan" data-type="r">
                     <option value="720" selected>720</option>
                     <option value="360">360</option>
                   </select>
@@ -1074,15 +1076,15 @@ label {
             <div class="row">
               <div class="half">
               <label>*No. of Corporate Screens</label>
-              <input type="number" name="corporate_screen" placeholder="Screens" class="screen" data-type="c" /></div>
+              <input type="number" name="t_corporate_screen" placeholder="Screens" class="screen" data-type="c" /></div>
               <div class="half">
                 <label>Offer Rate(per Screen per 30 Days)</label>
-                <input type="number" name="c_per_screen" placeholder="Per Screen Rate" class="rate" data-type="c" />
+                <input type="number" name="t_c_per_screen" placeholder="Per Screen Rate" class="rate" data-type="c" />
               </div>
               <div class="half">
                 <label>Plan</label>
                 <!-- <input type="number" name="c_plan" placeholder="Plan Days" class="plan" data-type="c" /> -->
-                 <select name="c_plan" class="plan" data-type="c">
+                 <select name="t_c_plan" class="plan" data-type="c">
                     <option value="720" selected>720</option>
                     <option value="360">360</option>
                   </select>
@@ -1098,14 +1100,14 @@ label {
             <div class="row">
                <div class="half">
               <label>*No. of Outdoor Screens</label>
-              <input type="number" name="outdur_screen" placeholder="Screens" class="screen" data-type="o" /></div>
+              <input type="number" name="t_outdoor_screen" placeholder="Screens" class="screen" data-type="o" /></div>
            <div class="half">
               <label>Offer Rate(per Screen per 30 Days)</label>
-              <input type="number" name="o_per_screen" placeholder="Per Screen Rate" class="rate" data-type="o" /></div>
+              <input type="number" name="t_o_per_screen" placeholder="Per Screen Rate" class="rate" data-type="o" /></div>
            <div class="half">
               <label>Plan</label>
               <!-- <input type="number" name="o_plan" placeholder="Plan Days" class="plan" data-type="o" /></div> -->
-               <select name="o_plan" class="plan" data-type="o">
+               <select name="t_o_plan" class="plan" data-type="o">
                     <option value="720" selected>720</option>
                     <option value="360">360</option>
                   </select>
@@ -1121,22 +1123,9 @@ label {
           
             <label>Note:</label>
             <div class="form-row">
-              <textarea name="note" placeholder="Enter note..."></textarea>
+              <textarea name="t_note" placeholder="Enter note..."></textarea>
             </div>
-          
-          
-          
-            <!-- You already have screen fields, just reuse here or conditionally show -->
           </div>
-    
-    
-          <!-- Hidden inputs -->
-          <!-- <input type="hidden" name="company">
-              <input type="hidden" name="poc">
-              <input type="hidden" name="mobile">
-              <input type="hidden" name="city">
-              <input type="hidden" name="email">
-              <input type="hidden" name="type"> -->
     
           <div class="form-actions">
             <button type="button" class="btn" onclick="closeAll()">Cancel</button>
@@ -1164,22 +1153,22 @@ label {
       const formMessage = document.getElementById('formMessage');
       const actionSelect = document.getElementById('actionSelect');
 
-      if (proposalFieldsFilled || followupFieldsFilled || offerFieldsFilled || closedWonFieldsFilled || taxInvoiceFieldsFilled) {
-        formMessage.textContent = 'First you filled fields. Clear them before you can select another action type.';
-        actionSelect.value = ''; // Reset the select to the "Select" option
-        document.getElementById('proposalFields').style.display = 'none';
-        document.getElementById('followupFields').style.display = 'none';
-        document.getElementById('offerFields').style.display = 'none';
-        document.getElementById('closedWonFields').style.display = 'none';
-        document.getElementById('taxInvoiceFields').style.display = 'none';
-      } else {
+      // if (proposalFieldsFilled || followupFieldsFilled || offerFieldsFilled || closedWonFieldsFilled || taxInvoiceFieldsFilled) {
+      //   formMessage.textContent = 'First you filled fields. Clear them before you can select another action type.';
+      //   actionSelect.value = ''; // Reset the select to the "Select" option
+      //   document.getElementById('proposalFields').style.display = 'none';
+      //   document.getElementById('followupFields').style.display = 'none';
+      //   document.getElementById('offerFields').style.display = 'none';
+      //   document.getElementById('closedWonFields').style.display = 'none';
+      //   document.getElementById('taxInvoiceFields').style.display = 'none';
+      // } else {
         formMessage.textContent = ''; // Clear the message
         document.getElementById('proposalFields').style.display = (value === 'Send Proposal') ? 'block' : 'none';
         document.getElementById('followupFields').style.display = (value === 'Send Follow-up Email') ? 'block' : 'none';
         document.getElementById('offerFields').style.display = (value === 'Send Offer') ? 'block' : 'none';
         document.getElementById('closedWonFields').style.display = (value === 'Closed Won') ? 'block' : 'none';
         document.getElementById('taxInvoiceFields').style.display = (value === 'Send Tax Invoice') ? 'block' : 'none';
-      }
+      // }
     }
 
     function clearActionFields() {
@@ -1208,47 +1197,27 @@ label {
       document.getElementById('actionSelect').value = ''; // Optionally reset the select as well
     }
 
-  function calculateEndDateOffer() {
-  const startDate = document.getElementById("start_date").value;
-  const duration = parseInt(document.getElementById("duration").value) || 0;
+
+function calculateEndDate(startId, durationId, endId, displayId) {
+  const startDate = document.getElementById(startId).value;
+  const duration = parseInt(document.getElementById(durationId).value);
 
   if (startDate && duration) {
     const start = new Date(startDate);
     start.setDate(start.getDate() + duration);
 
     const dd = String(start.getDate()).padStart(2, '0');
-    const mm = String(start.getMonth() + 1).padStart(2, '0'); // January is 0!
+    const mm = String(start.getMonth() + 1).padStart(2, '0');
     const yyyy = start.getFullYear();
+    const formatted = `${dd}/${mm}/${yyyy}`;
 
-    const formattedDate = `${dd}/${mm}/${yyyy}`;
-    document.getElementById("end_date").value = formattedDate;
-    document.getElementById("end_date_display").innerText = `(Ends on: ${formattedDate})`;
+    document.getElementById(endId).value = formatted;
+    document.getElementById(displayId).textContent = `(Ends on: ${formatted})`;
   } else {
-    document.getElementById("end_date").value = "";
-    document.getElementById("end_date_display").innerText = "(Ends on: DD/MM/YYYY)";
+    document.getElementById(endId).value = "";
+    document.getElementById(displayId).textContent = "(Ends on: DD/MM/YYYY)";
   }
 }
-
-
-    function InvoicecalculateEndDate() {
-      const startDate = document.getElementById('start_datee').value;
-      const duration = parseInt(document.getElementById('durationn').value);
-       if (startDate && duration) {
-    const start = new Date(startDate);
-    start.setDate(start.getDate() + duration);
-
-    const dd = String(start.getDate()).padStart(2, '0');
-    const mm = String(start.getMonth() + 1).padStart(2, '0'); // January is 0!
-    const yyyy = start.getFullYear();
-
-    const formattedDate = `${dd}/${mm}/${yyyy}`;
-    document.getElementById("end_datee").value = formattedDate;
-    document.getElementById("end_date_displayy").innerText = `(Ends on: ${formattedDate})`;
-  } else {
-    document.getElementById("end_datee").value = "";
-    document.getElementById("end_date_displayy").innerText = "(Ends on: DD/MM/YYYY)";
-  }
-    }
 
     function openForm1() {
       document.getElementById('form1').style.display = 'flex';
@@ -1271,7 +1240,8 @@ label {
 
       fetch('/save-entry', {
         method: 'POST',
-        body: new URLSearchParams(formData)
+        // body: new URLSearchParams(formData)
+        body: formData
       }).then(res => res.json())
         .then(data => {
           if (data.id) {
@@ -1284,16 +1254,8 @@ label {
             const email = formData.get("email");
             const type = formData.get("type");
 
-          //   document.getElementById('previewInfo').innerHTML = `
-          //   <p><strong>Company:</strong> ${company}</p>
-          //   <p><strong>POC:</strong> ${poc}</p>
-          //   <p><strong>Mobile:</strong> ${mobile}</p>
-          //   <p><strong>City:</strong> ${city}</p>
-          //   <p><strong>Email:</strong> ${email}</p>
-          // `;
-
             const form2 = document.getElementById('fullForm');
-            form2.company.value = company;
+            form2.name.value = company;
             // form2.poc.value = poc;
             form2.mobile.value = mobile;
             form2.city.value = city;
@@ -1321,7 +1283,8 @@ label {
 
       fetch('/save-entry', {
         method: 'POST',
-        body: new URLSearchParams(formData)
+        // body: new URLSearchParams(formData)
+        body: formData
       }).then(res => {
         if (res.ok) {
           alert('Saved action successfully!');
@@ -1332,31 +1295,78 @@ label {
       });
     });
 
-    const inputs = document.querySelectorAll('.screen, .rate, .plan');
 
-    inputs.forEach(input => {
-      input.addEventListener('input', () => {
-        const type = input.dataset.type;
-        const screens = document.querySelector(`.screen[data-type="${type}"]`).value;
-        const rate = document.querySelector(`.rate[data-type="${type}"]`).value;
-        const plan = document.querySelector(`.plan[data-type="${type}"]`).value;
 
-        const screensVal = parseFloat(screens) || 0;
-        const rateVal = parseFloat(rate) || 0;
-        const planVal = parseFloat(plan) || 0;
+    
+    // const inputs = document.querySelectorAll('.screen, .rate, .plan');
 
-        let total = 0;
+    // inputs.forEach(input => {
+    //   input.addEventListener('input', () => {
+    //     const type = input.dataset.type;
+    //     const screens = document.querySelector(`.screen[data-type="${type}"]`).value;
+    //     const rate = document.querySelector(`.rate[data-type="${type}"]`).value;
+    //     const plan = document.querySelector(`.plan[data-type="${type}"]`).value;
 
-        if (screensVal > 0 && rateVal > 0 && planVal > 0) {
-          const totalCost = screensVal * rateVal;
-          const costPer30Days = (totalCost / planVal) * 30;
-          total = costPer30Days.toFixed(2);
-        }
+    //     const screensVal = parseFloat(screens) || 0;
+    //     const rateVal = parseFloat(rate) || 0;
+    //     const planVal = parseFloat(plan) || 0;
 
-        document.getElementById(`${type}_result`).textContent = `₹${total}`;
-      });
+    //     let total = 0;
+
+    //     if (screensVal > 0 && rateVal > 0 && planVal > 0) {
+    //       const totalCost = screensVal * rateVal;
+    //       const costPer30Days = (totalCost / planVal) * 30;
+    //       total = costPer30Days.toFixed(2);
+    //     }
+
+    //     document.getElementById(`${type}_result`).textContent = `₹${total}`;
+    //   });
+    // });
+
+    
+      function calculateAmount(sectionId) {
+    const section = document.querySelector(sectionId);
+    if (!section) return;
+
+    let totalAmount = 0;
+
+    ['r', 'c', 'o'].forEach(type => {
+      const screenInput = section.querySelector(`input.screen[data-type="${type}"]`);
+      const rateInput = section.querySelector(`input.rate[data-type="${type}"]`);
+      const durationInput = section.querySelector('input[name$="duration"]');
+      const resultSpan = section.querySelector(`#${type}_result`);
+
+      const screens = parseFloat(screenInput?.value) || 0;
+      const rate = parseFloat(rateInput?.value) || 0;
+      const days = parseFloat(durationInput?.value) || 0;
+
+      const result = screens * (rate / 30) * days;
+      if (resultSpan) resultSpan.innerText = `₹${result.toFixed(2)}`;
+
+      totalAmount += result;
     });
 
+    // Update total
+    const totalDisplay = section.querySelector(`#total_amount`);
+    if (totalDisplay) {
+      totalDisplay.innerText = `₹${totalAmount.toFixed(2)}`;
+    }
+  }
+
+  // Hook events
+  document.addEventListener('input', function (e) {
+    if (
+      e.target.matches('.screen') ||
+      e.target.matches('.rate') ||
+      e.target.matches('[name="duration"]') ||
+      e.target.matches('[name="t_duration"]')
+    ) {
+      calculateAmount('#offerFields');
+      calculateAmount('#taxInvoiceFields');
+    }
+  });
+    
+    
     document.querySelectorAll('.component-block').forEach(block => {
       const rows = block.querySelectorAll('.form-row');
 
@@ -1382,7 +1392,125 @@ label {
       });
     });
 
+
+
+      function formatLocalDate(dateString) {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+
+        // Convert to local date string
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+
+        return `${year}-${month}-${day}`; // "YYYY-MM-DD"
+      }
+
+
+
+
+     document.addEventListener("DOMContentLoaded", () => {
+    const editButtons = document.querySelectorAll(".edit-btn");
+
+    editButtons.forEach((btn) => {
+      btn.addEventListener("click", async (e) => {
+        const entryId = btn.getAttribute("data-id");
+        console.log("entryId",entryId);
+        
+        try {
+          const response = await fetch(`/get-entry/${entryId}`);
+          if (!response.ok) throw new Error("Entry not found");
+
+          const data = await response.json();
+
+          // Fill form2 with the fetched data
+          document.querySelector('#form2 input[name="entry_id"]').value = entryId;
+          document.querySelector('#form2 input[name="name"]').value = data.name || "";
+          // document.querySelector('#form2 input[name="poc"]').value = data.poc_name || "";
+          document.querySelector('#form2 input[name="mobile"]').value = data.mobile_number || "";
+          document.querySelector('#form2 input[name="city"]').value = data.city || "";
+          document.querySelector('#form2 input[name="email"]').value = data.email || "";
+          document.querySelector('#form2 select[name="type"]').value = data.customer_type || "";
+          document.querySelector('#form2 select[name="action"]').value = data.action_type || "";
+
+          handleActionChange(data.action_type || "");
+
+
+          document.querySelector('#form2 input[name="email_subject"]').value = data.email_sub || "";
+          document.querySelector('#form2 textarea[name="email_body"]').value = data.email_body || "";
+          document.querySelector('#form2 input[name="followup_email_sub"]').value = data.followup_email_sub || "";
+          document.querySelector('#form2 textarea[name="followup_email_body"]').value = data.followup_email_body || "";
+          document.querySelector('#form2 input[name="start_date"]').value = data.start_date || "";
+          document.querySelector('#form2 input[name="end_date"]').value = data.end_date || "";
+          document.querySelector('#form2 input[name="duration"]').value = data.duration || "";
+          document.querySelector('#form2 input[name="residential_screen"]').value = data.residential_screen || "";
+          document.querySelector('#form2 input[name="r_per_screen"]').value = data.r_per_screen || "";
+          document.querySelector('#form2 select[name="r_plan"]').value = data.r_plan || "";
+          document.querySelector('#form2 input[name="corporate_screen"]').value = data.corporate_screen || "";
+          document.querySelector('#form2 input[name="c_per_screen"]').value = data.c_per_screen || "";
+          document.querySelector('#form2 select[name="c_plan"]').value = data.c_plan || "";
+          document.querySelector('#form2 input[name="outdoor_screen"]').value = data.outdoor_screen || "";
+          document.querySelector('#form2 input[name="o_per_screen"]').value = data.o_per_screen || "";
+          document.querySelector('#form2 select[name="o_plan"]').value = data.o_plan || "";
+          document.querySelector('#form2 textarea[name="note"]').value = data.note || "";
+          document.querySelector('#form2 input[name="amount"]').value = data.amount || "";
+          document.querySelector('#form2 input[name="invoice_no"]').value = data.invoice_no || "";
+          // document.querySelector('#form2 input[name="invoice_date"]').value = data.invoice_date || "";
+          document.querySelector('#form2 input[name="po_no"]').value = data.po_no || "";
+          // document.querySelector('#form2 input[name="po_date"]').value = data.po_date || ""; 
+          document.querySelector('#form2 input[name="ack_no"]').value = data.ack_no || "";
+          // document.querySelector('#form2 input[name="ack_date"]').value = data.ack_date || "";
+          document.querySelector('input[name="invoice_date"]').value = formatLocalDate(data.invoice_date);
+          document.querySelector('input[name="po_date"]').value = formatLocalDate(data.po_date);
+          document.querySelector('input[name="ack_date"]').value = formatLocalDate(data.ack_date);
+          // console.log("ack_date",data.ack_date || "");
+          // console.log("po_date",data.po_date || "");
+          // console.log("invoice_date",data.invoice_date || "");
+          document.querySelector('#form2 input[name="place_of_supply"]').value = data.place_of_supply || "";
+          document.querySelector('#form2 input[name="payment_terms"]').value = data.payment_terms || "";
+          document.querySelector('#form2 input[name="irn"]').value = data.irn || "";
+          document.querySelector('#form2 input[name="spoc"]').value = data.spoc || "";
+          document.querySelector('#form2 textarea[name="billing_address"]').value = data.billing_address || "";
+          document.querySelector('#form2 input[name="t_start_date"]').value = data.t_start_date || "";
+          // console.log("t_start_date",data.t_start_date || "");
+          document.querySelector('#form2 input[name="end_date"]').value = data.end_date || "";
+          document.querySelector('#form2 input[name="t_duration"]').value = data.t_duration || "";
+          document.querySelector('#form2 input[name="t_end_date"]').value = data.t_end_date || "";
+          document.querySelector('#form2 input[name="t_residential_screen"]').value = data.t_residential_screen || "";
+          document.querySelector('#form2 input[name="t_r_per_screen"]').value = data.t_r_per_screen || "";
+          document.querySelector('#form2 select[name="t_r_plan"]').value = data.t_r_plan || "";
+          document.querySelector('#form2 input[name="t_corporate_screen"]').value = data.t_corporate_screen || "";
+          document.querySelector('#form2 input[name="t_c_per_screen"]').value = data.t_c_per_screen || "";
+          document.querySelector('#form2 select[name="t_c_plan"]').value = data.t_c_plan || "";
+          document.querySelector('#form2 input[name="t_outdoor_screen"]').value = data.t_outdoor_screen || "";
+          document.querySelector('#form2 input[name="t_o_per_screen"]').value = data.t_o_per_screen || "";
+          document.querySelector('#form2 select[name="t_o_plan"]').value = data.t_o_plan || "";
+          document.querySelector('#form2 textarea[name="t_note"]').value = data.t_note || "";
+          // In your JS:
+          if (data.confirmation_pdf) {
+            document.getElementById("existing-confirmation-file").innerHTML =
+            `<a href="${data.confirmation_pdf}" target="_blank">View existing file</a>`;
+          } else {
+            document.getElementById("existing-confirmation-file").innerHTML = "No file uploaded";
+          }
+          
+          // document.querySelector('#form2 input[name="confirmation_pdf"]').value = data.confirmation_pdf || "";
+          // Clear the file input (this is allowed):
+          document.querySelector('#form2 input[name="confirmation_file"]').value = "";
+          // Show the modal
+          document.getElementById("form2").style.display = "flex";
+        } catch (err) {
+          console.error("Error fetching entry:", err);
+          alert("Failed to load entry data.");
+        }
+      });
+    });
+  });
+
+
+
   </script>
+
 
 
 
