@@ -945,7 +945,7 @@ label {
         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         <path d="M14 2v6h6" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-      <span>PO2561256.PDF</span>
+      <span id="confirmation_filename">No File Selected</span>
     </div>
 <div id="existing-confirmation-file"></div>
 
@@ -956,12 +956,14 @@ label {
     </div>
 
     <script>
-      document.getElementById('confirmation_file').addEventListener('change', function () {
-        const file = this.files[0];
-        if (file) {
-          document.querySelector('.uploaded-file span').textContent = file.name;
-        }
-      });
+       // Handle file input change
+  document.getElementById('confirmation_file').addEventListener('change', function () {
+    const file = this.files[0];
+    if (file) {
+      document.querySelector('.uploaded-file span').textContent = file.name;
+    }
+ 
+  });
     </script>
 
 
@@ -1486,17 +1488,22 @@ function calculateEndDate(startId, durationId, endId, displayId) {
           document.querySelector('#form2 input[name="t_o_per_screen"]').value = data.t_o_per_screen || "";
           document.querySelector('#form2 select[name="t_o_plan"]').value = data.t_o_plan || "";
           document.querySelector('#form2 textarea[name="t_note"]').value = data.t_note || "";
-          // In your JS:
-          if (data.confirmation_pdf) {
-            document.getElementById("existing-confirmation-file").innerHTML =
-            `<a href="${data.confirmation_pdf}" target="_blank">View existing file</a>`;
-          } else {
-            document.getElementById("existing-confirmation-file").innerHTML = "No file uploaded";
-          }
-          
-          // document.querySelector('#form2 input[name="confirmation_pdf"]').value = data.confirmation_pdf || "";
-          // Clear the file input (this is allowed):
-          document.querySelector('#form2 input[name="confirmation_file"]').value = "";
+              // Show initial file info if present
+  if (data.confirmation_pdf) {
+    document.getElementById("confirmation_filename").textContent = data.confirmation_pdf;
+  }
+        if (data.confirmation_link && data.confirmation_link_download) {
+  document.getElementById("existing-confirmation-file").innerHTML = `
+    <a href="${data.confirmation_link}" target="_blank">View</a> |
+    <a href="${data.confirmation_link_download}" download>Download</a>
+  `;
+} else {
+  document.getElementById("existing-confirmation-file").innerHTML = "No file uploaded";
+}
+
+// Clear file input
+document.querySelector('#form2 input[name="confirmation_file"]').value = "";
+
           // Show the modal
           document.getElementById("form2").style.display = "flex";
         } catch (err) {
