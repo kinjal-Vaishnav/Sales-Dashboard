@@ -3,7 +3,7 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const pool = require('./db');
 const app = express();
-
+const bcrypt = require('bcrypt');
 const multer = require('multer');
 const path = require('path');
 
@@ -20,9 +20,8 @@ const upload = multer({
     } else {
       cb(new Error('Only PDF files are allowed!'), false);
     }
-  }
-});
-
+  }                                                   
+});                                                                     
 
 
 app.set('view engine', 'ejs');
@@ -38,14 +37,91 @@ app.use(session({
   saveUninitialized: true  
 }));                                                                  
 
-// Fake login session                                                                                                                                            
-app.use((req, res, next) => {
-  req.session.user = { emp_id: 'emp_81', name: 'Hardik Prajapati' };              
-  next();                       
-});                                                                                                                           
+// Fake login session                                                                                                                                                                         
+// app.use((req, res, next) => {                                                                            
+//   req.session.user = { emp_id: 'emp_81', name: 'Hardik Prajapati' };         
+//   next();                        
+// });  
 
-app.get('/', async (req, res) => {                                                        
-  const user = req.session.user;
+
+
+
+
+
+app.get('/register', (req, res) => {
+  res.render('register');
+});
+
+app.post('/register', async (req, res) => {
+  const { name, email, password, role, pass_kay } = req.body;
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await pool.query(
+  `INSERT INTO public."User1s" 
+   (name, email, password, role, pass_kay, "createdAt", "updatedAt") 
+   VALUES ($1, $2, $3, $4, $5, NOW(), NOW())`,
+  [name, email, hashedPassword, role, pass_kay]
+);
+    res.send('User registered with pass_kay successfully!');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error registering user.');
+  }
+});
+
+                                                                               
+                                                                     
+// GET login form                                                                                                                   
+app.get('/', (req, res) => {
+  res.render('login', { error: null });
+});
+
+// POST login logic
+app.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const result = await pool.query(`SELECT * FROM "User1s" WHERE email = $1`, [email]);
+
+    if (result.rows.length === 0) {
+      return res.render('login', { error: "Invalid email or password." });
+    }
+
+    const user = result.rows[0];
+    const match = await bcrypt.compare(password, user.password);
+
+    if (!match) {
+      return res.render('login', { error: "Invalid email or password." });
+    }
+
+    // ✅ Save user in session after successful login
+    req.session.user = {
+      id: user.id,
+      name: user.name,
+      emp_id: user.emp_id || `emp_${user.id}`,  // Optional fallback        
+      email: user.email
+    };
+
+    res.redirect('/dashboard');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
+  }
+});
+
+
+
+
+
+
+
+
+app.get('/dashboard', async (req, res) => {  
+
+   const user = req.session.user;
+   if (!user) return res.redirect('/login');
+  
+
   try {
     const result = await pool.query(`
       SELECT 
@@ -94,7 +170,7 @@ app.post('/save-entry', upload.single('confirmation_pdf'), async (req, res) => {
     GST_No, pan_No, Website
   } = req.body;
 
-  const owner = req.session.user.name;
+  // const owner = req.session.user.name;                                       
   const confirmation_pdf = req.file ? req.file.filename : null;
 
   try {
@@ -127,7 +203,7 @@ app.post('/save-entry', upload.single('confirmation_pdf'), async (req, res) => {
           corporate_screen = $12,
           c_per_screen = $13,
           c_plan = $14,
-          outdur_screen = $15,
+          outdoor_screen = $15,
           o_per_screen = $16,
           o_plan = $17,
           note = $18,
@@ -176,7 +252,7 @@ app.post('/save-entry', upload.single('confirmation_pdf'), async (req, res) => {
 });  
 
 
-// test 
+// test                                                                 
 
 
 // Route to handle updating an existing entry
@@ -200,7 +276,7 @@ try {
       account_owner = $1, name = $2, poc_name = $3, mobile_number = $4, city = $5, email = $6, customer_type = $7,
       action_type = $8, email_sub = $9, email_body = $10, followup_email_sub = $11, followup_email_body = $12,
       start_date = $13, total_value = $14, residential_screen = $15, r_per_screen = $16, r_plan = $17,
-      corporate_screen = $18, c_per_screen = $19, c_plan = $20, outdur_screen = $21, o_per_screen = $22, o_plan = $23,
+      corporate_screen = $18, c_per_screen = $19, c_plan = $20, outdoor_screen = $21, o_per_screen = $22, o_plan = $23,
       note = $24, invoice_no = $25, invoice_date = $26, amount = $27, end_date = $28, confirmation_pdf = $29,
       po_no = $30, po_date = $31, gst_no = $32, pan_no = $33, website = $34, place_of_supply = $35, payment_terms = $36,
       ack_no = $37, ack_date = $38, irn = $39, spoc = $40, billing_address = $41
@@ -307,7 +383,7 @@ app.post('/enquiry-inline/:id', async (req, res) => {
 
 
 
-
+                                                                          
 
 app.listen(3000, () => console.log('Server running on http://localhost:3000'));                                                                                                                                                                                                  
       
