@@ -921,38 +921,40 @@ label {
           </div> -->
     
     <div id="closedWonFields" style="display: none;">
-  <div class="form-group">
-    <label for="amount">*Amount:</label>
-    <input type="number" id="amount" name="amount" placeholder="₹5,00,000.00" />
-  </div>
-
-  <div class="form-group">
-    <label for="confirmation_pdf">*Purchase Order/Email Confirmation:</label>
-
-    <label for="confirmation_file" class="upload-box">
-      <svg xmlns="http://www.w3.org/2000/svg" class="upload-icon" viewBox="0 0 24 24" fill="none">
-        <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke="#1D4ED8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M7 9l5-5 5 5" stroke="#1D4ED8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M12 4v12" stroke="#1D4ED8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      <span style="color: #0D6EFD;">Click To Upload</span>
-    </label>
-    <input type="file" id="confirmation_file" name="confirmation_file" accept=".pdf,image/*" hidden />
-
-
-    <div class="uploaded-file">
-      <svg xmlns="http://www.w3.org/2000/svg" class="file-icon" viewBox="0 0 24 24" fill="none">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M14 2v6h6" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      <span id="confirmation_filename">No File Selected</span>
-    </div>
-<div id="existing-confirmation-file"></div>
-
-    <p class="hint-text">
-      If the PDF of the PO is not avail, please upload a screenshot of email confirmation
-    </p>
-  </div>
+      <div class="form-group">
+        <label for="amount">*Amount:</label>
+        <input type="number" id="amount" name="amount" placeholder="₹5,00,000.00" />
+      </div>
+    
+      <div class="form-group">
+        <label for="confirmation_pdf">*Purchase Order/Email Confirmation:</label>
+    
+        <label for="confirmation_file" class="upload-box">
+          <svg xmlns="http://www.w3.org/2000/svg" class="upload-icon" viewBox="0 0 24 24" fill="none">
+            <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke="#1D4ED8" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
+            <path d="M7 9l5-5 5 5" stroke="#1D4ED8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M12 4v12" stroke="#1D4ED8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <span style="color: #0D6EFD;">Click To Upload</span>
+        </label>
+        <input type="file" id="confirmation_file" name="confirmation_file" accept=".pdf,image/*" hidden />
+    
+    
+        <div class="uploaded-file">
+          <svg xmlns="http://www.w3.org/2000/svg" class="file-icon" viewBox="0 0 24 24" fill="none">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="#6B7280" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M14 2v6h6" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <span id="confirmation_filename">No File Selected</span>
+        </div>
+        <div id="existing-confirmation-file"></div>
+    
+        <p class="hint-text">
+          If the PDF of the PO is not avail, please upload a screenshot of email confirmation
+        </p>
+      </div>
     </div>
 
     <script>
@@ -1447,13 +1449,17 @@ function calculateEndDate(startId, durationId, endId, displayId) {
           document.querySelector('#form2 input[name="duration"]').value = data.duration || "";
           document.querySelector('#form2 input[name="residential_screen"]').value = data.residential_screen || "";
           document.querySelector('#form2 input[name="r_per_screen"]').value = data.r_per_screen || "";
-          document.querySelector('#form2 select[name="r_plan"]').value = data.r_plan || "";
+          document.querySelector('#form2 select[name="r_plan"]').value = (data.r_plan || "720").trim();
           document.querySelector('#form2 input[name="corporate_screen"]').value = data.corporate_screen || "";
           document.querySelector('#form2 input[name="c_per_screen"]').value = data.c_per_screen || "";
-          document.querySelector('#form2 select[name="c_plan"]').value = data.c_plan || "";
+          document.querySelector('#form2 select[name="c_plan"]').value = (data.c_plan || "720").trim();
           document.querySelector('#form2 input[name="outdoor_screen"]').value = data.outdoor_screen || "";
           document.querySelector('#form2 input[name="o_per_screen"]').value = data.o_per_screen || "";
-          document.querySelector('#form2 select[name="o_plan"]').value = data.o_plan || "";
+          document.querySelector('#form2 select[name="o_plan"]').value = (data.o_plan || "720").trim();
+          // console.log("data.r_plan:", data.r_plan);   
+          // console.log("data.c_plan:", data.c_plan);
+          // console.log("data.o_plan:", data.o_plan);
+
           document.querySelector('#form2 textarea[name="note"]').value = data.note || "";
           document.querySelector('#form2 input[name="amount"]').value = data.amount || "";
           document.querySelector('#form2 input[name="invoice_no"]').value = data.invoice_no || "";
@@ -1480,13 +1486,17 @@ function calculateEndDate(startId, durationId, endId, displayId) {
           document.querySelector('#form2 input[name="t_end_date"]').value = data.t_end_date || "";
           document.querySelector('#form2 input[name="t_residential_screen"]').value = data.t_residential_screen || "";
           document.querySelector('#form2 input[name="t_r_per_screen"]').value = data.t_r_per_screen || "";
-          document.querySelector('#form2 select[name="t_r_plan"]').value = data.t_r_plan || "";
+          // document.querySelector('#form2 select[name="t_r_plan"]').value = data.t_r_plan || "";
+          document.querySelector('#form2 select[name="t_r_plan"]').value = (data.t_r_plan || "720").trim();
           document.querySelector('#form2 input[name="t_corporate_screen"]').value = data.t_corporate_screen || "";
           document.querySelector('#form2 input[name="t_c_per_screen"]').value = data.t_c_per_screen || "";
-          document.querySelector('#form2 select[name="t_c_plan"]').value = data.t_c_plan || "";
+          // document.querySelector('#form2 select[name="t_c_plan"]').value = data.t_c_plan || "";
+          document.querySelector('#form2 select[name="t_c_plan"]').value = (data.t_c_plan || "720").trim();
           document.querySelector('#form2 input[name="t_outdoor_screen"]').value = data.t_outdoor_screen || "";
           document.querySelector('#form2 input[name="t_o_per_screen"]').value = data.t_o_per_screen || "";
-          document.querySelector('#form2 select[name="t_o_plan"]').value = data.t_o_plan || "";
+          // document.querySelector('#form2 select[name="t_o_plan"]').value = data.t_o_plan || "";
+          document.querySelector('#form2 select[name="t_o_plan"]').value = (data.t_o_plan || "720").trim();
+
           document.querySelector('#form2 textarea[name="t_note"]').value = data.t_note || "";
               // Show initial file info if present
   if (data.confirmation_pdf) {
