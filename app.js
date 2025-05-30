@@ -6,25 +6,8 @@ const app = express();
 
 const multer = require('multer');
 const path = require('path');
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, 'uploads/'),  // Ensure 'uploads/' folder exists
-  filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`)
-});
-
-const upload = multer({ 
-  storage,
-  fileFilter: (req, file, cb) => {
-    if (file.mimetype === 'application/pdf') {
-      cb(null, true);
-    } else {
-      cb(new Error('Only PDF files are allowed!'), false);
-    }
-  }
-});
-
-
-
+const bcrypt = require('bcrypt');
+const { google } = require('googleapis');
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -174,7 +157,7 @@ const serviceAccount = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT);
 const auth = new google.auth.GoogleAuth({
   credentials: serviceAccount,
   projectId: serviceAccount.project_id,
-  scopes: ['https://www.googleapis.com/auth/drive'],
+  scopes: ['https://www.googleapis.com/auth/drive'],               
 });
 const drive = google.drive({ version: 'v3', auth });
 
@@ -237,10 +220,10 @@ app.post('/save-entry', upload.single('confirmation_file'), async (req, res) => 
     ack_no, ack_date, irn, spoc, billing_address,
     GST_No, pan_No, Website, t_start_date, t_duration, t_end_date,
     t_residential_screen, t_r_per_screen, t_r_plan, t_corporate_screen,
-    t_c_per_screen, t_c_plan, t_outdoor_screen, t_o_per_screen, t_o_plan, t_note
+    t_c_per_screen, t_c_plan, t_outdoor_screen, t_o_per_screen, t_o_plan, t_note,confirmation_link,confirmation_link_download
   } = req.body;
 
-  const owner = req.session.user.name;
+  // const owner = req.session.user.name;
   const confirmation_pdf = req.file ? req.file.filename : null;
 
   try {
@@ -392,7 +375,7 @@ try {
 }
 });
 
-                                 
+                                  
 app.get('/get-entry/:id', async (req, res) => {
   const entryId = req.params.id;
   console.log("Received entryId:", entryId);  // Add a log to check
