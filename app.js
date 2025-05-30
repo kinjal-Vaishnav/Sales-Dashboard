@@ -81,7 +81,7 @@ const normalizeDate = (value) => {
 
 app.post('/save-entry', upload.single('confirmation_pdf'), async (req, res) => {
   const {
-    company, poc, mobile, city, email, type,
+    name, poc, mobile, city, email, type,
     email_subject, email_body,
     followup_email_sub, followup_email_body,
     action, entry_id, start_date, duration, end_date,
@@ -105,7 +105,7 @@ app.post('/save-entry', upload.single('confirmation_pdf'), async (req, res) => {
           city, email, customer_type
         ) VALUES ($1, $2, $3, $4, $5, $6, $7)
         RETURNING id
-      `, [owner, company, poc, mobile, city, email, type]);
+      `, [owner, name, poc, mobile, city, email, type]);
 
       res.json({ id: result.rows[0].id });
 
@@ -226,7 +226,7 @@ try {
 }
 });
 
-
+                                 
 app.get('/get-entry/:id', async (req, res) => {
   const entryId = req.params.id;
   console.log("Received entryId:", entryId);  // Add a log to check
@@ -290,14 +290,14 @@ app.post('/enquiry-inline/:id', async (req, res) => {
   const lastModifiedBy = req.session.user?.name || 'Unknown';
   updates.push(`last_modified_by = $${values.length + 1}`);
   values.push(lastModifiedBy);
-
   values.push(id);
 
   if (updates.length === 0) return res.status(400).send("No data to update");
 
   try {
     await pool.query(`UPDATE sales_enquiry SET ${updates.join(', ')} WHERE id = $${values.length}`, values);
-    res.status(200).json({ message: "Successfully updated" });
+    // res.status(200).json({ message: "Successfully updated" });
+    res.redirect(`/enquiry/${id}`)
   } catch (err) {
     console.error('Inline Update Error:', err);
     res.status(500).send("Update failed");
