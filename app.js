@@ -334,15 +334,6 @@ app.get('/get-entry/:id', async (req, res) => {
 });
 
 
-
-
-
-
-
-
-
-
-
 app.get('/enquiry/:id', async (req, res) => {
   const id = req.params.id;
   try {
@@ -356,6 +347,7 @@ app.get('/enquiry/:id', async (req, res) => {
     res.status(500).send("Server error");
   }
 });
+
 app.post('/enquiry-inline/:id', async (req, res) => {
   const id = req.params.id;
   const fields = [
@@ -391,6 +383,53 @@ app.post('/enquiry-inline/:id', async (req, res) => {
   } catch (err) {
     console.error('Inline Update Error:', err);
     res.status(500).send("Update failed");
+  }
+});
+
+
+
+
+
+
+
+
+
+
+// admin routes
+
+app.get('/admin-dashboard', async (req, res) => {                                                        
+  const user = req.session.user;
+  try {
+    const result = await pool.query(`
+      SELECT 
+        id,
+        name,
+        city,
+        action_type,
+        mobile_number,
+        customer_type,
+        account_owner,
+        po_no,
+        ack_no,
+        billing_address,
+        spoc
+        /* …any other fields you want to edit… */
+      FROM sales_enquiry
+      where account_owner IS NOT NULL
+      order by id desc
+    `);
+    let enquiries = result.rows;
+    const uniqueCities = [...new Set(enquiries.map(e => e.city).filter(Boolean))];
+const uniqueEmployees = [...new Set(enquiries.map(e => e.account_owner).filter(Boolean))];
+    res.render('adminDashboard', {
+      user,
+      enquiries: result.rows,
+      uniqueCities,
+      uniqueEmployees
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
   }
 });
 
