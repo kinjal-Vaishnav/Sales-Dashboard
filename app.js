@@ -159,6 +159,7 @@ let confirmation_link_download=null;
         req.file.originalname,
         req.file.mimetype
       );
+      
       confirmation_pdf = fileName;
       confirmation_link = previewLink || null;
       confirmation_link_download=downloadLink || null;
