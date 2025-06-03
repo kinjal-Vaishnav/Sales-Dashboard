@@ -732,7 +732,9 @@ label {
           <hr class="form-underline">
           <p class="required-note"><span class="required-star">*</span> = Required Information</p>
     
-         
+          <!-- <h3>Next Action</h3> -->
+          <!-- <label>Account Owner</label>
+              <input type="text" value="<%= user.name %>" disabled> -->
           <div class="row" style="display: flex; justify-content: space-between;align-items: center;">
             <div class="half">
               <label>Account Owner</label>
@@ -910,49 +912,62 @@ label {
             </div>
           </div>
     
-         
+          <!-- <div id="closedWonFields" style="display:none;">
+            <label>*Amount:</label>
+            <input type="number" name="amount" />
+    
+            <label>*Purchase Order/Email Confirmation (PDF only):</label>
+            <input type="file" name="confirmation_pdf" accept="application/pdf" />
+          </div> -->
     
     <div id="closedWonFields" style="display: none;">
-  <div class="form-group">
-    <label for="amount">*Amount:</label>
-    <input type="number" id="amount" name="amount" placeholder="₹5,00,000.00" />
-  </div>
-
-  <div class="form-group">
-    <label for="confirmation_pdf">*Purchase Order/Email Confirmation:</label>
-
-    <label for="confirmation_pdf" class="upload-box">
-      <svg xmlns="http://www.w3.org/2000/svg" class="upload-icon" viewBox="0 0 24 24" fill="none">
-        <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke="#1D4ED8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M7 9l5-5 5 5" stroke="#1D4ED8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M12 4v12" stroke="#1D4ED8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      <span style="color: #0D6EFD;">Click To Upload</span>
-    </label>
-    <input type="file" id="confirmation_pdf" name="confirmation_pdf" accept="application/pdf" hidden />
-
-    <div class="uploaded-file">
-      <svg xmlns="http://www.w3.org/2000/svg" class="file-icon" viewBox="0 0 24 24" fill="none">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M14 2v6h6" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      <span>PO2561256.PDF</span>
-    </div>
-
-    <p class="hint-text">
-      If the PDF of the PO is not avail, please upload a screenshot of email confirmation
-    </p>
-  </div>
+      <div class="form-group">
+        <label for="amount">*Amount:</label>
+        <input type="number" id="amount" name="amount" placeholder="₹5,00,000.00" />
+      </div>
+    
+      <div class="form-group">
+        <label for="confirmation_pdf">*Purchase Order/Email Confirmation:</label>
+    
+        <label for="confirmation_file" class="upload-box">
+          <svg xmlns="http://www.w3.org/2000/svg" class="upload-icon" viewBox="0 0 24 24" fill="none">
+            <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke="#1D4ED8" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
+            <path d="M7 9l5-5 5 5" stroke="#1D4ED8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M12 4v12" stroke="#1D4ED8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <span style="color: #0D6EFD;">Click To Upload</span>
+        </label>
+        <input type="file" id="confirmation_file" name="confirmation_file" accept=".pdf,image/*" hidden />
+    
+    
+        <div class="uploaded-file">
+          <svg xmlns="http://www.w3.org/2000/svg" class="file-icon" viewBox="0 0 24 24" fill="none">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="#6B7280" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M14 2v6h6" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <span id="confirmation_filename">No File Selected</span>
+        </div>
+        <div id="existing-confirmation-file"></div>
+    
+        <p class="hint-text">
+          If the PDF of the PO is not avail, please upload a screenshot of email confirmation
+        </p>
+      </div>
     </div>
 
     <script>
-      document.getElementById('confirmation_pdf').addEventListener('change', function () {
-        const file = this.files[0];
-        if (file) {
-          document.querySelector('.uploaded-file span').textContent = file.name;
-        }
-      });
+       // Handle file input change
+  document.getElementById('confirmation_file').addEventListener('change', function () {
+    const file = this.files[0];
+    if (file) {
+      document.querySelector('.uploaded-file span').textContent = file.name;
+    }
+ 
+  });
     </script>
+
 
           <!-- Tax Invoice Fields -->
           <div id="taxInvoiceFields" style="display: none; margin-top: 20px;">
@@ -1083,9 +1098,9 @@ label {
                 <input type="text" value="10000" readonly />
               </div>
               <span class="result" id="c_result">₹0</span>
-            </div>                                                                     
+            </div>
           
-            <!-- <h4>Outdoor</h4> -->                                       
+            <!-- <h4>Outdoor</h4> -->
             <div class="row">
                <div class="half">
               <label>*No. of Outdoor Screens</label>
@@ -1114,20 +1129,7 @@ label {
             <div class="form-row">
               <textarea name="t_note" placeholder="Enter note..."></textarea>
             </div>
-          
-          
-          
-            <!-- You already have screen fields, just reuse here or conditionally show -->
           </div>
-    
-    
-          <!-- Hidden inputs -->
-          <!-- <input type="hidden" name="company">
-              <input type="hidden" name="poc">
-              <input type="hidden" name="mobile">
-              <input type="hidden" name="city">
-              <input type="hidden" name="email">
-              <input type="hidden" name="type"> -->
     
           <div class="form-actions">
             <button type="button" class="btn" onclick="closeAll()">Cancel</button>
@@ -1140,7 +1142,7 @@ label {
 
 
   </div>                                                                     
-  </div>                                                                    
+  </div>
 
 
   <script>
@@ -1528,6 +1530,6 @@ document.querySelector('#form2 input[name="confirmation_file"]').value = "";
 
 
 
-                                                                    
-</body>                                                         
-</html>
+
+</body>                                                                                              
+</html>                                                                                                                                                    

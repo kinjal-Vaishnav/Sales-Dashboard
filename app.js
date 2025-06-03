@@ -53,7 +53,7 @@ app.post('/register', async (req, res) => {
   }
 });
 
-                                                                               
+
                                                                      
 // GET login form                                                                                                                   
 app.get('/', (req, res) => {
@@ -96,14 +96,14 @@ app.post('/login', async (req, res) => {
 
 
 
-
-
+ 
+                                                                                  
 
 
 app.get('/dashboard', async (req, res) => {  
 
    const user = req.session.user;
-   if (!user) return res.redirect('/login');
+   if (!user) return res.redirect('/');
   
 
   try {
@@ -206,6 +206,7 @@ async function uploadToDrive(filePath, fileName, mimetype) {
 
 
 
+
 app.post('/save-entry', upload.single('confirmation_file'), async (req, res) => {
   const {
     name, poc, mobile, city, email, type,
@@ -220,13 +221,33 @@ app.post('/save-entry', upload.single('confirmation_file'), async (req, res) => 
     ack_no, ack_date, irn, spoc, billing_address,
     GST_No, pan_No, Website, t_start_date, t_duration, t_end_date,
     t_residential_screen, t_r_per_screen, t_r_plan, t_corporate_screen,
-    t_c_per_screen, t_c_plan, t_outdoor_screen, t_o_per_screen, t_o_plan, t_note,confirmation_link,confirmation_link_download
+    t_c_per_screen, t_c_plan, t_outdoor_screen, t_o_per_screen, t_o_plan, t_note, confirmation_link,confirmation_link_download
   } = req.body;
 
-  // const owner = req.session.user.name;
-  const confirmation_pdf = req.file ? req.file.filename : null;
+const owner = req.session.user?.name || 'Unknown';
+
+  let confirmation_pdf = null;
+  let file_link = null;
 
   try {
+
+      // Upload file to Drive if provided
+    if (req.file) {
+      const { previewLink, fileName, downloadLink } = await uploadToDrive(
+        req.file.path,
+        req.file.originalname,
+        req.file.mimetype
+      );
+      confirmation_pdf = fileName;
+      confirmation_link = previewLink;
+      confirmation_link_download=downloadLink;
+
+      console.log('confirmation_pdf',confirmation_pdf);
+      console.log('confirmation_link',confirmation_link);
+      
+      fs.unlinkSync(req.file.path); // remove local file after upload
+    }
+
     if (!entry_id) {
       const result = await pool.query(`
         INSERT INTO sales_enquiry (
@@ -325,6 +346,7 @@ app.post('/save-entry', upload.single('confirmation_file'), async (req, res) => 
 
 
 
+
 // test                                                                 
 
 
@@ -397,24 +419,38 @@ app.get('/get-entry/:id', async (req, res) => {
 
 
 
-
-
-
-
+   
 
 app.get('/enquiry/:id', async (req, res) => {
-  const id = req.params.id;
+ // add this line to check 
+  const user = req.session.user;
+  if (!user) return res.redirect('/');
+
+  const enquiryId = req.params.id;
+
   try {
-    const result = await pool.query('SELECT * FROM sales_enquiry WHERE id = $1', [id]);
-    if (result.rows.length === 0) {
-      return res.status(404).send("Not found");
+    // Fetch the enquiry
+    const enquiryResult = await pool.query('SELECT * FROM sales_enquiry WHERE id = $1', [enquiryId]);
+    if (enquiryResult.rows.length === 0) {
+      return res.status(404).send("Enquiry not found");
     }
-    res.render('edit-enquiry', { enquiry : result.rows[0] ,  enquiryList: result.rows});
+
+    // Fetch all SalesForce users except current user
+    const salesUsersResult = await pool.query(
+      `SELECT id, name FROM public."User1s" WHERE role = 'SalesForce' AND id != $1`,
+      [user.id]
+    );
+
+    res.render('edit-enquiry', {
+      enquiry: enquiryResult.rows[0],
+      salesUsers: salesUsersResult.rows
+    });
   } catch (err) {
     console.error('Error fetching enquiry:', err);
     res.status(500).send("Server error");
   }
 });
+
 app.post('/enquiry-inline/:id', async (req, res) => {
   const id = req.params.id;
   const fields = [
@@ -425,6 +461,7 @@ app.post('/enquiry-inline/:id', async (req, res) => {
 
   const updates = [];
   const values = [];
+
   const clean = val => Array.isArray(val) ? val.join(', ') : val;
 
   fields.forEach(field => {
@@ -435,18 +472,37 @@ app.post('/enquiry-inline/:id', async (req, res) => {
     }
   });
 
+  // 👇 NEW: Handle account_owner_id
+  if (req.body.account_owner_id) {
+    try {
+      const userResult = await pool.query(
+        'SELECT name FROM public."User1s" WHERE id = $1',
+        [req.body.account_owner_id]
+      );
+      if (userResult.rows.length > 0) {
+        const newOwnerName = userResult.rows[0].name;
+        updates.push(`account_owner = $${values.length + 1}`);
+        values.push(newOwnerName);
+      }
+    } catch (err) {
+      console.error('Failed to fetch new owner name:', err);
+      return res.status(500).send('Failed to transfer ownership');
+    }
+  }
+
   // Add last_modified_by from session
   const lastModifiedBy = req.session.user?.name || 'Unknown';
   updates.push(`last_modified_by = $${values.length + 1}`);
   values.push(lastModifiedBy);
+
+  // WHERE clause
   values.push(id);
 
   if (updates.length === 0) return res.status(400).send("No data to update");
 
   try {
     await pool.query(`UPDATE sales_enquiry SET ${updates.join(', ')} WHERE id = $${values.length}`, values);
-    // res.status(200).json({ message: "Successfully updated" });
-    res.redirect(`/enquiry/${id}`)
+    res.redirect(`/enquiry/${id}`);
   } catch (err) {
     console.error('Inline Update Error:', err);
     res.status(500).send("Update failed");
@@ -454,9 +510,9 @@ app.post('/enquiry-inline/:id', async (req, res) => {
 });
 
 
-
-
-                                                                          
+                                                                               
 
 app.listen(3000, () => console.log('Server running on http://localhost:3000'));                                                                                                                                                                                                  
       
+
+
