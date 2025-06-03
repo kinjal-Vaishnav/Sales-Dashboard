@@ -148,7 +148,8 @@ app.post('/save-entry', upload.single('confirmation_file'), async (req, res) => 
 
   let confirmation_pdf = null;
   let file_link = null;
-
+let confirmation_link=null;
+let confirmation_link_download=null;
   try {
 
       // Upload file to Drive if provided
@@ -159,8 +160,8 @@ app.post('/save-entry', upload.single('confirmation_file'), async (req, res) => 
         req.file.mimetype
       );
       confirmation_pdf = fileName;
-      confirmation_link = previewLink;
-      confirmation_link_download=downloadLink;
+      confirmation_link = previewLink || null;
+      confirmation_link_download=downloadLink || null;
 
       console.log('confirmation_pdf',confirmation_pdf);
       console.log('confirmation_link',confirmation_link);
@@ -189,7 +190,7 @@ app.post('/save-entry', upload.single('confirmation_file'), async (req, res) => 
           followup_email_sub = $4,
           followup_email_body = $5,
           start_date = $6,
-          total_value = $7,
+          duration = $7,
           end_date = $8,
           residential_screen = $9,
           r_per_screen = $10,
