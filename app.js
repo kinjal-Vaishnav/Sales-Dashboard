@@ -228,7 +228,8 @@ const owner = req.session.user?.name || 'Unknown';
 
   let confirmation_pdf = null;
   let file_link = null;
-
+let confirmation_link=null;
+let confirmation_link_download=null;
   try {
 
       // Upload file to Drive if provided
@@ -239,8 +240,8 @@ const owner = req.session.user?.name || 'Unknown';
         req.file.mimetype
       );
       confirmation_pdf = fileName;
-      confirmation_link = previewLink;
-      confirmation_link_download=downloadLink;
+      confirmation_link = previewLink || null;
+      confirmation_link_download=downloadLink || null;
 
       console.log('confirmation_pdf',confirmation_pdf);
       console.log('confirmation_link',confirmation_link);
@@ -269,7 +270,7 @@ const owner = req.session.user?.name || 'Unknown';
           followup_email_sub = $4,
           followup_email_body = $5,
           start_date = $6,
-          total_value = $7,
+          duration = $7,
           end_date = $8,
           residential_screen = $9,
           r_per_screen = $10,
@@ -419,7 +420,10 @@ app.get('/get-entry/:id', async (req, res) => {
 
 
 
-   
+
+
+
+
 
 app.get('/enquiry/:id', async (req, res) => {
  // add this line to check 
@@ -508,6 +512,8 @@ app.post('/enquiry-inline/:id', async (req, res) => {
     res.status(500).send("Update failed");
   }
 });
+
+
 
 
                                                                                
