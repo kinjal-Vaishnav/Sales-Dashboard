@@ -132,6 +132,7 @@ app.get('/dashboard', async (req, res) => {
         /* …any other fields you want to edit… */
       FROM sales_enquiry
       WHERE account_owner = $1 ORDER BY id DESC
+      WHERE account_owner = $1 order by id desc
     `, [user.name]);
     res.render('dashboard', {
       user,
@@ -230,10 +231,11 @@ app.post('/save-entry', upload.single('confirmation_file'), async (req, res) => 
     ack_no, ack_date, irn, spoc, billing_address,
     GST_No, pan_No, Website, t_start_date, t_duration, t_end_date,
     t_residential_screen, t_r_per_screen, t_r_plan, t_corporate_screen,
-    t_c_per_screen, t_c_plan, t_outdoor_screen, t_o_per_screen, t_o_plan, t_note
+    t_c_per_screen, t_c_plan, t_outdoor_screen, t_o_per_screen, t_o_plan, t_note, total_offer_amount
   } = req.body;
 
   const owner = req.session.user.name;
+console.log("total_offer_amount",total_offer_amount);
 
   let confirmation_pdf = null;
   let file_link = null;
@@ -249,6 +251,8 @@ let confirmation_link_download=null;
         req.file.mimetype
       );
       confirmation_pdf = fileName;         
+      
+      confirmation_pdf = fileName;
       confirmation_link = previewLink || null;
       confirmation_link_download=downloadLink || null;
 
@@ -321,8 +325,8 @@ let confirmation_link_download=null;
           t_o_plan = $46, 
           t_note = $47,
           confirmation_link = $48,
-          confirmation_link_download=$49
-        WHERE id = $50
+          confirmation_link_download=$49,total_offer_amount = $50
+        WHERE id = $51
       `, [
         action,
         email_subject, email_body,
@@ -339,7 +343,7 @@ let confirmation_link_download=null;
         irn, spoc, billing_address,
         GST_No, pan_No, Website,t_start_date, t_duration, t_end_date,
         t_residential_screen, t_r_per_screen, t_r_plan, t_corporate_screen, 
-        t_c_per_screen, t_c_plan, t_outdoor_screen, t_o_per_screen, t_o_plan, t_note,confirmation_link,confirmation_link_download,
+        t_c_per_screen, t_c_plan, t_outdoor_screen, t_o_per_screen, t_o_plan, t_note,confirmation_link,confirmation_link_download,total_offer_amount,
         entry_id
       ]);
 
