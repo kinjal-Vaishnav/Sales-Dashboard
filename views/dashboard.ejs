@@ -948,12 +948,12 @@
               <div class="half">
                 <label>Start Date:</label>
                 <input type="date" name="start_date" id="start_date"
-                  onchange="calculateEndDate('start_date','duration','end_date','end_date_display')" />
+                  onchange="calculateEndDate('start_date','duration','end_date','end_date_display')" oninput="calculateEndDate('start_date','duration','end_date','end_date_display')"  />
               </div>
               <div class="half">
                 <label>Duration (Days):</label>
                 <input type="number" style="margin-top: 10px;" name="duration" id="duration"
-                  onchange="calculateEndDate('start_date','duration','end_date','end_date_display')" />
+                  onchange="calculateEndDate('start_date','duration','end_date','end_date_display')" oninput="calculateEndDate('start_date','duration','end_date','end_date_display')"  />
                 <input type="text" name="end_date" id="end_date" readonly style="display: none;" />
                 <small id="end_date_display" style="color: red;">(Ends on: DD/MM/YYYY)</small>
               </div>
@@ -1037,6 +1037,7 @@
 
 
               <div><strong>Total Amount:</strong> <span id="total_amount">₹0</span></div>
+          <input type="hidden" name="total_offer_amount" id="total_amount_input" />
 
             </div>
 
@@ -1177,12 +1178,12 @@
               <div class="half">
                 <label>Start Date:</label>
                 <input type="date" name="t_start_date" id="start_datee"
-                  onchange="calculateEndDate('start_datee','durationn','end_datee','end_date_displayy')" />
+                  onchange="calculateEndDate('start_datee','durationn','end_datee','end_date_displayy')" oninput="calculateEndDate('start_datee','durationn','end_datee','end_date_displayy')"/>
               </div>
               <div class="half">
                 <label>Duration (Days):</label>
                 <input type="number" style="margin-top: 10px;" name="t_duration" id="durationn"
-                  onchange="calculateEndDate('start_datee','durationn','end_datee','end_date_displayy')" />
+                  onchange="calculateEndDate('start_datee','durationn','end_datee','end_date_displayy')" oninput="calculateEndDate('start_datee','durationn','end_datee','end_date_displayy')"/>
                 <input type="text" name="t_end_date" id="end_datee" readonly style="display: none;" />
                 <small id="end_date_displayy" style="color: red;">(Ends on: DD/MM/YYYY)</small>
               </div>
@@ -1343,26 +1344,36 @@
     }
 
 
-    function calculateEndDate(startId, durationId, endId, displayId) {
-      const startDate = document.getElementById(startId).value;
-      const duration = parseInt(document.getElementById(durationId).value);
+ function calculateEndDate(startId, durationId, endId, displayId) {
+  const startInput = document.getElementById(startId);
+  const durationInput = document.getElementById(durationId);
+  const endInput = document.getElementById(endId);
+  const display = document.getElementById(displayId);
 
-      if (startDate && duration) {
-        const start = new Date(startDate);
-        start.setDate(start.getDate() + duration);
+  if (!startInput || !durationInput || !endInput || !display) {
+    console.warn("One or more required inputs are missing.");
+    return;
+  }
 
-        const dd = String(start.getDate()).padStart(2, '0');
-        const mm = String(start.getMonth() + 1).padStart(2, '0');
-        const yyyy = start.getFullYear();
-        const formatted = `${dd}/${mm}/${yyyy}`;
+  const startDate = startInput.value;
+  const duration = parseInt(durationInput.value);
 
-        document.getElementById(endId).value = formatted;
-        document.getElementById(displayId).textContent = `(Ends on: ${formatted})`;
-      } else {
-        document.getElementById(endId).value = "";
-        document.getElementById(displayId).textContent = "(Ends on: DD/MM/YYYY)";
-      }
-    }
+  if (startDate && duration) {
+    const start = new Date(startDate);
+    start.setDate(start.getDate() + duration);
+
+    const dd = String(start.getDate()).padStart(2, '0');
+    const mm = String(start.getMonth() + 1).padStart(2, '0');
+    const yyyy = start.getFullYear();
+    const formatted = `${dd}/${mm}/${yyyy}`;
+
+    endInput.value = formatted;
+    display.textContent = `(Ends on: ${formatted})`;
+  } else {
+    endInput.value = "";
+    display.textContent = "(Ends on: DD/MM/YYYY)";
+  }
+}
 
     function openForm1() {
       document.getElementById('form1').style.display = 'flex';
@@ -1469,48 +1480,53 @@
     // });
 
 
-    function calculateAmount(sectionId) {
-      const section = document.querySelector(sectionId);
-      if (!section) return;
+  function calculateAmount(sectionId) {
+    const section = document.querySelector(sectionId);
+    if (!section) return;
 
-      let totalAmount = 0;
+    let totalAmount = 0;
 
-      ['r', 'c', 'o'].forEach(type => {
-        const screenInput = section.querySelector(`input.screen[data-type="${type}"]`);
-        const rateInput = section.querySelector(`input.rate[data-type="${type}"]`);
-        const durationInput = section.querySelector('input[name$="duration"]');
-        const resultSpan = section.querySelector(`#${type}_result`);
+    ['r', 'c', 'o'].forEach(type => {
+      const screenInput = section.querySelector(`input.screen[data-type="${type}"]`);
+      const rateInput = section.querySelector(`input.rate[data-type="${type}"]`);
+      const durationInput = section.querySelector('input[name$="duration"]');
+      const resultSpan = section.querySelector(`#${type}_result`);
 
-        const screens = parseFloat(screenInput?.value) || 0;
-        const rate = parseFloat(rateInput?.value) || 0;
-        const days = parseFloat(durationInput?.value) || 0;
+      const screens = parseFloat(screenInput?.value) || 0;
+      const rate = parseFloat(rateInput?.value) || 0;
+      const days = parseFloat(durationInput?.value) || 0;
 
-        const result = screens * (rate / 30) * days;
-        if (resultSpan) resultSpan.innerText = `₹${result.toFixed(2)}`;
+      const result = screens * (rate / 30) * days;
+      if (resultSpan) resultSpan.innerText = `₹${result.toFixed(2)}`;
 
-        totalAmount += result;
-      });
-
-      // Update total
-      const totalDisplay = section.querySelector(`#total_amount`);
-      if (totalDisplay) {
-        totalDisplay.innerText = `₹${totalAmount.toFixed(2)}`;
-      }
-    }
-
-    // Hook events
-    document.addEventListener('input', function (e) {
-      if (
-        e.target.matches('.screen') ||
-        e.target.matches('.rate') ||
-        e.target.matches('[name="duration"]') ||
-        e.target.matches('[name="t_duration"]')
-      ) {
-        calculateAmount('#offerFields');
-        calculateAmount('#taxInvoiceFields');
-      }
+      totalAmount += result;
     });
 
+    const totalDisplay = section.querySelector(`#total_amount`);
+    if (totalDisplay) {
+      totalDisplay.innerText = `₹${totalAmount.toFixed(2)}`;
+      document.getElementById("total_amount_input").value = totalAmount;
+    }
+  }
+
+  // Attach events on input fields
+  document.addEventListener('input', function (e) {
+    if (
+      e.target.matches('.screen') ||
+      e.target.matches('.rate') ||
+      e.target.matches('[name="duration"]') ||
+      e.target.matches('[name="t_duration"]')
+    ) {
+      calculateAmount('#offerFields');
+      calculateAmount('#taxInvoiceFields');
+    }
+  });
+
+  // Trigger on page load in case values are already filled (edit mode)
+  document.addEventListener("DOMContentLoaded", function () {
+    calculateAmount('#offerFields');
+    calculateAmount('#taxInvoiceFields');
+  });
 
     document.querySelectorAll('.component-block').forEach(block => {
       const rows = block.querySelectorAll('.form-row');
@@ -1597,6 +1613,9 @@
             document.querySelector('#form2 input[name="outdoor_screen"]').value = data.outdoor_screen || "";
             document.querySelector('#form2 input[name="o_per_screen"]').value = data.o_per_screen || "";
             document.querySelector('#form2 select[name="o_plan"]').value = (data.o_plan || "720").trim();
+            document.querySelector('#form2 input[name="total_offer_amount"]').value = data.total_offer_amount || "";
+         document.getElementById('total_amount').innerText = `₹${data.total_offer_amount || 0}`;
+
             // console.log("data.r_plan:", data.r_plan);   
             // console.log("data.c_plan:", data.c_plan);
             // console.log("data.o_plan:", data.o_plan);
@@ -1639,6 +1658,19 @@
             document.querySelector('#form2 select[name="t_o_plan"]').value = (data.t_o_plan || "720").trim();
 
             document.querySelector('#form2 textarea[name="t_note"]').value = data.t_note || "";
+              calculateAmount('#offerFields');
+      calculateAmount('#taxInvoiceFields');
+
+      console.log(
+  document.getElementById('start_date'),
+  document.getElementById('duration'),
+  document.getElementById('end_date'),
+  document.getElementById('end_date_display')
+);
+
+      calculateEndDate('start_date', 'duration', 'end_date', 'end_date_display');
+calculateEndDate('start_datee', 'durationn', 'end_datee', 'end_date_displayy');
+
             // Show initial file info if present
             if (data.confirmation_pdf) {
               document.getElementById("confirmation_filename").textContent = data.confirmation_pdf;
