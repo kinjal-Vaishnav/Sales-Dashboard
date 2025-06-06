@@ -43,7 +43,7 @@ app.get('/', async (req, res) => {
         spoc
         /* …any other fields you want to edit… */
       FROM sales_enquiry
-      WHERE account_owner = $1
+      WHERE account_owner = $1 order by id desc
     `, [user.name]);
     res.render('dashboard', {
       user,
@@ -141,14 +141,16 @@ app.post('/save-entry', upload.single('confirmation_file'), async (req, res) => 
     ack_no, ack_date, irn, spoc, billing_address,
     GST_No, pan_No, Website, t_start_date, t_duration, t_end_date,
     t_residential_screen, t_r_per_screen, t_r_plan, t_corporate_screen,
-    t_c_per_screen, t_c_plan, t_outdoor_screen, t_o_per_screen, t_o_plan, t_note
+    t_c_per_screen, t_c_plan, t_outdoor_screen, t_o_per_screen, t_o_plan, t_note, total_offer_amount
   } = req.body;
 
   const owner = req.session.user.name;
+console.log("total_offer_amount",total_offer_amount);
 
   let confirmation_pdf = null;
   let file_link = null;
-
+let confirmation_link=null;
+let confirmation_link_download=null;
   try {
 
       // Upload file to Drive if provided
@@ -158,9 +160,10 @@ app.post('/save-entry', upload.single('confirmation_file'), async (req, res) => 
         req.file.originalname,
         req.file.mimetype
       );
+      
       confirmation_pdf = fileName;
-      confirmation_link = previewLink;
-      confirmation_link_download=downloadLink;
+      confirmation_link = previewLink || null;
+      confirmation_link_download=downloadLink || null;
 
       console.log('confirmation_pdf',confirmation_pdf);
       console.log('confirmation_link',confirmation_link);
@@ -189,7 +192,7 @@ app.post('/save-entry', upload.single('confirmation_file'), async (req, res) => 
           followup_email_sub = $4,
           followup_email_body = $5,
           start_date = $6,
-          total_value = $7,
+          duration = $7,
           end_date = $8,
           residential_screen = $9,
           r_per_screen = $10,
@@ -231,8 +234,8 @@ app.post('/save-entry', upload.single('confirmation_file'), async (req, res) => 
           t_o_plan = $46, 
           t_note = $47,
           confirmation_link = $48,
-          confirmation_link_download=$49
-        WHERE id = $50
+          confirmation_link_download=$49,total_offer_amount = $50
+        WHERE id = $51
       `, [
         action,
         email_subject, email_body,
@@ -249,7 +252,7 @@ app.post('/save-entry', upload.single('confirmation_file'), async (req, res) => 
         irn, spoc, billing_address,
         GST_No, pan_No, Website,t_start_date, t_duration, t_end_date,
         t_residential_screen, t_r_per_screen, t_r_plan, t_corporate_screen, 
-        t_c_per_screen, t_c_plan, t_outdoor_screen, t_o_per_screen, t_o_plan, t_note,confirmation_link,confirmation_link_download,
+        t_c_per_screen, t_c_plan, t_outdoor_screen, t_o_per_screen, t_o_plan, t_note,confirmation_link,confirmation_link_download,total_offer_amount,
         entry_id
       ]);
 
@@ -334,15 +337,6 @@ app.get('/get-entry/:id', async (req, res) => {
 });
 
 
-
-
-
-
-
-
-
-
-
 app.get('/enquiry/:id', async (req, res) => {
   const id = req.params.id;
   try {
@@ -356,6 +350,7 @@ app.get('/enquiry/:id', async (req, res) => {
     res.status(500).send("Server error");
   }
 });
+
 app.post('/enquiry-inline/:id', async (req, res) => {
   const id = req.params.id;
   const fields = [
@@ -391,6 +386,53 @@ app.post('/enquiry-inline/:id', async (req, res) => {
   } catch (err) {
     console.error('Inline Update Error:', err);
     res.status(500).send("Update failed");
+  }
+});
+
+
+
+
+
+
+
+
+
+
+// admin routes
+
+app.get('/admin-dashboard', async (req, res) => {                                                        
+  const user = req.session.user;
+  try {
+    const result = await pool.query(`
+      SELECT 
+        id,
+        name,
+        city,
+        action_type,
+        mobile_number,
+        customer_type,
+        account_owner,
+        po_no,
+        ack_no,
+        billing_address,
+        spoc
+        /* …any other fields you want to edit… */
+      FROM sales_enquiry
+      where account_owner IS NOT NULL
+      order by id desc
+    `);
+    let enquiries = result.rows;
+    const uniqueCities = [...new Set(enquiries.map(e => e.city).filter(Boolean))];
+const uniqueEmployees = [...new Set(enquiries.map(e => e.account_owner).filter(Boolean))];
+    res.render('adminDashboard', {
+      user,
+      enquiries: result.rows,
+      uniqueCities,
+      uniqueEmployees
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
   }
 });
 
