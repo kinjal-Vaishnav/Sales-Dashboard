@@ -30,15 +30,24 @@ app.use(session({
 
 function ensureRole(allowedRoles) {
   return function (req, res, next) {
-    console.log("req.session.user.role",req.session.user.role);
-    
-    if (req.session && req.session.user && allowedRoles.includes(req.session.user.role)) {
-      return next();
+    if (req.session && req.session.user) {
+      const userRole = req.session.user.role?.trim(); // trim to remove spaces
+      console.log("Checking role against allowedRoles:", allowedRoles, "Current user role:", userRole);
+
+      if (userRole && allowedRoles.includes(userRole)) {
+        return next();
+      } else {
+        console.log("Access denied: Role not allowed");
+        return res.redirect('/');
+      }
     } else {
-      return res.redirect('/'); // or res.status(403).send('Forbidden') if API
+      console.log("Access denied: No user in session");
+      return res.redirect('/');
     }
   };
 }
+
+
 
 app.get('/register', (req, res) => {
   res.render('register', {
@@ -540,7 +549,59 @@ const uniqueEmployees = [...new Set(enquiries.map(e => e.account_owner).filter(B
 
 
 
+app.get('/adminenquiry/:id', async (req, res) => {
+  const id = req.params.id;
+  try {
+    const result = await pool.query('SELECT * FROM sales_enquiry WHERE id = $1', [id]);
+    if (result.rows.length === 0) {
+      return res.status(404).send("Not found");
+    }
+    res.render('admin-edit-enquiry', { enquiry : result.rows[0] ,  enquiryList: result.rows});
+  } catch (err) {
+    console.error('Error fetching enquiry:', err);
+    res.status(500).send("Server error");
+  }
+});
 
+
+
+app.post('/admin-enquiry-inline/:id', async (req, res) => {
+  const id = req.params.id;
+  const fields = [
+    'name', 'city', 'action_type', 'mobile_number', 'customer_type',
+    'email', 'gst_no', 'pan_no', 'website', 'billing_address',
+    'shipping_address'
+  ];
+
+  const updates = [];
+  const values = [];
+  const clean = val => Array.isArray(val) ? val.join(', ') : val;
+
+  fields.forEach(field => {
+    if (req.body[field] !== undefined) {
+      const cleanedValue = clean(req.body[field]);
+      updates.push(`${field} = $${values.length + 1}`);
+      values.push(cleanedValue);
+    }
+  });
+
+  // Add last_modified_by from session
+  const lastModifiedBy = req.session.user?.name || 'Unknown';
+  updates.push(`last_modified_by = $${values.length + 1}`);
+  values.push(lastModifiedBy);
+  values.push(id);
+
+  if (updates.length === 0) return res.status(400).send("No data to update");
+
+  try {
+    await pool.query(`UPDATE sales_enquiry SET ${updates.join(', ')} WHERE id = $${values.length}`, values);
+    // res.status(200).json({ message: "Successfully updated" });
+    res.redirect(`/adminenquiry/${id}`)
+  } catch (err) {
+    console.error('Inline Update Error:', err);
+    res.status(500).send("Update failed");
+  }
+});
 
 app.listen(3000, () => console.log('Server running on http://localhost:3000'));                                                                                                                                                                                                  
       
