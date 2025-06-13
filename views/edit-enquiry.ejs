@@ -375,7 +375,7 @@
             <path d="M2.44238 15.6152C3.79098 15.6154 4.88465 16.709 4.88477 18.0576C4.88477 19.4063 3.79105 20.4999 2.44238 20.5C1.09361 20.5 0 19.4064 0 18.0576C0.000117634 16.7089 1.09368 15.6152 2.44238 15.6152ZM10 15.6152C11.3487 15.6152 12.4423 16.7089 12.4424 18.0576C12.4424 19.4064 11.3488 20.5 10 20.5C8.65123 20.5 7.55762 19.4064 7.55762 18.0576C7.55773 16.7089 8.6513 15.6152 10 15.6152ZM17.5576 15.6152C18.9063 15.6152 19.9999 16.7089 20 18.0576C20 19.4064 18.9064 20.5 17.5576 20.5C16.2089 20.4999 15.1152 19.4063 15.1152 18.0576C15.1154 16.709 16.209 15.6154 17.5576 15.6152ZM2.44238 8.05762C3.79105 8.05773 4.88477 9.1513 4.88477 10.5C4.88477 11.8487 3.79105 12.9423 2.44238 12.9424C1.09361 12.9424 0 11.8488 0 10.5C1.28853e-07 9.15123 1.09361 8.05762 2.44238 8.05762ZM10 8.05762C11.3488 8.05762 12.4424 9.15123 12.4424 10.5C12.4424 11.8488 11.3488 12.9424 10 12.9424C8.65123 12.9424 7.55762 11.8488 7.55762 10.5C7.55762 9.15123 8.65123 8.05762 10 8.05762ZM17.5576 8.05762C18.9064 8.05762 20 9.15123 20 10.5C20 11.8488 18.9064 12.9424 17.5576 12.9424C16.2089 12.9423 15.1152 11.8487 15.1152 10.5C15.1152 9.1513 16.2089 8.05773 17.5576 8.05762ZM2.44238 0.5C3.79105 0.500117 4.88477 1.59368 4.88477 2.94238C4.88465 4.29098 3.79098 5.38465 2.44238 5.38477C1.09368 5.38477 0.000117376 4.29105 0 2.94238C0 1.59361 1.09361 0.5 2.44238 0.5ZM10 0.5C11.3488 0.5 12.4424 1.59361 12.4424 2.94238C12.4423 4.29105 11.3487 5.38477 10 5.38477C8.6513 5.38477 7.55773 4.29105 7.55762 2.94238C7.55762 1.59361 8.65123 0.5 10 0.5ZM17.5576 0.5C18.9064 0.5 20 1.59361 20 2.94238C19.9999 4.29105 18.9063 5.38477 17.5576 5.38477C16.209 5.38465 15.1154 4.29098 15.1152 2.94238C15.1152 1.59368 16.2089 0.500118 17.5576 0.5Z" fill="#ABABAB"/>
         </svg>
             
-      <a style="font-size: 18px;font-weight: 700;  margin-left: 30px;" >Sales</a>
+      <a href="/dashboard" style="font-size: 18px;font-weight: 700;  margin-left: 30px;" >Sales</a>
       <a href="/" class="active">Home </a>
       <a href="#">By Employees<svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path fill-rule="evenodd" clip-rule="evenodd" d="M13.6651 2.29992L7.35745 8.66916C7.17284 8.85377 6.86514 8.85377 6.68053 8.66916L0.372837 2.29992C0.188221 2.11531 0.188221 1.80762 0.372837 1.623L1.04976 0.946079C1.23438 0.761463 1.54207 0.761463 1.72668 0.946079L6.68053 5.96146C6.86514 6.14608 7.17284 6.14608 7.35745 5.96146L12.3113 0.976848C12.4959 0.792233 12.8036 0.792233 12.9882 0.976848L13.6651 1.65377C13.819 1.83839 13.819 2.11531 13.6651 2.29992Z" fill="#706E6B"/>
@@ -391,7 +391,7 @@
       <path fill-rule="evenodd" clip-rule="evenodd" d="M13.6651 2.29992L7.35745 8.66916C7.17284 8.85377 6.86514 8.85377 6.68053 8.66916L0.372837 2.29992C0.188221 2.11531 0.188221 1.80762 0.372837 1.623L1.04976 0.946079C1.23438 0.761463 1.54207 0.761463 1.72668 0.946079L6.68053 5.96146C6.86514 6.14608 7.17284 6.14608 7.35745 5.96146L12.3113 0.976848C12.4959 0.792233 12.8036 0.792233 12.9882 0.976848L13.6651 1.65377C13.819 1.83839 13.819 2.11531 13.6651 2.29992Z" fill="#706E6B"/>
       </svg>
       </a>
-    </div>
+    </div>                                                                          
 
     <form action="/enquiry-inline/<%= enquiry.id %>" method="POST" id="editForm">
     <div class="section">
@@ -417,13 +417,26 @@
         </div>
       </div>
 
-      <!-- Right: Buttons -->
+      <!-- Right: Buttons -->                                                   
       <div class="right">
         <button type="button" id="editBtn" style="border-radius: 4px 0px 0px 4px;">Edit</button>
         <button type="submit" id="saveBtn" style="display: none;">Save</button>
-        <button style="border-radius: 0px 4px 4px 0px;">Transfer Ownership</button>
+<label for="account_owner_id">Transfer Ownership:</label>
+<select 
+  id="account_owner_id"
+  style="margin-left: 10px; border-radius: 4px;" 
+  required
+  data-enquiry-id="<%= enquiry.id %>"
+>
+  <option disabled selected>Select user</option>
+  <% salesUsers.forEach(user => { %>
+    <option value="<%= user.id %>"><%= user.name %></option>
+  <% }) %>
+</select>
+
+
       </div>
-    </div>
+    </div> 
 
     </div>
 
@@ -464,7 +477,7 @@
           <%= enquiry.city %>
         </p>
       </div>
-    </div>
+    </div>  
 
 
 
@@ -499,27 +512,24 @@
               <% } %>
           </div>
     
-        </div>
+        </div>                                                    
     
         <div class="detail-row">
-          <div class="detail-label">Phone</div>
-          <div class="detail-value">
-    
-            <span class="view">
-              <%= enquiry.mobile_number %>
-            </span>
-            <input class="edit" type="text" name="mobile_number" value="<%= enquiry.mobile_number %>" readonly
-              style="display:none;">
-            <span class="edit-icon"  onclick="makeEditable(this)">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd"
-                  d="M2.90275 10.2768L5.64121 13.0152C5.76429 13.1383 5.9489 13.1383 6.07198 13.0152L12.9027 6.1537C13.0258 6.03062 13.0258 5.846 12.9027 5.72293L10.1951 3.01523C10.072 2.89216 9.88736 2.89216 9.76429 3.01523L2.90275 9.87677C2.77967 9.99985 2.77967 10.1845 2.90275 10.2768ZM11.0874 1.7537C10.9643 1.87677 10.9643 2.06139 11.0874 2.18447L13.7951 4.89216C13.9181 5.01523 14.1027 5.01523 14.2258 4.89216L14.9951 4.12293C15.4874 3.66139 15.4874 2.92293 14.9951 2.43062L13.5489 0.984465C13.0566 0.492157 12.2874 0.492157 11.7951 0.984465L11.0874 1.7537ZM0.625826 14.8306C0.564287 15.1383 0.841211 15.4152 1.1489 15.3537L4.50275 14.5537C4.62583 14.5229 4.71813 14.4614 4.77967 14.3998L4.84121 14.3383C4.90275 14.2768 4.93352 14.0614 4.81044 13.9383L2.04121 11.1691C1.91813 11.046 1.70275 11.0768 1.64121 11.1383L1.57967 11.1999C1.48736 11.2922 1.4566 11.3845 1.42583 11.4768L0.625826 14.8306Z"
-                  fill="#ABABAB" />
-              </svg>
-    
-            </span>
-          </div>
-        </div>
+  <div class="detail-label">Phone</div>
+  <div class="detail-value">
+    <span class="view">
+      <%= enquiry.mobile_number %>
+    </span>
+    <input class="edit" type="text" name="mobile_number" value="<%= enquiry.mobile_number %>" style="display:none;">
+    <span class="edit-icon"  onclick="makeEditable(this)">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M2.90275 10.2768L5.64121 13.0152C5.76429 13.1383 5.9489 13.1383 6.07198 13.0152L12.9027 6.1537C13.0258 6.03062 13.0258 5.846 12.9027 5.72293L10.1951 3.01523C10.072 2.89216 9.88736 2.89216 9.76429 3.01523L2.90275 9.87677C2.77967 9.99985 2.77967 10.1845 2.90275 10.2768ZM11.0874 1.7537C10.9643 1.87677 10.9643 2.06139 11.0874 2.18447L13.7951 4.89216C13.9181 5.01523 14.1027 5.01523 14.2258 4.89216L14.9951 4.12293C15.4874 3.66139 15.4874 2.92293 14.9951 2.43062L13.5489 0.984465C13.0566 0.492157 12.2874 0.492157 11.7951 0.984465L11.0874 1.7537ZM0.625826 14.8306C0.564287 15.1383 0.841211 15.4152 1.1489 15.3537L4.50275 14.5537C4.62583 14.5229 4.71813 14.4614 4.77967 14.3998L4.84121 14.3383C4.90275 14.2768 4.93352 14.0614 4.81044 13.9383L2.04121 11.1691C1.91813 11.046 1.70275 11.0768 1.64121 11.1383L1.57967 11.1999C1.48736 11.2922 1.4566 11.3845 1.42583 11.4768L0.625826 14.8306Z"
+          fill="#ABABAB" />
+      </svg>
+
+    </span>
+  </div>
+</div>
     
         <!-- Example for City -->
         <div class="detail-row">
@@ -647,7 +657,7 @@
               </svg>
     
             </span>
-          </div>
+          </div>                                                                  
         </div>
    
    </div>
@@ -684,39 +694,59 @@
     </div>
 </form>
   </div>
-
 <script>
-   function makeEditable(icon) {
+  function makeEditable(icon) {
     const detailValue = icon.closest('.detail-value');
     const viewSpan = detailValue.querySelector('.view');
     const input = detailValue.querySelector('.edit');
 
     viewSpan.style.display = 'none';
-input.style.display = 'inline-block';
-input.style.border = 'none';
-input.style.outline = 'none';
-    input.removeAttribute('readonly');
+    input.style.display = 'inline-block';
+    input.style.border = 'none';
+    input.style.outline = 'none';
+    input.removeAttribute('readonly'); // Ensure readonly is removed for individual fields
     input.focus();
-     document.getElementById('editBtn').style.display = 'none';
+    document.getElementById('editBtn').style.display = 'none';
     document.getElementById('saveBtn').style.display = 'inline-block';
   }
+
   document.getElementById('editBtn').addEventListener('click', () => {
     const views = document.querySelectorAll('.view');
     const edits = document.querySelectorAll('.edit');
-    views.forEach(v => v.style.display = 'none');
-edits.forEach(e => {
-  e.style.display = 'inline-block';
-  e.style.border = 'none';
-  e.style.outline = 'none';
-  e.focus();
 
-});    document.getElementById('editBtn').style.display = 'none';
+    views.forEach(v => v.style.display = 'none');
+    edits.forEach(e => {
+      e.style.display = 'inline-block';
+      e.style.border = 'none';
+      e.style.outline = 'none';
+      e.removeAttribute('readonly'); // Crucially, remove readonly for ALL fields
+      e.focus();
+    });
+    document.getElementById('editBtn').style.display = 'none';
     document.getElementById('saveBtn').style.display = 'inline-block';
   });
 </script>
 
-    
 
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  document.getElementById('account_owner_id').addEventListener('change', async function () {
+    const accountOwnerId = this.value;
+    const enquiryId = this.dataset.enquiryId;
+
+    try {
+      const response = await axios.post(`/enquiry-inline/${enquiryId}`, {
+        account_owner_id: accountOwnerId
+      });
+
+      // Optionally redirect or show success
+      window.location.href = `/enquiry/${enquiryId}`;
+    } catch (error) {
+      console.error('Ownership transfer failed:', error);
+      alert('Something went wrong while transferring ownership.');
+    }
+  });
+</script>
     
 </body>
 </html>

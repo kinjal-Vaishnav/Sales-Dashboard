@@ -5,6 +5,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Salesforce Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
   <style>
     body {
       background-color: #ebf5fd;
@@ -792,64 +794,65 @@
     <!-- Modal 1 -->
     <div id="form1" class="modal">
       <div class="modal-content">
-        <form id="accountForm">
-          <h2 class="form-title">New Opportunity</h2>
-          <hr class="form-underline">
-          <p class="required-note"><span class="required-star">*</span> = Required Information</p>
+   <form id="accountForm">
+  <h2 class="form-title">New Opportunity</h2>
+  <hr class="form-underline">
+  <p class="required-note"><span class="required-star">*</span> = Required Information</p>
 
-          <div class="form-section">
-            <p class="section-heading">Opportunity Details</p>
+  <div class="form-section">
+    <p class="section-heading">Opportunity Details</p>
 
-            <label>Account Owner</label>
-            <p class="owner-display">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect width="20" height="20" rx="10" fill="#EBEBEB" />
-                <path fill-rule="evenodd" clip-rule="evenodd"
-                  d="M15.5379 13.923V14.4307C15.5379 15.0307 15.0302 15.5384 14.4302 15.5384H5.56863C4.96863 15.5384 4.46094 15.0307 4.46094 14.4307V13.923C4.46094 12.5845 6.03017 11.7538 7.50709 11.1076L7.64555 11.0384C7.76094 10.9922 7.87632 10.9922 7.99171 11.0615C8.59171 11.4538 9.26094 11.6615 9.97632 11.6615C10.6917 11.6615 11.384 11.4307 11.9609 11.0615C12.0763 10.9922 12.1917 10.9922 12.3071 11.0384L12.4456 11.1076C13.9686 11.7538 15.5379 12.5615 15.5379 13.923ZM9.99942 4.46143C11.5225 4.46143 12.7456 5.82297 12.7456 7.50758C12.7456 9.1922 11.5225 10.5537 9.99942 10.5537C8.47634 10.5537 7.25326 9.1922 7.25326 7.50758C7.25326 5.82297 8.47634 4.46143 9.99942 4.46143Z"
-                  fill="#768191" />
-              </svg>
-              <%= user.name %>
-            </p>
+    <label>Account Owner</label>
+    <p class="owner-display"><%= user.name %></p>
 
-            <label>*Company Name</label>
-            <input type="text" name="name" required>
+    <label>*Company Name</label>
+    <input type="text" name="name" id="companyName" required>
 
-            <div class="row">
-              <div class="half">
-                <label>*Poc Name</label>
-                <input type="text" name="poc" required>
-              </div>
-              <div class="half">
-                <label>*Mobile Number</label>
-                <input type="text" name="mobile" required>
-              </div>
-            </div>
+    <div class="row">
+      <div class="half">
+        <label>*Poc Name</label>
+        <input type="text" name="poc" id="pocName" required pattern="^[a-zA-Z\s]+$" title="Only alphabets allowed">
+      </div>
+      <div class="half">
+        <label>*Mobile Number</label>
+        <input type="text" name="mobile" id="mobile" required pattern="^[0-9]{10}$" title="Enter a valid 10-digit mobile number">
+      </div>
+    </div>
 
-            <div class="row">
-              <div class="half">
-                <label>*City</label>
-                <input type="text" name="city" required>
-              </div>
-              <div class="half">
-                <label>*Email Address</label>
-                <input type="email" name="email" required>
-              </div>
-            </div>
+   <div class="row">
+      <div class="half">
+        <label>*City</label>
+        <input type="text" name="city" id="cityInput" list="cityList" required>
+        <datalist id="cityList">
+          <option value="Gandhinagar">
+          <option value="Ahmedabad">
+          <option value="Mumbai">
+          <option value="Surat">
+          <option value="Rajkot">
+          <option value="Baroda">
+              <option value="UdaiPur">
+        </datalist>
+      </div>
+      <div class="half">
+        <label>*Email Address</label>
+        <input type="email" name="email" required>
+      </div>
+    </div>
 
-            <label>*Type</label>
-            <select name="type" required>
-              <option value="">--None--</option>
-              <option value="Customer - Direct">Customer - Direct</option>
-              <option value="Regional Agency">Regional Agency</option>
-            </select>
-          </div>
+    <label>*Type</label>
+    <select name="type" required>
+      <option value="">--None--</option>
+      <option value="Customer - Direct">Customer - Direct</option>
+      <option value="Regional Agency">Regional Agency</option>
+    </select>
+  </div>
 
-          <div class="form-actions">
-            <button type="button" onclick="closeAll()" class="btn cancel">Cancel</button>
-            <button type="submit" onclick="submitForm1(event, 'save_new')" class="btn secondary">Save & New</button>
-            <button type="submit" onclick="submitForm1(event, 'save')" class="btn primary">Save</button>
-          </div>
-        </form>
+  <div class="form-actions">
+    <button type="button" onclick="closeAll()" class="btn cancel">Cancel</button>
+    <button type="submit" onclick="submitForm1(event, 'save_new')" class="btn secondary">Save & New</button>
+    <button type="submit" onclick="submitForm1(event, 'save')" class="btn primary">Save</button>
+  </div>
+</form>
       </div>
     </div>
 
@@ -900,27 +903,27 @@
           <div class="row">
             <div class="half">
               <label>*Opportunity Name</label>
-              <input type="text" name="name">
+              <input type="text" name="name" readonly>
             </div>
             <div class="half">
               <label>*Mobile Number</label>
-              <input type="text" name="mobile">
+              <input type="text" name="mobile" readonly>
             </div>
           </div>
 
           <div class="row">
             <div class="half">
               <label>*City</label>
-              <input type="text" name="city">
+              <input type="text" name="city" readonly>
             </div>
             <div class="half">
               <label>*Email Address</label>
-              <input type="email" name="email">
+              <input type="email" name="email" readonly>
             </div>
           </div>
 
           <label>*Type</label>
-          <select name="type">
+          <select name="type" readonly>
             <option value="">--None--</option>
             <option value="Customer - Direct">Customer - Direct</option>
             <option value="Regional Agency">Regional Agency</option>
@@ -1392,8 +1395,19 @@
       event.preventDefault();
 
       const form1 = document.getElementById('accountForm');
+
+       const companyInput = document.getElementById('companyName');
+  companyInput.value = companyInput.value.toUpperCase();
+
+  if (!form1.checkValidity()) {
+    form1.reportValidity();
+    return;
+  }
+
+
       const formData = new FormData(form1);
 
+     
       fetch('/save-entry', {
         method: 'POST',
         // body: new URLSearchParams(formData)
@@ -1437,19 +1451,34 @@
       const form = e.target;
       const formData = new FormData(form);
 
-      fetch('/save-entry', {
-        method: 'POST',
-        // body: new URLSearchParams(formData)
-        body: formData
-      }).then(res => {
-        if (res.ok) {
-          alert('Saved action successfully!');
-          closeAll();
-        } else {
-          alert('Error saving action.');
-        }
-      });
+      
+fetch('/save-entry', {
+  method: 'POST',
+  body: formData
+}).then(res => {
+  if (res.ok) {
+    Swal.fire({
+      icon: 'success',
+      title: 'Saved!',
+      text: 'Saved action successfully!',
+      confirmButtonColor: '#3085d6'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        closeAll(); // Close modal (or form)
+        location.reload(); // Reload after user clicks OK
+      }
     });
+  } else {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Error saving action.',
+      confirmButtonColor: '#d33'
+    });
+  }
+});
+
+});
 
 
 
@@ -1821,4 +1850,4 @@ calculateEndDate('start_datee', 'durationn', 'end_datee', 'end_date_displayy');
 
 </body>
 
-</html>
+</html>                                                                                                                                                                                                                                                                                                                                                                                                                                                        

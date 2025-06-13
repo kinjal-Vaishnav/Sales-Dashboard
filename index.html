@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Dashboard</title>
+  <style>
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 10;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+      background: #fff;
+      margin: 5% auto;
+      padding: 25px 30px;
+      width: 500px;
+      border-radius: 10px;
+      font-family: Arial, sans-serif;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .form-title {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 10px;
+    }
+
+    .section-heading {
+      font-size: 16px;
+      background: #f0f0f0;
+      padding: 8px;
+      border-radius: 5px;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .owner-display {
+      background: #f8f8f8;
+      padding: 8px;
+      margin: 8px 0 16px;
+      border-radius: 4px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    label {
+      font-weight: 600;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .row {
+      display: flex;
+      gap: 30px;
+    }
+
+    .half {
+      flex: 1;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      padding: 8px 14px;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn.cancel {
+      background: #e0e0e0;
+      color: #333;
+    }
+
+    .btn.secondary {
+      background: #d1e9ff;
+      color: #007bff;
+    }
+
+    .btn.primary {
+      background: #007bff;
+      color: #fff;
+    }
+
+    /* //////////////////////////////////// */
+
+    /* Modal backdrop and content box */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: 5% auto;
+      border-radius: 6px;
+      padding: 20px 30px;
+      width: 80%;
+      max-width: 800px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .modal-content h3 {
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+      font-size: 20px;
+      color: #2c2c2c;
+    }
+
+    /* Inputs & selects */
+    .modal-content input[type="text"],
+    .modal-content input[type="number"],
+    .modal-content input[type="date"],
+    .modal-content input[type="file"],
+    .modal-content select,
+    .modal-content textarea {
+      width: 100%;
+      padding: 8px 10px;
+      margin: 8px 0;
+      border: 1px solid #d8dde6;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
+
+    .modal-content select {
+      background-color: #fff;
+    }
+
+    /* Labels */
+    .modal-content label {
+      font-weight: 600;
+      margin-top: 10px;
+      display: block;
+      color: #3c3c3c;
+    }
+
+    /* Form rows */
+    .form-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .form-row input {
+      flex: 1;
+    }
+
+    /* Actions */
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .form-actions button {
+      padding: 8px 16px;
+      font-size: 14px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .form-actions button[type="button"] {
+      background-color: #f4f6f9;
+      color: #333;
+    }
+
+    .form-actions button[type="submit"] {
+      background-color: #0070d2;
+      color: white;
+    }
+
+    .form-actions button:hover {
+      opacity: 0.9;
+    }
+
+
+
+    #offerFields {
+      display: none;
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 20px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      background: #f9f9f9;
+      font-family: Arial, sans-serif;
+    }
+
+    #offerFields h3,
+    #offerFields h4 {
+      margin-top: 20px;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    .form-row label {
+      flex: 1;
+      font-weight: bold;
+    }
+
+    .form-row input,
+    .form-row textarea {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      min-width: 0;
+    }
+
+    .form-row input[type="date"],
+    .form-row input[type="number"] {
+      flex: 1;
+    }
+
+    textarea[name="note"] {
+      width: 100%;
+      height: 100px;
+      resize: vertical;
+      margin-top: 10px;
+    }
+
+    /*  /////////////////////////////////////*/
+
+    /* General styling */
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 20px;
+      color: #2b2b2b;
+      background-color: #f8f9fa;
+    }
+
+    .container {
+      /* max-width: 1200px; */
+      margin: 0 auto;
+      padding: 0 15px;
+    }
+
+    /* Logo styling */
+    .logo-container {
+      margin-bottom: 20px;
+      padding-top: 10px;
+    }
+
+    .logo {
+      height: 45px;
+      width: auto;
+    }
+
+    /* Header and titles */
+    h3 {
+      color: #2a5885;
+      font-size: 1.3rem;
+      margin: 15px 0 10px;
+    }
+
+    p strong {
+      color: #444;
+      font-weight: 600;
+    }
+
+    /* Navigation tabs */
+    /* Tab Navigation - Exact Match to Image */
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid #d8dde6;
+      margin: 15px 0 20px 0;
+      padding-left: 0;
+      list-style: none;
+    }
+
+    .tab {
+      padding: 10px 20px;
+      margin-right: 0;
+      background-color: #f4f6f9;
+      border: 1px solid #d8dde6;
+      border-bottom: none;
+      border-radius: 4px 4px 0 0;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: #54698d;
+      position: relative;
+      bottom: -1px;
+      font-weight: 400;
+      transition: all 0.2s ease;
+    }
+
+    .tab.active {
+      background-color: white;
+      border-bottom: 1px solid white;
+      margin-bottom: -1px;
+      color: #16325c;
+      font-weight: 700;
+      border-color: #d8dde6 #d8dde6 white;
+    }
+
+    .tab:not(.active):hover {
+      background-color: #eef1f6;
+    }
+
+    /* Header Section - Exact Match */
+    .header-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 15px;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      color: #16325c;
+      margin: 0 0 5px 0;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      color: #54698d;
+      margin: 0;
+      font-weight: 400;
+    }
+
+    /* Action Buttons - Right Aligned */
+    .actions {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+
+    .button {
+      padding: 8px 12px;
+      background-color: #0070d2;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: background-color 0.2s ease;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .button:hover {
+      background-color: #005fb2;
+    }
+
+    /* Filter Info - Exact Match */
+    .filter-info {
+      font-size: 0.8rem;
+      color: #706e6b;
+      margin: -10px 0 15px 0;
+      font-style: normal;
+      font-weight: 400;
+    }
+
+    /* Divider Line */
+    .divider {
+      border-top: 1px solid #d8dde6;
+      margin: 15px 0;
+      width: 100%;
+    }
+
+    /* Table styling */
+    #dataTable {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      background-color: white;
+    }
+
+    #dataTable thead {
+      background-color: #f5f7fa;
+      border-bottom: 2px solid #e0e0e0;
+    }
+
+    #dataTable th {
+      padding: 12px 15px;
+      text-align: left;
+      font-weight: 600;
+      color: #444;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+    }
+
+    #dataTable td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #e0e0e0;
+      font-size: 0.9rem;
+    }
+
+    #dataTable tr:not(:last-child) td {
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    #dataTable tr:hover {
+      background-color: #f5f7fa;
+    }
+
+    #dataTable a {
+      color: #2a5885;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    #dataTable a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .container {
+        padding: 0 10px;
+      }
+
+      .tabs {
+        overflow-x: auto;
+        white-space: nowrap;
+        display: block;
+        padding-bottom: 5px;
+      }
+
+      .tab {
+        display: inline-block;
+        margin-bottom: 5px;
+      }
+
+      .actions {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        margin-top: 10px;
+        margin-left: 0;
+      }
+
+      #dataTable {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+
+      .logo {
+        height: 38px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 10px;
+      }
+
+      #dataTable th,
+      #dataTable td {
+        padding: 8px 10px;
+        font-size: 0.8rem;
+      }
+
+      .button {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+      }
+
+      .filter-info {
+        font-size: 0.8rem;
+      }
+
+      .logo {
+        height: 32px;
+      }
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <!-- <button onclick="openForm1()">New</button>                                     -->
+
+  <!-- Modal 1 -->
+  <div id="form1" class="modal">
+    <div class="modal-content">
+      <form id="accountForm">
+        <span class="close-button" onclick="closeAll()">&times;</span>
+        <h2 class="form-title">Opportunity Details</h2>
+        <div class="form-section">
+          <p class="section-heading">Opportunity Details</p>
+
+          <label>Account Owner</label>
+          <p class="owner-display"><img src="https://img.icons8.com/ios-filled/20/user.png" />
+            <%= user.name %>
+          </p>
+          <input type="hidden" name="account_owner" value="<%= user.name %>">
+
+
+          <label>*Company Name</label>
+          <input type="text" name="name" required>
+          <div class="row">
+            <div class="half">
+              <label>*Poc Name</label>
+              <input type="text" name="poc_name" required>
+            </div>
+            <div class="half">
+              <label>*Mobile Number</label>
+              <input type="text" name="mobile_number" required>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="half">
+              <label>*City</label>
+              <input type="text" name="city" required>
+            </div>
+            <div class="half">
+              <label>*Email Address</label>
+              <input type="email" name="email" required>
+            </div>
+          </div>
+
+          <label>*Type</label>
+          <select name="customer_type" required>
+            <option value="">--None--</option>
+            <option value="Customer - Direct">Customer - Direct</option>
+            <option value="Regional Agency">Regional Agency</option>
+          </select>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" onclick="closeAll()" class="btn cancel">Cancel</button>
+          <button type="submit" onclick="submitForm1(event, 'save_new')" class="btn secondary">Save & New</button>
+          <button type="submit" onclick="submitForm1(event, 'save')" class="btn primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="form2" class="modal">
+    <div class="modal-content">
+      <form id="fullForm" enctype="multipart/form-data">
+        <span class="close-button" onclick="closeAll()">&times;</span>
+        <input type="hidden" name="entry_id" value=""> <input type="hidden" name="account_owner">
+        <input type="hidden" name="name">
+        <input type="hidden" name="poc_name">
+        <input type="hidden" name="mobile_number">
+        <input type="hidden" name="city">
+        <input type="hidden" name="email">
+        <input type="hidden" name="customer_type">
+
+
+        <h3>Next Action</h3>
+        <label>Account Owner</label>
+        <input type="text" value="<%= user.name %>" disabled>
+
+        <div id="previewInfo"></div>
+
+        <div class="form-group">
+          <div id="formMessage" style="color: red; margin-bottom: 10px;"></div>
+          <label>Action:</label>
+          <select name="action_type" id="actionSelect" required onchange="handleActionChange(this.value)">
+            <option value="">Select</option>
+            <option value="Send Proposal">Send Proposal</option>
+            <option value="Send Follow-up Email">Send Follow-up Email</option>
+            <option value="Send Offer">Send Offer</option>
+            <option value="Send Tax Invoice">Send Tax Invoice</option>
+            <option value="Closed Won">Closed Won</option>
+          </select>
+          <button type="button" onclick="clearActionFields()" style="margin-left: 10px;">Clear Fields</button>
+        </div>
+
+        <div id="proposalFields" style="display:none;">
+          <label>Email Subject:</label>
+          <input type="text" name="email_sub" />
+          <label>Email Body:</label>
+          <textarea name="email_body"></textarea>
+        </div>
+
+        <div id="followupFields" style="display:none;">
+          <label>Follow-up Email Subject:</label>
+          <input type="text" name="followup_email_sub" />
+          <label>Follow-up Email Body:</label>
+          <textarea name="followup_email_body"></textarea>
+        </div>
+
+        <div id="offerFields" style="display:none;">
+          <div class="form-row">
+            <label>Start Date:</label>
+            <input type="date" name="start_date" id="start_date_offer" />
+
+            <label>Duration (Days):</label>
+            <input type="number" name="duration" id="duration_offer" oninput="calculateEndDateOffer()" />
+            <br>
+            <p> <input type="text" name="end_date" id="end_date_offer" readonly /> </p>
+          </div>
+          <div class="component-block">
+            <h4>Residential</h4>
+            <div class="form-row">
+              <input type="number" name="residential_screen" placeholder="Screens" class="screen" data-type="r" />
+              <input type="number" name="r_per_screen" placeholder="Per Screen Rate" class="rate" data-type="r" />
+              <input type="number" name="r_plan" placeholder="Plan Days" class="plan" data-type="r" />
+              <span class="result" id="r_result">₹0</span>
+            </div>
+
+            <h4>Corporate</h4>
+            <div class="form-row">
+              <input type="number" name="corporate_screen" placeholder="Screens" class="screen" data-type="c" />
+              <input type="number" name="c_per_screen" placeholder="Per Screen Rate" class="rate" data-type="c" />
+              <input type="number" name="c_plan" placeholder="Plan Days" class="plan" data-type="c" />
+              <span class="result" id="c_result">₹0</span>
+            </div>
+
+            <h4>Outdoor</h4>
+            <div class="form-row">
+              <input type="number" name="outdur_screen" placeholder="Screens" class="screen" data-type="o" />
+              <input type="number" name="o_per_screen" placeholder="Per Screen Rate" class="rate" data-type="o" />
+              <input type="number" name="o_plan" placeholder="Plan Days" class="plan" data-type="o" />
+              <span class="result" id="o_result">₹0</span>
+            </div>
+            <hr />
+            <div><strong>Total Amount:</strong> <span id="total_amount">₹0</span></div>
+          </div>
+          <label>Note:</label>
+          <div class="form-row">
+            <textarea name="note" placeholder="Enter note..."></textarea>
+          </div>
+        </div>
+
+        <div id="closedWonFields" style="display:none;">
+          <label>*Amount:</label>
+          <input type="number" name="amount" />
+          <label>*Purchase Order/Email Confirmation (PDF only):</label>
+          <input type="file" name="confirmation_pdf" accept="application/pdf" />
+          <div class="file-upload-info" id="current_confirmation_pdf_info"></div>
+          <input type="hidden" name="existing_confirmation_pdf" id="existing_confirmation_pdf">
+          <label>Remarks:</label>
+          <textarea name="closed_won_remarks" placeholder="Enter remarks..."></textarea>
+          <label>Closure Date:</label>
+          <input type="date" name="closure_date" />                               
+        </div>                                                        
+
+        <div id="taxInvoiceFields" style="display: none; margin-top: 20px;">
+          <h3>Tax Invoice Details</h3>
+          <input type="text" name="invoice_no" placeholder="Invoice No" />
+          <input type="date" name="invoice_date" placeholder="Invoice Date" />
+          <input type="text" name="po_no" placeholder="PO No." />
+          <input type="date" name="po_date" placeholder="PO Date" />
+          <input type="text" name="gst_no" placeholder="GST No" />
+          <input type="text" name="pan_no" placeholder="PAN No" />
+          <input type="text" name="website" placeholder="Website" />
+          <input type="text" name="place_of_supply" placeholder="Place of Supply" />
+          <input type="text" name="payment_terms" placeholder="Payment Terms" />
+          <input type="text" name="ack_no" placeholder="Acknowledgment No." />
+          <input type="date" name="ack_date" placeholder="Acknowledgment Date" />
+          <input type="text" name="irn" placeholder="IRN" />
+          <input type="text" name="spoc" placeholder="SPOC" />
+          <textarea name="billing_address" placeholder="Billing Address"></textarea>
+          <div class="form-row">
+            <label>Start Date:</label>
+            <input type="date" name="start_date_tax" id="start_date_tax" />
+
+            <label>Duration (Days):</label>
+            <input type="number" name="duration_tax" id="duration_tax" oninput="InvoicecalculateEndDate()" />
+            <br>
+            <p> <input type="text" name="end_date_tax" id="end_date_tax" readonly /> </p>
+          </div>
+          <div class="component-block">
+            <h4>Residential</h4>
+            <div class="form-row">
+              <input type="number" name="residential_screen_tax" placeholder="Screens" class="screen"
+                data-type="r_tax" />
+              <input type="number" name="r_per_screen_tax" placeholder="Per Screen Rate" class="rate"
+                data-type="r_tax" />
+              <input type="number" name="r_plan_tax" placeholder="Plan Days" class="plan" data-type="r_tax" />
+              <span class="result" id="r_tax_result">₹0</span>
+            </div>
+            <h4>Corporate</h4>
+            <div class="form-row">
+              <input type="number" name="corporate_screen_tax" placeholder="Screens" class="screen" data-type="c_tax" />
+              <input type="number" name="c_per_screen_tax" placeholder="Per Screen Rate" class="rate"
+                data-type="c_tax" />
+              <input type="number" name="c_plan_tax" placeholder="Plan Days" class="plan" data-type="c_tax" />
+              <span class="result" id="c_tax_result">₹0</span>
+            </div>
+            <h4>Outdoor</h4>
+            <div class="form-row">
+              <input type="number" name="outdur_screen_tax" placeholder="Screens" class="screen" data-type="o_tax" />
+              <input type="number" name="o_per_screen_tax" placeholder="Per Screen Rate" class="rate"
+                data-type="o_tax" />
+              <input type="number" name="o_plan_tax" placeholder="Plan Days" class="plan" data-type="o_tax" />
+              <span class="result" id="o_tax_result">₹0</span>
+            </div>
+            <hr />
+            <div><strong>Total Amount:</strong> <span id="total_amount_tax">₹0</span></div>
+          </div>
+          <label>Note:</label>
+          <div class="form-row">
+            <textarea name="note_tax" placeholder="Enter note..."></textarea>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" onclick="closeAll()">Cancel</button>
+          <button type="submit">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+
+  <div class="container">
+
+
+    <div class="logo-container">
+      <a href="/">
+        <img src="https://www.aekads.com/images/Footerlogo.png" alt="aekads logo" class="logo">
+      </a>
+    </div>
+
+
+    <!-- Tabs Navigation -->
+    <div class="tabs">
+      <div class="tab active">Home</div>
+      <div class="tab">By Employees</div>
+      <div class="tab">By City</div>
+      <div class="tab">Accounts</div>
+      <div class="tab">Reports</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Header Section -->
+    <div class="header-section">
+      <div>
+        <h3 class="section-title">Opportunities</h3>
+        <p class="subtitle"><strong>All Employees</strong></p>
+        <!-- <p class="filter-info">3 items - Sorted by Opportunity Name - Filtered by All Employees - Updated 4 minutes ago</p> -->
+      </div>
+
+      <div class="actions">
+        <button class="button" onclick="openForm1()">New</button>
+        <button class="button">Import</button>
+        <button class="button">Export</button>
+      </div>  
+    </div>
+
+    <div class="filter-info">
+      3 items - Sorted by Opportunity Name - Filtered by All Employees - Updated 4 minutes ago
+    </div>
+
+
+
+    <table id="dataTable">  
+      <thead>                                                         
+        <tr>
+          <th>#</th>
+          <th>Opportunity Name</th>
+          <th>City</th>
+          <th>Stage</th>
+          <th>Phone</th>
+          <th>Type</th>
+          <th>Account Owner</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% enquiries.forEach((row, index)=> { %>
+          <tr>
+            <td>
+              <%= index + 1 %>
+            </td>
+            <td>
+              <a href="/enquiry/<%= row.id %>">
+                <%= row.name %>
+              </a>
+            </td>
+            <td>
+              <%= row.city %>
+            </td>
+            <td>
+              <%= row.action_type || '-' %>                           
+            </td>
+            <td>
+              <%= row.mobile_number %>
+            </td>
+            <td>
+              <%= row.customer_type %>
+            </td>                                                       
+            <td>
+              <%= row.account_owner %>
+            </td>
+            <td>
+              <button class="button" onclick="editEntryExample(<%= row.id %>)">Edit</button>
+
+            </td>
+          </tr>                                 
+          <% }) %>                                                                                        
+      </tbody>                                                                                                                                                                                                                                   
+    </table>                                                                                                      
+
+  </div>                                                                     
+
+                                                                          
+  <script>  
+    let currentEntryId = null; // Stores the ID of the entry being edited
+
+    // Helper to parse date strings for input fields
+    const formatDateForInput = (dateString) => {
+      if (!dateString) return '';
+      const date = new Date(dateString);
+      return date.toISOString().split('T')[0];
+    };
+
+    // --- Form Population Functions ---
+    function populateForm1(entry) {
+      const form1 = document.getElementById('accountForm');
+      form1.name.value = entry.name || ''; // Company Name
+      form1.poc_name.value = entry.poc_name || '';
+      form1.mobile_number.value = entry.mobile_number || '';
+      form1.city.value = entry.city || '';
+      form1.email.value = entry.email || '';
+      form1.customer_type.value = entry.customer_type || '';
+      document.getElementById('form1').style.display = 'block';
+    }
+
+    function populateForm2(entry) {
+      const form2 = document.getElementById('fullForm');
+      form2.entry_id.value = entry.id; // Set the hidden ID
+      currentEntryId = entry.id; // Set global ID for submission logic
+
+      // Populate hidden fields from Form 1 data
+      form2.account_owner.value = entry.account_owner || '';
+      form2.name.value = entry.name || '';
+      form2.poc_name.value = entry.poc_name || '';
+      form2.mobile_number.value = entry.mobile_number || '';
+      form2.city.value = entry.city || '';
+      form2.email.value = entry.email || '';
+      form2.customer_type.value = entry.customer_type || '';
+
+      // Display basic info in previewInfo
+      document.getElementById('previewInfo').innerHTML = `
+            <p><strong>Company:</strong> ${entry.name || ''}</p>
+            <p><strong>POC:</strong> ${entry.poc_name || ''}</p>
+            <p><strong>Mobile:</strong> ${entry.mobile_number || ''}</p>
+            <p><strong>City:</strong> ${entry.city || ''}</p>
+            <p><strong>Email:</strong> ${entry.email || ''}</p>
+        `;
+
+      // Populate Form 2 specific fields based on action_type
+      form2.action_type.value = entry.action_type || ''; // Set the selected action
+
+      // Clear all fields before populating to avoid stale data               
+      clearActionFields();
+      // Trigger handleActionChange to show/hide relevant sections based on fetched action_type
+      handleActionChange(entry.action_type || '', true); // Pass true to skip initial field check
+
+      if (entry.action_type === 'Send Proposal') {
+        form2.email_sub.value = entry.email_sub || '';
+        form2.email_body.value = entry.email_body || '';
+      } else if (entry.action_type === 'Send Follow-up Email') {
+        form2.followup_email_sub.value = entry.followup_email_sub || '';
+        form2.followup_email_body.value = entry.followup_email_body || '';
+      } else if (entry.action_type === 'Send Offer') {
+        document.getElementById('start_date_offer').value = formatDateForInput(entry.start_date);
+        document.getElementById('duration_offer').value = entry.duration || '';
+        calculateEndDateOffer(); // Recalculate end date based on fetched start date and duration
+
+        document.querySelector('#offerFields .screen[data-type="r"]').value = entry.residential_screen || '';
+        document.querySelector('#offerFields .rate[data-type="r"]').value = entry.r_per_screen || '';
+        document.querySelector('#offerFields .plan[data-type="r"]').value = entry.r_plan || '';
+
+        document.querySelector('#offerFields .screen[data-type="c"]').value = entry.corporate_screen || '';
+        document.querySelector('#offerFields .rate[data-type="c"]').value = entry.c_per_screen || '';
+        document.querySelector('#offerFields .plan[data-type="c"]').value = entry.c_plan || '';
+
+        document.querySelector('#offerFields .screen[data-type="o"]').value = entry.outdur_screen || '';
+        document.querySelector('#offerFields .rate[data-type="o"]').value = entry.o_per_screen || '';
+        document.querySelector('#offerFields .plan[data-type="o"]').value = entry.o_plan || '';
+
+        // Trigger input event listeners to update results and total amount
+        document.querySelectorAll('#offerFields .screen, #offerFields .rate, #offerFields .plan').forEach(input => {
+          const event = new Event('input', { bubbles: true });
+          input.dispatchEvent(event);
+        });
+        form2.note.value = entry.note || '';
+
+      } else if (entry.action_type === 'Closed Won') {
+        form2.amount.value = entry.amount || '';
+        form2.closed_won_remarks.value = entry.closed_won_remarks || '';
+        form2.closure_date.value = formatDateForInput(entry.closure_date);
+
+        // Display current PDF info if available
+        const pdfInfoDiv = document.getElementById('current_confirmation_pdf_info');
+        const existingPdfInput = document.getElementById('existing_confirmation_pdf');
+        if (entry.confirmation_pdf) {
+          pdfInfoDiv.innerHTML = `Current file: <a href="/${entry.confirmation_pdf}" target="_blank">${entry.confirmation_pdf.split('/').pop()}</a> (Upload new to replace)`;
+          existingPdfInput.value = entry.confirmation_pdf; // Set hidden field to send existing path back
+        } else {
+          pdfInfoDiv.innerHTML = 'No file uploaded.';
+          existingPdfInput.value = '';
+        }
+
+      } else if (entry.action_type === 'Send Tax Invoice') {
+        form2.invoice_no.value = entry.invoice_no || '';
+        form2.invoice_date.value = formatDateForInput(entry.invoice_date);
+        form2.po_no.value = entry.po_no || '';
+        form2.po_date.value = formatDateForInput(entry.po_date);
+        form2.gst_no.value = entry.gst_no || '';
+        form2.pan_no.value = entry.pan_no || '';
+        form2.website.value = entry.website || '';
+        form2.place_of_supply.value = entry.place_of_supply || '';
+        form2.payment_terms.value = entry.payment_terms || '';
+        form2.ack_no.value = entry.ack_no || '';
+        form2.ack_date.value = formatDateForInput(entry.ack_date);
+        form2.irn.value = entry.irn || '';
+        form2.spoc.value = entry.spoc || '';
+        form2.billing_address.value = entry.billing_address || '';
+
+        document.getElementById('start_date_tax').value = formatDateForInput(entry.start_date); // Re-use start_date/duration for tax invoice
+        document.getElementById('duration_tax').value = entry.duration || '';
+        InvoicecalculateEndDate(); // Recalculate end date
+
+        // Ensure these selectors are correct for tax invoice fields
+        document.querySelector('#taxInvoiceFields .screen[data-type="r_tax"]').value = entry.residential_screen || '';
+        document.querySelector('#taxInvoiceFields .rate[data-type="r_tax"]').value = entry.r_per_screen || '';
+        document.querySelector('#taxInvoiceFields .plan[data-type="r_tax"]').value = entry.r_plan || '';
+
+        document.querySelector('#taxInvoiceFields .screen[data-type="c_tax"]').value = entry.corporate_screen || '';
+        document.querySelector('#taxInvoiceFields .rate[data-type="c_tax"]').value = entry.c_per_screen || '';
+        document.querySelector('#taxInvoiceFields .plan[data-type="c_tax"]').value = entry.c_plan || '';
+
+        document.querySelector('#taxInvoiceFields .screen[data-type="o_tax"]').value = entry.outdur_screen || '';
+        document.querySelector('#taxInvoiceFields .rate[data-type="o_tax"]').value = entry.o_per_screen || '';
+        document.querySelector('#taxInvoiceFields .plan[data-type="o_tax"]').value = entry.o_plan || '';
+
+        document.querySelectorAll('#taxInvoiceFields .screen, #taxInvoiceFields .rate, #taxInvoiceFields .plan').forEach(input => {
+          const event = new Event('input', { bubbles: true });
+          input.dispatchEvent(event);
+        });
+        form2.note_tax.value = entry.note || ''; // Note for tax invoice
+      }
+
+      document.getElementById('form2').style.display = 'block';
+    }
+
+    // --- Modal Control Functions ---
+
+    // New/Edit entry point for Form 1
+    function openForm1(entryId = null) {
+      clearAllForms(); // Clear all fields when opening a form
+      currentEntryId = entryId; // Set current entry ID
+
+      if (entryId) {
+        // Fetch existing data for editing
+        fetch(`/get-entry/${entryId}`)
+          .then(res => {
+            if (!res.ok) {
+              if (res.status === 404) throw new Error('Entry not found');
+              throw new Error('Failed to fetch entry');
+            }
+            return res.json();
+          })
+          .then(data => {
+            populateForm1(data);
+            // Also pass data to Form 2 hidden fields immediately for later use
+            const form2 = document.getElementById('fullForm');
+            form2.account_owner.value = data.account_owner || '';
+            form2.name.value = data.name || '';
+            form2.poc_name.value = data.poc_name || '';
+            form2.mobile_number.value = data.mobile_number || '';
+            form2.city.value = data.city || '';
+            form2.email.value = data.email || '';
+            form2.customer_type.value = data.customer_type || '';
+            form2.entry_id.value = data.id; // Important for saving updates later
+            currentEntryId = data.id; // Make sure this is set globally
+          })
+          .catch(error => {
+            console.error('Error fetching entry for Form 1:', error);
+            alert('Error fetching entry: ' + error.message);
+            closeAll(); // Close forms if there's an error
+          });
+      } else {
+        // For a new entry, just open Form 1
+        document.getElementById('form1').style.display = 'block';
+      }
+    }
+
+    // Function to directly open form 2 for editing (e.g., from a list of entries)
+    async function openForm2ForEdit(entryId) {
+      clearAllForms();
+      currentEntryId = entryId;
+
+      try {
+        const res = await fetch(`/get-entry/${entryId}`);
+        if (!res.ok) {
+          if (res.status === 404) throw new Error('Entry not found');
+          throw new Error('Failed to fetch entry');
+        }
+        const data = await res.json();
+        populateForm2(data); // Populate form2 directly
+      } catch (error) {
+        console.error('Error fetching entry for Form 2:', error);
+        alert('Error fetching entry for Form 2: ' + error.message);
+        closeAll();
+      }
+    }
+
+    // Example function to call edit entry (you would integrate this into your table/list view)
+    // Make sure to pass a valid INTEGER ID from your database for testing.
+    function editEntryExample(id) {
+      // openForm1(id); // Start with Form 1 to show initial details and then allow proceeding to Form 2
+      // Or, if you want to jump straight to Form 2 for deeper edits:   
+      openForm2ForEdit(id);
+    }
+
+    function closeAll() {
+      document.getElementById('form1').style.display = 'none';
+      document.getElementById('form2').style.display = 'none';
+      clearAllForms(); // Clear all fields when closing
+      currentEntryId = null; // Reset the current entry ID
+    }
+
+    function clearAllForms() {
+      document.getElementById('accountForm').reset();
+      document.getElementById('fullForm').reset();
+      document.getElementById('formMessage').textContent = '';
+      clearActionFields(); // Ensure all action-specific fields are hidden and cleared
+      // Reset calculation displays
+      document.getElementById('r_result').textContent = '₹0';
+      document.getElementById('c_result').textContent = '₹0';
+      document.getElementById('o_result').textContent = '₹0';
+      document.getElementById('total_amount').textContent = '₹0';
+      document.getElementById('r_tax_result').textContent = '₹0';
+      document.getElementById('c_tax_result').textContent = '₹0';
+      document.getElementById('o_tax_result').textContent = '₹0';
+      document.getElementById('total_amount_tax').textContent = '₹0';
+      document.getElementById('current_confirmation_pdf_info').innerHTML = ''; // Clear PDF info
+      document.getElementById('existing_confirmation_pdf').value = ''; // Clear hidden PDF path
+    }
+
+    // --- Action Field Management ---
+    function handleActionChange(value, isPopulating = false) {
+      const formMessage = document.getElementById('formMessage');
+      const actionSelect = document.getElementById('actionSelect');
+
+      // Only check for filled fields if not currently populating from fetched data
+      if (!isPopulating) {
+        const proposalFieldsFilled = document.querySelector('#proposalFields input[name="email_sub"]').value !== '' || document.querySelector('#proposalFields textarea[name="email_body"]').value !== '';
+        const followupFieldsFilled = document.querySelector('#followupFields input[name="followup_email_sub"]').value !== '' || document.querySelector('#followupFields textarea[name="followup_email_body"]').value !== '';
+        const offerFieldsFilled = document.getElementById('start_date_offer').value !== '' || document.getElementById('duration_offer').value !== '' || document.querySelector('#offerFields textarea[name="note"]').value !== '' || document.querySelector('#offerFields .screen').value !== '';
+        const closedWonFieldsFilled = document.querySelector('#closedWonFields input[name="amount"]').value !== '' || document.querySelector('#closedWonFields input[name="confirmation_pdf"]').value !== '' || document.querySelector('#closedWonFields textarea[name="closed_won_remarks"]').value !== '' || document.querySelector('#closedWonFields input[name="closure_date"]').value !== '';
+        const taxInvoiceFieldsFilled = document.querySelector('#taxInvoiceFields input[name="invoice_no"]').value !== '' || document.querySelector('#taxInvoiceFields textarea[name="billing_address"]').value !== '' || document.querySelector('#taxInvoiceFields .screen').value !== '';
+
+        if (proposalFieldsFilled || followupFieldsFilled || offerFieldsFilled || closedWonFieldsFilled || taxInvoiceFieldsFilled) {
+          formMessage.textContent = 'Please clear the currently filled action fields before selecting another action type.';
+          actionSelect.value = ''; // Reset the select to the "Select" option
+          // Hide all fields if there's a conflict
+          document.getElementById('proposalFields').style.display = 'none';
+          document.getElementById('followupFields').style.display = 'none';
+          document.getElementById('offerFields').style.display = 'none';
+          document.getElementById('closedWonFields').style.display = 'none';
+          document.getElementById('taxInvoiceFields').style.display = 'none';
+          return; // Exit function if fields are filled
+        }
+      }
+
+      formMessage.textContent = ''; // Clear the message
+      document.getElementById('proposalFields').style.display = (value === 'Send Proposal') ? 'block' : 'none';
+      document.getElementById('followupFields').style.display = (value === 'Send Follow-up Email') ? 'block' : 'none';
+      document.getElementById('offerFields').style.display = (value === 'Send Offer') ? 'block' : 'none';
+      document.getElementById('closedWonFields').style.display = (value === 'Closed Won') ? 'block' : 'none';
+      document.getElementById('taxInvoiceFields').style.display = (value === 'Send Tax Invoice') ? 'block' : 'none';
+    }
+
+    function clearActionFields() {
+      document.getElementById('proposalFields').style.display = 'none';
+      document.querySelectorAll('#proposalFields input[type="text"], #proposalFields textarea').forEach(el => el.value = '');
+
+      document.getElementById('followupFields').style.display = 'none';
+      document.querySelectorAll('#followupFields input[type="text"], #followupFields textarea').forEach(el => el.value = '');
+
+      document.getElementById('offerFields').style.display = 'none';
+      document.querySelectorAll('#offerFields input[type="date"], #offerFields input[type="number"], #offerFields textarea').forEach(el => el.value = '');
+      document.getElementById('r_result').textContent = '₹0';
+      document.getElementById('c_result').textContent = '₹0';
+      document.getElementById('o_result').textContent = '₹0';
+      document.getElementById('total_amount').textContent = '₹0';
+
+
+      document.getElementById('closedWonFields').style.display = 'none';
+      document.querySelectorAll('#closedWonFields input[type="number"], #closedWonFields input[type="file"], #closedWonFields textarea, #closedWonFields input[type="date"]').forEach(el => {
+        if (el.type === 'file') {
+          el.value = '';
+        } else {
+          el.value = '';
+        }
+      });
+      document.getElementById('current_confirmation_pdf_info').innerHTML = ''; // Clear PDF info
+      document.getElementById('existing_confirmation_pdf').value = ''; // Clear hidden PDF path
+
+      document.getElementById('taxInvoiceFields').style.display = 'none';
+      document.querySelectorAll('#taxInvoiceFields input[type="text"], #taxInvoiceFields input[type="date"], #taxInvoiceFields textarea, #taxInvoiceFields input[type="number"]').forEach(el => el.value = '');
+      document.getElementById('r_tax_result').textContent = '₹0';
+      document.getElementById('c_tax_result').textContent = '₹0';
+      document.getElementById('o_tax_result').textContent = '₹0';
+      document.getElementById('total_amount_tax').textContent = '₹0';
+
+
+      document.getElementById('formMessage').textContent = '';
+      document.getElementById('actionSelect').value = '';
+    }
+
+    // --- Date Calculation Functions ---
+    function calculateEndDateOffer() {
+      const startDate = document.getElementById("start_date_offer").value;
+      const duration = parseInt(document.getElementById("duration_offer").value) || 0;
+
+      if (startDate && duration) {
+        const start = new Date(startDate);
+        start.setDate(start.getDate() + duration);
+        const endDate = start.toISOString().split('T')[0];
+        document.getElementById("end_date_offer").value = endDate;
+      } else {
+        document.getElementById("end_date_offer").value = "";
+      }
+    }
+
+    function InvoicecalculateEndDate() {
+      const startDate = document.getElementById('start_date_tax').value;
+      const duration = parseInt(document.getElementById('duration_tax').value) || 0;
+      if (startDate && duration) {
+        const start = new Date(startDate);
+        start.setDate(start.getDate() + duration);
+        const endDate = start.toISOString().split('T')[0];
+        document.getElementById('end_date_tax').value = endDate;
+      } else {
+        document.getElementById('end_date_tax').value = "";
+      }
+    }
+
+    // --- Form Submission Logic ---
+    function submitForm1(event, mode) {
+      event.preventDefault();
+
+      const form1 = document.getElementById('accountForm');
+      const formData = new FormData(form1);
+
+      // Append the currentEntryId if it exists (for editing)
+      if (currentEntryId) {
+        formData.append('id', currentEntryId);
+      }
+
+      // Convert FormData to URLSearchParams for x-www-form-urlencoded (for Form 1 only)
+      const data = new URLSearchParams();
+      for (const pair of formData.entries()) {
+        data.append(pair[0], pair[1]);
+      }
+
+      const endpoint = currentEntryId ? `/update-entry/${currentEntryId}` : '/save-entry';
+      const method = currentEntryId ? 'PUT' : 'POST';
+
+      fetch(endpoint, {
+        method: method,
+        body: data,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }).then(res => res.json())
+        .then(data => {
+          if (data.id || data.message === 'Data updated successfully') { // Check for ID for new, or success message for update
+            const returnedId = data.id || currentEntryId; // Use returned ID or existing ID
+            currentEntryId = returnedId; // Ensure currentEntryId is set for subsequent actions
+
+            // Populate hidden fields in Form 2
+            const form2 = document.getElementById('fullForm');
+            // Directly map formData from form1 to form2's hidden fields
+            form2.account_owner.value = formData.get('account_owner');
+            form2.name.value = formData.get('name');
+            form2.poc_name.value = formData.get('poc_name');
+            form2.mobile_number.value = formData.get('mobile_number');
+            form2.city.value = formData.get('city');
+            form2.email.value = formData.get('email');
+            form2.customer_type.value = formData.get('customer_type');
+            form2.entry_id.value = returnedId; // Set the ID for form2's submission
+
+            // Update preview info in Form 2
+            document.getElementById('previewInfo').innerHTML = `
+                        <p><strong>Company:</strong> ${formData.get('name')}</p>
+                        <p><strong>POC:</strong> ${formData.get('poc_name')}</p>
+                        <p><strong>Mobile:</strong> ${formData.get('mobile_number')}</p>
+                        <p><strong>City:</strong> ${formData.get('city')}</p>
+                        <p><strong>Email:</strong> ${formData.get('email')}</p>
+                    `;
+
+
+            if (mode === 'save') {
+              document.getElementById('form1').style.display = 'none';
+              document.getElementById('form2').style.display = 'block';
+            } else if (mode === 'save_new') {
+              form1.reset();
+              alert('Entry saved! You can add another entry now.');
+              currentEntryId = null; // Reset for new entry
+            }
+          } else {
+            alert('Failed to save/update entry.');
+          }
+        })
+        .catch(error => {
+          console.error('Error submitting Form 1:', error);
+          alert('An error occurred during submission: ' + error.message);
+        });
+    }
+
+    document.getElementById('fullForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+
+      // Ensure entry_id is part of formData for updates
+      if (currentEntryId) {
+        formData.set('entry_id', currentEntryId); // Set for backend identification
+      }
+
+      const actionType = formData.get('action_type');
+      let totalValue = 0;
+
+      // Calculate total_value based on selected action type
+      if (actionType === 'Send Offer') {
+        const r_screens = parseFloat(formData.get('residential_screen')) || 0;
+        const r_rate = parseFloat(formData.get('r_per_screen')) || 0;
+        const r_plan = parseFloat(formData.get('r_plan')) || 0;
+        const c_screens = parseFloat(formData.get('corporate_screen')) || 0;
+        const c_rate = parseFloat(formData.get('c_per_screen')) || 0;
+        const c_plan = parseFloat(formData.get('c_plan')) || 0;
+        const o_screens = parseFloat(formData.get('outdur_screen')) || 0;
+        const o_rate = parseFloat(formData.get('o_per_screen')) || 0;
+        const o_plan = parseFloat(formData.get('o_plan')) || 0;
+
+        totalValue = (r_screens * r_rate * r_plan) + (c_screens * c_rate * c_plan) + (o_screens * o_rate * o_plan);
+      } else if (actionType === 'Send Tax Invoice') {
+        const r_screens_tax = parseFloat(formData.get('residential_screen_tax')) || 0;
+        const r_rate_tax = parseFloat(formData.get('r_per_screen_tax')) || 0;
+        const r_plan_tax = parseFloat(formData.get('r_plan_tax')) || 0;
+        const c_screens_tax = parseFloat(formData.get('corporate_screen_tax')) || 0;
+        const c_rate_tax = parseFloat(formData.get('c_per_screen_tax')) || 0;
+        const c_plan_tax = parseFloat(formData.get('c_plan_tax')) || 0;
+        const o_screens_tax = parseFloat(formData.get('outdur_screen_tax')) || 0;
+        const o_rate_tax = parseFloat(formData.get('o_per_screen_tax')) || 0;
+        const o_plan_tax = parseFloat(formData.get('o_plan_tax')) || 0;
+
+        totalValue = (r_screens_tax * r_rate_tax * r_plan_tax) + (c_screens_tax * c_rate_tax * c_plan_tax) + (o_screens_tax * o_rate_tax * o_plan_tax);
+
+      } else if (actionType === 'Closed Won') {
+        totalValue = parseFloat(formData.get('amount')) || 0;
+      }
+      formData.append('total_value', totalValue);
+
+
+      let endpoint = '';
+      let method = '';
+
+      // Determine endpoint and method based on whether we're editing or creating
+      if (currentEntryId) {
+        endpoint = `/update-entry/${currentEntryId}`;
+        method = 'PUT';
+        // Multer handles req.params.id for the route, but also send in formData if needed
+        // formData.set('id', currentEntryId); // Not strictly needed here as id is in URL params
+      } else {
+        endpoint = '/save-entry'; // Your existing route for new entries
+        method = 'POST';
+      }
+
+      // Send FormData directly for file uploads. The browser will set Content-Type: multipart/form-data
+      fetch(endpoint, {
+        method: method,
+        body: formData
+      }).then(res => {
+        if (res.ok) {
+          alert('Action saved successfully!');
+          closeAll();
+        } else {
+          return res.json().then(err => { throw new Error(err.error || err.message || 'Error saving action.'); });
+        }
+      })
+        .catch(error => {
+          console.error('Error submitting full form:', error);
+          alert('Error saving action: ' + error.message);
+        });
+    });
+
+    // --- Calculation Logic for Component Blocks ---
+    const allRateInputs = document.querySelectorAll('.component-block .screen, .component-block .rate, .component-block .plan');
+
+    allRateInputs.forEach(input => {
+      input.addEventListener('input', updateComponentBlockTotal);
+    });
+
+    function updateComponentBlockTotal() {
+      const blocks = document.querySelectorAll('.component-block');
+      blocks.forEach(block => {
+        let totalAmountForBlock = 0;
+        const rows = block.querySelectorAll('.form-row');
+
+        rows.forEach(row => {
+          const type = row.querySelector('.screen')?.dataset.type;
+          const screens = parseFloat(row.querySelector('.screen')?.value) || 0;
+          const rate = parseFloat(row.querySelector('.rate')?.value) || 0;
+          const plan = parseFloat(row.querySelector('.plan')?.value) || 0;
+
+          let rowTotal = 0;
+          if (screens > 0 && rate > 0 && plan > 0) {
+            rowTotal = screens * rate * plan;
+          }
+          // Check if result span exists before updating
+          const resultSpan = document.getElementById(`${type}_result`);
+          if (resultSpan) {
+            resultSpan.textContent = `₹${rowTotal.toFixed(2)}`;
+          }
+          totalAmountForBlock += rowTotal;
+        });
+
+        // Update the specific total amount span for this block
+        if (block.querySelector('#total_amount')) {
+          block.querySelector('#total_amount').textContent = `₹${totalAmountForBlock.toFixed(2)}`;
+        }
+        if (block.querySelector('#total_amount_tax')) {
+          block.querySelector('#total_amount_tax').textContent = `₹${totalAmountForBlock.toFixed(2)}`;
+        }
+      });
+    }
+
+    // Initial calculation update for existing values on load (if any)
+    document.addEventListener('DOMContentLoaded', updateComponentBlockTotal);
+
+
+
+  </script>
+</body>
+                                
+</html>                                                                             
