@@ -28,6 +28,17 @@ app.use(session({
 // });                                                                                                                           
 
 
+function ensureRole(allowedRoles) {
+  return function (req, res, next) {
+    console.log("req.session.user.role",req.session.user.role);
+    
+    if (req.session && req.session.user && allowedRoles.includes(req.session.user.role)) {
+      return next();
+    } else {
+      return res.redirect('/'); // or res.status(403).send('Forbidden') if API
+    }
+  };
+}
 
 app.get('/register', (req, res) => {
   res.render('register', {
@@ -115,7 +126,7 @@ app.post('/login', async (req, res) => {
 
 
 
-app.get('/dashboard', async (req, res) => {                                                        
+app.get('/dashboard',ensureRole(['SalesForce']), async (req, res) => {                                                        
   const user = req.session.user;
   try {
     const result = await pool.query(`
@@ -490,7 +501,7 @@ app.post('/enquiry-inline/:id', async (req, res) => {
 
 // admin routes
 
-app.get('/admin-dashboard', async (req, res) => {                                                        
+app.get('/admin-dashboard',ensureRole(['SalesForceAdmin']), async (req, res) => {                                                        
   const user = req.session.user;
   try {
     const result = await pool.query(`
