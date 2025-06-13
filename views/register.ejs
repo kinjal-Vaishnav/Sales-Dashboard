@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
   <title>Register</title>
@@ -26,3 +26,471 @@
   </form>                                       
 </body>                                                                                                                                             
 </html>
+
+
+ -->
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Screen</title>
+    <link rel="icon" type="image/png" href="https://res.cloudinary.com/dqfnwh89v/image/upload/v1724408615/qxvvfcf7ftgklhl2k03v.png">
+
+    <style>
+      /* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Gilroy-Regular;
+    line-height: 1.6;
+}
+
+/* Fade-In Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Floating Animation for Logo */
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+
+
+/* Scale-Up Animation for Right Section */
+@keyframes scaleUp {
+    0% {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Slide-In Animation for Right Section */
+@keyframes slideInRight {
+    0% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Shadow Pulse Animation for Details Card */
+@keyframes shadowPulse {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
+    }
+
+    50% {
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
+    }
+}
+
+/* Fade-In Animation for Form Fields */
+@keyframes fadeInFields {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Main Container */
+#main {
+    width: 100%;
+    min-height: 100vh;
+    background: #FAF8FF url("https://res.cloudinary.com/dqfnwh89v/image/upload/v1724404517/edidpw1xsthuyvasvubm.png") no-repeat center/cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Left Section */
+.left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 34%;
+    padding: 20px;
+}
+
+.logo img {
+    width: 100%;
+    max-width: 433px;
+    animation: float 4s ease-in-out;
+    /* Floating effect */
+    transition: transform 0.5s ease-in-out;
+}
+
+
+.para p {
+    font-size: 38px;
+    font-weight: 400;
+    text-align: center;
+    background: linear-gradient(90deg, #EA5E2C 0%, #716164 51.5%, #006499 100%);
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-top: 10px;
+    max-width: 447px;
+}
+
+/* Right Section */
+.right {
+    width: 35%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+/* border: 1px solid blue; */
+}
+
+.details {
+    background-color: #FFFFFF;
+    width: 70vw;
+    max-width: 555px;
+    padding: 51px;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* gap: 20px; */
+    animation: shadowPulse 1s ease-in-out;
+/* border: 1px solid black; */
+}
+
+.para1 p {
+    color: #202224;
+    font-size: 33px;
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: 11px;
+}
+
+.para2 p {
+    color: #202224;
+    font-size: 18px;
+    font-weight: 600;
+    opacity: 0.8;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Form Fields */
+.emailField, .passwordField {
+    width: 100%;
+    display: grid;
+    gap: 10px;
+    opacity: 0;
+    animation: fadeInFields 1s ease-in-out forwards;
+}
+
+label {
+    color: #202224;
+    font-size: 18px;
+    font-weight: 600;
+    opacity: 0.8;
+}
+
+input {
+    width: 100%;
+    padding: 10px 15px;
+    font-size: 20px;
+    color: #000;
+    background: #F1F4F9;
+    border: 1px solid #D8D8D8;
+    border-radius: 10px;
+    opacity: 0.8;
+}
+
+/* Button */
+.btn button {
+    width: 100%;
+    max-width: 331px;
+    background: #4880FF;
+    color: #FFFFFF;
+    font-size: 22px;
+    font-weight: 700;
+    border: none;
+    border-radius: 10px;
+    opacity: 0.9;
+    cursor: pointer;
+    margin-top: 20px;
+    padding: 10px 80px;
+    transition: transform 0.3s ease-in-out;
+    animation: fadeInFields 1s ease-in-out forwards;
+}
+
+
+
+/* Error Message */
+.error {
+    color: red;
+    font-size: 16px;
+}
+
+/* Media Queries */
+@media (max-width: 1400px) {
+    .left {
+        width: 40%;
+    }
+
+    .right {
+        width: 60%;
+    }
+
+    .details {
+        max-width: 500px;
+    }
+
+    .para p {
+        font-size: 36px;
+    }
+}
+
+@media (max-width: 1300px) {
+    .right {
+        width: 53%;
+    }
+
+    .logo img {
+        max-width: 370px;
+    }
+
+    .para p {
+        font-size: 34px;
+    }
+
+    .details {
+        padding: 40px;
+        max-width: 500px;
+    }
+
+    .btn button {
+        max-width: 290px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .para p {
+        font-size: 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    #main {
+        flex-direction: column;
+        padding: 30px;
+        background: #FAF8FF url("https://res.cloudinary.com/dykvdhxke/image/upload/v1741000642/White_Modern_Mobile_Wallpaper_bybfx8.jpg") no-repeat center/cover;
+    }
+
+    .left, .right {
+        width: 68%;
+    }
+
+    .logo img {
+        max-width: 300px;
+    }
+
+    .para p {
+        font-size: 32px;
+    }
+
+    .details {
+        padding: 30px;
+    }
+
+    .para1 p {
+        font-size: 28px;
+    }
+
+    .para2 p {
+        font-size: 16px;
+    }
+
+    label {
+        font-size: 16px;
+    }
+
+    input {
+        font-size: 18px;
+    }
+
+    .btn button {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    #main {
+        flex-direction: column;
+        padding: 15px;
+    }
+
+    .left, .right {
+        width: 100%;
+    }
+
+    .left {
+        padding-bottom: 0;
+    }
+
+    .logo img {
+        max-width: 220px;
+    }
+
+    .para p {
+        font-size: 24px;
+        line-height: 1.3;
+        margin-bottom: 3%;
+    }
+
+    .details {
+        padding: 27px;
+        max-width: 450px;
+        box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .para1 p {
+        font-size: 21px;
+    }
+
+    .para2 p {
+        font-size: 16px;
+    }
+
+    label {
+        font-size: 16px;
+    }
+
+    input {
+        font-size: 16px;
+        padding: 8px;
+    }
+
+    .btn button {
+        font-size: 18px;
+        max-width: 100%;
+        padding: 10px 50px;
+    }
+}
+
+@media (max-width: 336px) {
+    .para p {
+        font-size: 20px;
+        line-height: 1.3;
+    }
+
+    .para1 p {
+        font-size: 22px;
+    }
+
+    .btn button {
+        padding: 8px 40px;
+    }
+}
+    </style>
+</head>
+<body>
+    <div id="main">
+        <div class="left">
+            <div class="logo">
+                <img src="./images/Logo.png" alt="Aekads" />
+            </div>
+            <div class="para">
+                <p>Customer Relationship Management</p>
+            </div>
+        </div>
+        <div class="right">
+            <form action="/register" method="POST">
+                <div class="details">
+                    <div class="para1">
+                        <p>Register to Account</p>
+                    </div>
+                    <div class="para2">
+                        <p>Please enter your basic details to register</p>
+                    </div>
+                    <div class="emailField">
+                        <label for="name">Name:</label>
+                        <input type="text"  placeholder="Enter Name" name="name" required>
+                    </div>
+                    <div class="emailField">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" placeholder="Enter Email" name="email" required>
+                    </div>
+                    <div class="passwordField">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" placeholder="Enter Password" name="password" required>
+                    </div>
+                    <div class="passwordField">
+                        <label for="pass_kay">App Pass:</label>
+                        <input type="text" placeholder="Enter App Pass" name="pass_kay" required>
+                    </div>
+                       <div class="passwordField">
+                    <label>Role:</label>
+    <input type="text" name="role" required></div>
+                    <div class="btn">
+                        <button type="submit">Register</button>
+                    </div>
+                      <% if (successMessage) { %>
+                        <div class="success">
+                          <p>
+                            <%= successMessage %>
+                          </p>
+                          <% if (showLoginLink) { %>
+                            <p><a href="/">Click here to login</a></p>
+                            <% } %>
+                        </div>
+                        <% } %>
+                          <% if (errorMessage) { %>
+                            <div class="error">
+                              <p>
+                                <%= errorMessage %>
+                              </p>
+                            </div>
+                            <% } %>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+
+ 

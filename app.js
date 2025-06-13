@@ -4,8 +4,10 @@ const bodyParser = require('body-parser');
 const pool = require('./db');
 const app = express();
 const multer = require('multer');
+const bcrypt = require('bcrypt');
 const fs = require('fs');
 const { google } = require('googleapis');
+const { error } = require('console');
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -20,12 +22,100 @@ app.use(session({
 }));                                                                  
 
 // Fake login session                                                                                                                                            
-app.use((req, res, next) => {
-  req.session.user = { emp_id: 'emp_81', name: 'Hardik Prajapati' };              
-  next();                       
-});                                                                                                                           
+// app.use((req, res, next) => {
+//   req.session.user = { emp_id: 'emp_81', name: 'Hardik Prajapati' };              
+//   next();                       
+// });                                                                                                                           
 
-app.get('/', async (req, res) => {                                                        
+
+
+app.get('/register', (req, res) => {
+  res.render('register', {
+    successMessage: null,
+    errorMessage: null,
+    showLoginLink: false
+  });
+});
+
+
+app.post('/register', async (req, res) => {
+  const { name, email, password, role, pass_kay } = req.body;
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await pool.query(
+  `INSERT INTO public."User1s" 
+   (name, email, password, role, pass_kay, "createdAt", "updatedAt") 
+   VALUES ($1, $2, $3, $4, $5, NOW(), NOW())`,
+  [name, email, hashedPassword, role, pass_kay]
+);
+    // res.send('User registered with pass_kay successfully!');
+      // Render register page again with success message
+    res.render('register', {
+      successMessage: 'User registered successfully!',errorMessage: null,
+      showLoginLink: true
+    });
+    
+  } catch (err) {
+    console.error(err);
+    res.render('register', {
+      errorMessage: 'Error registering user.',successMessage : null,
+      showLoginLink: false
+    });
+  }
+});
+
+
+                                                                     
+// GET login form                                                                                                                   
+app.get('/', (req, res) => {
+  res.render('login', { error: null });
+});
+
+// POST login logic
+app.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const result = await pool.query(`SELECT * FROM "User1s" WHERE email = $1`, [email]);
+
+    if (result.rows.length === 0) {
+      return res.render('login', { error: "Invalid email or password." });
+    }
+
+    const user = result.rows[0];
+    const match = await bcrypt.compare(password, user.password);
+
+    if (!match) {
+      return res.render('login', { error: "Invalid email or password." });
+    }
+
+    // ✅ Save user in session after successful login
+    req.session.user = {
+      id: user.id,
+      name: user.name,
+      emp_id: user.emp_id || `emp_${user.id}`,
+      email: user.email,
+      role: user.role // assuming it's spelled 'roll' in DB
+    };
+
+    // ✅ Role-based redirection
+    if (user.role === 'SalesForceAdmin') {
+      res.redirect('/admin-dashboard');
+    } else if (user.role === 'SalesForce') {
+      res.redirect('/dashboard');
+    } else {
+      res.render('login', { error: "Unauthorized role." });
+    }
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
+  }
+});
+
+
+
+app.get('/dashboard', async (req, res) => {                                                        
   const user = req.session.user;
   try {
     const result = await pool.query(`
