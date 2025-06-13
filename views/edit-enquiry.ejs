@@ -417,25 +417,22 @@
         </div>
       </div>
 
-      <!-- Right: Buttons -->
+      <!-- Right: Buttons -->                                                   
       <div class="right">
         <button type="button" id="editBtn" style="border-radius: 4px 0px 0px 4px;">Edit</button>
         <button type="submit" id="saveBtn" style="display: none;">Save</button>
- <form action="/enquiry-inline/<%= enquiry.id %>" method="POST" id="ownerTransferForm">
-  <label for="account_owner_id">Transfer Ownership:</label>
-  <select 
-    name="account_owner_id" 
-    id="account_owner_id" 
-    style="margin-left: 10px; border-radius: 4px;" 
-    onchange="this.form.submit()" 
-    required
-  >
-    <option disabled selected>Select user</option>
-    <% salesUsers.forEach(user => { %>
-      <option value="<%= user.id %>"><%= user.name %></option>
-    <% }) %>
-  </select>
-</form>
+<label for="account_owner_id">Transfer Ownership:</label>
+<select 
+  id="account_owner_id"
+  style="margin-left: 10px; border-radius: 4px;" 
+  required
+  data-enquiry-id="<%= enquiry.id %>"
+>
+  <option disabled selected>Select user</option>
+  <% salesUsers.forEach(user => { %>
+    <option value="<%= user.id %>"><%= user.name %></option>
+  <% }) %>
+</select>
 
 
       </div>
@@ -517,25 +514,22 @@
     
         </div>                                                    
     
-        <div class="detail-row">                                                                                 
-          <div class="detail-label">Phone</div>                                                                               
-          <div class="detail-value">                                                                   
-    
-            <span class="view">
-              <%= enquiry.mobile_number %>
-            </span>
-            <input class="edit" type="text" name="mobile_number" value="<%= enquiry.mobile_number %>" readonly
-              style="display:none;">
-            <span class="edit-icon"  onclick="makeEditable(this)">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd"
-                  d="M2.90275 10.2768L5.64121 13.0152C5.76429 13.1383 5.9489 13.1383 6.07198 13.0152L12.9027 6.1537C13.0258 6.03062 13.0258 5.846 12.9027 5.72293L10.1951 3.01523C10.072 2.89216 9.88736 2.89216 9.76429 3.01523L2.90275 9.87677C2.77967 9.99985 2.77967 10.1845 2.90275 10.2768ZM11.0874 1.7537C10.9643 1.87677 10.9643 2.06139 11.0874 2.18447L13.7951 4.89216C13.9181 5.01523 14.1027 5.01523 14.2258 4.89216L14.9951 4.12293C15.4874 3.66139 15.4874 2.92293 14.9951 2.43062L13.5489 0.984465C13.0566 0.492157 12.2874 0.492157 11.7951 0.984465L11.0874 1.7537ZM0.625826 14.8306C0.564287 15.1383 0.841211 15.4152 1.1489 15.3537L4.50275 14.5537C4.62583 14.5229 4.71813 14.4614 4.77967 14.3998L4.84121 14.3383C4.90275 14.2768 4.93352 14.0614 4.81044 13.9383L2.04121 11.1691C1.91813 11.046 1.70275 11.0768 1.64121 11.1383L1.57967 11.1999C1.48736 11.2922 1.4566 11.3845 1.42583 11.4768L0.625826 14.8306Z"
-                  fill="#ABABAB" />
-              </svg>
-    
-            </span>
-          </div>
-        </div>
+        <div class="detail-row">
+  <div class="detail-label">Phone</div>
+  <div class="detail-value">
+    <span class="view">
+      <%= enquiry.mobile_number %>
+    </span>
+    <input class="edit" type="text" name="mobile_number" value="<%= enquiry.mobile_number %>" style="display:none;">
+    <span class="edit-icon"  onclick="makeEditable(this)">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M2.90275 10.2768L5.64121 13.0152C5.76429 13.1383 5.9489 13.1383 6.07198 13.0152L12.9027 6.1537C13.0258 6.03062 13.0258 5.846 12.9027 5.72293L10.1951 3.01523C10.072 2.89216 9.88736 2.89216 9.76429 3.01523L2.90275 9.87677C2.77967 9.99985 2.77967 10.1845 2.90275 10.2768ZM11.0874 1.7537C10.9643 1.87677 10.9643 2.06139 11.0874 2.18447L13.7951 4.89216C13.9181 5.01523 14.1027 5.01523 14.2258 4.89216L14.9951 4.12293C15.4874 3.66139 15.4874 2.92293 14.9951 2.43062L13.5489 0.984465C13.0566 0.492157 12.2874 0.492157 11.7951 0.984465L11.0874 1.7537ZM0.625826 14.8306C0.564287 15.1383 0.841211 15.4152 1.1489 15.3537L4.50275 14.5537C4.62583 14.5229 4.71813 14.4614 4.77967 14.3998L4.84121 14.3383C4.90275 14.2768 4.93352 14.0614 4.81044 13.9383L2.04121 11.1691C1.91813 11.046 1.70275 11.0768 1.64121 11.1383L1.57967 11.1999C1.48736 11.2922 1.4566 11.3845 1.42583 11.4768L0.625826 14.8306Z"
+          fill="#ABABAB" />
+      </svg>
+
+    </span>
+  </div>
+</div>
     
         <!-- Example for City -->
         <div class="detail-row">
@@ -700,45 +694,59 @@
     </div>
 </form>
   </div>
-
 <script>
-   function makeEditable(icon) {
+  function makeEditable(icon) {
     const detailValue = icon.closest('.detail-value');
     const viewSpan = detailValue.querySelector('.view');
     const input = detailValue.querySelector('.edit');
 
     viewSpan.style.display = 'none';
-input.style.display = 'inline-block';
-input.style.border = 'none';
-input.style.outline = 'none';
-    input.removeAttribute('readonly');
+    input.style.display = 'inline-block';
+    input.style.border = 'none';
+    input.style.outline = 'none';
+    input.removeAttribute('readonly'); // Ensure readonly is removed for individual fields
     input.focus();
-     document.getElementById('editBtn').style.display = 'none';
+    document.getElementById('editBtn').style.display = 'none';
     document.getElementById('saveBtn').style.display = 'inline-block';
   }
+
   document.getElementById('editBtn').addEventListener('click', () => {
     const views = document.querySelectorAll('.view');
     const edits = document.querySelectorAll('.edit');
-    views.forEach(v => v.style.display = 'none');
-edits.forEach(e => {
-  e.style.display = 'inline-block';
-  e.style.border = 'none';
-  e.style.outline = 'none';
-  e.focus();
 
-});    document.getElementById('editBtn').style.display = 'none';
+    views.forEach(v => v.style.display = 'none');
+    edits.forEach(e => {
+      e.style.display = 'inline-block';
+      e.style.border = 'none';
+      e.style.outline = 'none';
+      e.removeAttribute('readonly'); // Crucially, remove readonly for ALL fields
+      e.focus();
+    });
+    document.getElementById('editBtn').style.display = 'none';
     document.getElementById('saveBtn').style.display = 'inline-block';
   });
-
-
-  // function toggleTransferList() {
-  //   const list = document.getElementById('transferList');
-  //   list.style.display = list.style.display === 'none' ? 'block' : 'none';
-  // }
 </script>
 
-    
 
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  document.getElementById('account_owner_id').addEventListener('change', async function () {
+    const accountOwnerId = this.value;
+    const enquiryId = this.dataset.enquiryId;
+
+    try {
+      const response = await axios.post(`/enquiry-inline/${enquiryId}`, {
+        account_owner_id: accountOwnerId
+      });
+
+      // Optionally redirect or show success
+      window.location.href = `/enquiry/${enquiryId}`;
+    } catch (error) {
+      console.error('Ownership transfer failed:', error);
+      alert('Something went wrong while transferring ownership.');
+    }
+  });
+</script>
     
 </body>
 </html>

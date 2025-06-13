@@ -132,7 +132,6 @@ app.get('/dashboard', async (req, res) => {
         /* …any other fields you want to edit… */
       FROM sales_enquiry
       WHERE account_owner = $1 ORDER BY id DESC
-      WHERE account_owner = $1 order by id desc
     `, [user.name]);
     res.render('dashboard', {
       user,
@@ -217,6 +216,7 @@ async function uploadToDrive(filePath, fileName, mimetype) {
 
 
 
+
 app.post('/save-entry', upload.single('confirmation_file'), async (req, res) => {
   const {
     name, poc, mobile, city, email, type,
@@ -250,7 +250,6 @@ let confirmation_link_download=null;
         req.file.originalname,
         req.file.mimetype
       );
-      confirmation_pdf = fileName;         
       
       confirmation_pdf = fileName;
       confirmation_link = previewLink || null;
@@ -347,7 +346,7 @@ let confirmation_link_download=null;
         entry_id
       ]);
 
-      res.sendStatus(200);
+      res.sendStatus(200);                
     }
 
   } catch (err) {
@@ -359,7 +358,8 @@ let confirmation_link_download=null;
 
 
 
-// test                                                                 
+
+// test                                                              
 
 
 // Route to handle updating an existing entry
@@ -577,5 +577,3 @@ const uniqueEmployees = [...new Set(enquiries.map(e => e.account_owner).filter(B
 
 app.listen(3000, () => console.log('Server running on http://localhost:3000'));                                                                                                                                                                                                  
       
-
-
